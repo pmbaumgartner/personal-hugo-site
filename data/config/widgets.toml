@@ -1,0 +1,22 @@
+# About Widget config
+[about]
+title = "Peter Baumgartner"                            # default: .Site.Title
+description = "Peter Baumgartner's Site"                      # default: .Site.Params.info.description
+logo = "/images/LAZERS.jpg"             # default: "/images/logo.png"
+
+# Recent Posts Widget config
+[recent_posts]
+title = ""                            # default: "Recent Posts"
+length = 5                            # default: 5
+excludeTypes = ["page"]               # default: ["page"]
+
+# Social Menu Widget config
+[social_menu]
+title = ""                            # default: ""
+platforms = ["github","twitter","email"]
+
+# Taxonomy Cloud Widget config
+[taxonomy_cloud]
+title = ""                            # default: Plural Name for `taxonomyCloud.taxonomy`
+taxonomy = "tags"                     # default: "tags"
+shuffle = true                        # default: true
