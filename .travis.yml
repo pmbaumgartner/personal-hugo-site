@@ -1,13 +1,15 @@
 language: go
 
 go:
-  - master # This uses automatically the latest version of go
+  - 1.7
+
+sudo: false
 
 install:
-  - go get github.com/spf13/hugo # This provides the latest version of Hugo to Travis CI
+  - go get -u -v github.com/spf13/hugo
 
 script:
-  - hugo # This commands builds your website on travis
+- hugo
 
 # Deploy to GitHub pages
 deploy:
