@@ -1,15 +1,19 @@
-language: go
+sudo: required
+python:
+  - "2.7"
 
-go:
-  - 1.7
-
-sudo: false
-
+# Clean and don't fail
 install:
-  - go get -u -v github.com/spf13/hugo
+  - sudo pip install pygments
+  - wget -O /tmp/hugo.deb https://github.com/gohugoio/hugo/releases/download/v0.38.1/hugo_0.38.1_Linux-64bit.deb
+  - sudo dpkg -i /tmp/hugo.deb
+  - rm -rf public || exit 0
 
+# Build the website
 script:
-- hugo
+  - pygmentize -V
+  - git submodule update --init --recursive
+  - hugo -v
 
 # Deploy to GitHub pages
 deploy:
