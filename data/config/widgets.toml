@@ -1,7 +1,7 @@
 # About Widget config
 [about]
 title = "Peter Baumgartner"                            # default: .Site.Title
-description = "Peter Baumgartner's Site"                      # default: .Site.Params.info.description
+description = "Data Scientist"                      # default: .Site.Params.info.description
 logo = "/images/LAZERS.jpg"             # default: "/images/logo.png"
 
 # Recent Posts Widget config
