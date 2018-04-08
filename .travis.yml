@@ -17,6 +17,7 @@ script:
 
 # Deploy to GitHub pages
 deploy:
+  provider: pages
   repo: pmbaumgartner/pmbaumgartner.github.io
   target_branch: master
   skip_cleanup: true
