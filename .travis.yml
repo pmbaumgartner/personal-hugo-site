@@ -12,7 +12,7 @@ python:
 # Clean and don't fail
 install:
   - sudo pip install pygments
-  - wget -O /tmp/hugo.deb https://github.com/gohugoio/hugo/releases/download/v0.31/hugo_0.31_Linux-64bit.deb
+  - wget -O /tmp/hugo.deb https://github.com/gohugoio/hugo/releases/download/v0.38.1/hugo_0.38.1_Linux-64bit.deb
   - sudo dpkg -i /tmp/hugo.deb
   - rm -rf public || exit 0
 
