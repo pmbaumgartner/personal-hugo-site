@@ -5,7 +5,7 @@ date: 2017-04-04
 
 The Receiver Operating Characteristic (ROC) curve is helpful in evaluating model performance, especially since Area Under the Curve (AUC ROC) has a several friendly interpretations. I use ROC curves in evaluating models and have to explain the output to non-technical folks. I was reading through [Machine Learning: The Art and Science of Algorithms that Make Sense of Data](http://a.co/dnKG3eO) and stumbled upon this nice visual and interpretation of ROC (tied to AUC):
 
-![png](//images/coloredROCsm.png)
+![png](/images/coloredROCsm.png)
 
 - Flach, P. (2012). Machine Learning: The Art and Science of Algorithms that Make Sense of Data. Cambridge University Press.
 
@@ -115,7 +115,7 @@ plt.tight_layout()
 plt.savefig('roc_colored.png')
 ```
 
-![png](//images/ColoredROCCurves_10_0.png)
+![png](/images/ColoredROCCurves_10_0.png)
 
 
 ## Relevant matplotlib StackOverflow Posts

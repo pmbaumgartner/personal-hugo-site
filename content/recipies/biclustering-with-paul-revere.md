@@ -443,7 +443,7 @@ plt.show()
 ```
 
 
-![png](//images/CoClustering-Revere_18_0.png)
+![png](/images/CoClustering-Revere_18_0.png)
 
 
 ## Brief Analysis

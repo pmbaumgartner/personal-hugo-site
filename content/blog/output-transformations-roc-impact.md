@@ -346,7 +346,7 @@ bin_plot(complete_scores, 'r_raw_score', 'is_recid')
 ```
 
 
-![png](images/Calculating%20ROC%20before%20and%20after%20transformations_16_0.png)
+![png](/images/Calculating%20ROC%20before%20and%20after%20transformations_16_0.png)
 
 
 Raw scores look to be normally distributed and also indicate the model works -- there seems to be a significant shift in raw scores in individual who actually recidivated.
