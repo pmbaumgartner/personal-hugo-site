@@ -45,7 +45,7 @@ There are three important lines (after import) in the example code above that wi
 
 First, we use the `get_ipython` method to get a global ipython object. If you actually run this first line in a standard python shell, you'll see something interesting:
 
-```
+```python
 >>> from IPython.testing.globalipapp import get_ipython
 >>> ip = get_ipython()
 In :

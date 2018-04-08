@@ -89,7 +89,7 @@ tag = "tags"
 page = "/:slug/"
 
 [blackfriday]
-hrefTargetBlank = true
+hrefTargetBlank = false
 
 [languages]
 # edit this block for your own language
