@@ -6,9 +6,9 @@ logo = "/images/LAZERS.jpg"             # default: "/images/logo.png"
 
 # Recent Posts Widget config
 [recent_posts]
-title = ""                            # default: "Recent Posts"
+title = "Recent Blog Posts"                            # default: "Recent Posts"
 length = 5                            # default: 5
-excludeTypes = ["page"]               # default: ["page"]
+excludeTypes = ["page", "notebooks"]               # default: ["page"]
 
 # Social Menu Widget config
 [social_menu]

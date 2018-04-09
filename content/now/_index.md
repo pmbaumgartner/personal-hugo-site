@@ -5,13 +5,14 @@ menu: main
 weight: 3
 ---
 
-([what's this page about?](http://nownownow.com/about))
+*(last updated 2018-04-08)*
 
 ### Summary
 
-Currently feeling pretty good about life. I've been trying to get back into meditation, a habit I have picked up and dropped a few times in my life already. The biggest recent change in my life was having to put down our dog, Miles, in January 2018.
+I've been living in Raleigh, North Carolina for 4 years now. Recently I've been trying to get back into meditation, a habit I have picked up and dropped a few times in my life already. The biggest recent change in my life was having to put down our dog, [Miles](https://twitter.com/pmbaumgartner/status/951977456256389120), in January 2018.
 
 ##### Reading
+
 **Currently**
 
 - Nonduality by David Loy [(goodreads)](https://www.goodreads.com/book/show/977341.Nonduality)
@@ -37,9 +38,10 @@ Currently feeling pretty good about life. I've been trying to get back into medi
 - [Reply All](https://gimletmedia.com/reply-all/)
 - [EconTalk](http://www.econtalk.org/)
 
-
 ##### Learning
+
 - Nothing in the queue now
 
 ##### Watching
+
 - [Red Letter Media - Half in the Bag](http://redlettermedia.com/)
