@@ -3,6 +3,8 @@ title: "Creating Slack Slash Commands with Python and Flask: Part 1"
 date: 2016-01-18
 ---
 
+<div class="note"><strong>Note (2018-04-09): </strong>Slack's API has changed since I wrote this article. I also never wrote a part 2. If you want an up to date tutorial <a href="https://www.digitalocean.com/community/tutorials/how-to-write-a-slash-command-with-flask-and-python-3-on-ubuntu-16-04">this blog</a> from DigitalOcean is good.</div>
+
 ## Part 1: Setting Up Our Workflow and a Simple Application
 
 A few weekends ago my pet project was to set up a drive time slash command in Slack. Searching through our organization's Slack conversation history, on top of overhearing several conversations, it seems like traffic is both a source of anguish and a favorite topic for smalltalk in our office.

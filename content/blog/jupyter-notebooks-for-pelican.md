@@ -3,6 +3,9 @@ title: Some Tips for Using Jupyter Notebooks with Pelican
 date: 2017-03-17
 ---
 
+<div class="note"><strong>Note (2018-04-09): </strong>I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in <a href="https://github.com/chrisalbon/notes/blob/master/make.ipynb">this notebook</a> from Chris Albon.</div>
+<br />
+
 Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I'm a python person so I figured I'd learn something new and move everything over to Pelican. I had also wanted an organized way to publicly store notebooks, code snippets, and workflows I was using regularly. My current storage system was randomly distributing them among various local folders, my employer's gitlab instance, and Slack. Using a static site generator like Pelican, along with the category and tag system, seemed like a good way to publicly share and organize this content.
 
 I was inspired by [Chris Albon's](https://chrisalbon.com/) great site and wanted to build something similar. You'll probably notice the theme and layout of this site are almost exactly the same. His site is built using Pelican and appeared to have a pretty good workflow for handling Jupyter Notebooks, which is the main feature I also need.
