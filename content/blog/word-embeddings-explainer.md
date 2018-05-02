@@ -10,26 +10,26 @@ Imagine if every word had an address you could look up in an address book. Now a
 
 For a visual example, here are simplified word embeddings for common 4- and 5-letter english words.
 
-#### Wordville Map
-
 ![Wordville](/images/wordville.png)
 
-What neighborhoods can you find in this embedding? A few that I see (going counterclockwise from top-left) are places and locations, cars/transportation, body parts/clothing, animals, food/drink, and people/relationships.
+I've drawn 3 *neighborhoods* over this embedding to illustrate the semantic groupings.
 
 ### What are they good for?
 
+A word embedding model transforms words into numbers so that we can do interesting measurements with them. Below are some applications of word embeddings.
+
 #### Word Similarity
 
-You can ask a word who its neighbors are. With enough words, this similarity query can work like a synonym finder. In the 2D representation, each immediate neighbor is equally distant from some seed term, but with the full dimension word embeddings you can get a more nuanced similarity score for each word. 
+You can ask a word who its neighbors are. With enough words, this similarity query can work like a synonym finder. In the 2D grid representation above, each immediate neighbor is equally distant from some central term, but with the full dimension word embeddings you can get a more nuanced similarity score for each word. 
 
 
 #### Sentence Similarity
 
 Sentences are made of words, so we can calculate a semantic distance between sentences using embeddings. Here's 3 sample sentences, with words we have addresses for in bold.
 
-1. My **wife** **kiss**ed the **baby**.
-2. That **woman** **loved** her **kids**.
-3. **Feed** the **gnome** a **snack**!
+1. There's a **tall** **patch** of **grass**.
+2. The **root** of the **tree** is in **soil**.
+3. Let's **chat** about **pizza** and **cake**!
 
 It's clear to us, as humans, that the first two sentences share meaning and the 3rd sentence is different than them. A common way of calculating the similarity of two pieces of text is to count how many words overlap — however,  none of the sentences above have any meaningful words in common (once we remove common *[stopwords](https://en.wikipedia.org/wiki/Stop_words)* like "the"). When measuring similarity in this way, all three of our example sentences are equally similar, since they all don't share any words.
 
