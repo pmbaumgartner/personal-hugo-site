@@ -3,6 +3,12 @@ title: "Word Embeddings Explainer"
 date: 2018-04-30T15:22:07-04:00
 draft: false
 ---
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@pmbaumgartner">
+<meta name="twitter:creator" content="@pmbaumgartner">
+<meta name="twitter:title" content="Word Embeddings Explainer">
+<meta name="twitter:description" content="What are word embeddings and what can we do with them?">
+<meta name="twitter:image" content="https://github.com/pmbaumgartner/personal-hugo-site/raw/master/static/images/wordville.png">
 
 ### What are word embeddings?
 
