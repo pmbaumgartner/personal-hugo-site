@@ -8,7 +8,7 @@ draft: false
 <meta name="twitter:creator" content="@pmbaumgartner">
 <meta name="twitter:title" content="Holy NLP!">
 <meta name="twitter:description" content="How to use Part of Speech Tags, Dependency Parsing, and Named Entity Recognition to understand the characters of the Bible">
-<meta name="twitter:image" content="https://s31.postimg.cc/8vbgq54jf/Screen_Shot_2018-05-19_at_1.09.00_PM.png">
+<meta name="twitter:image" content="https://s31.postimg.cc/5r0stbl63/Screen_Shot_2018-05-19_at_1.15.32_PM.png">
 
 ## Introduction
 
