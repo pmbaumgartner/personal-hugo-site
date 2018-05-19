@@ -17,13 +17,13 @@ For analyzing text, data scientists often use Natural Language Processing (NLP).
 
 We're going use the `spaCy` python library to apply these three tools together to discover who the major actors are in the Bible and what actions they take. From there, we'll see if we can make an interesting visualization with this structured data. 
 
-This approach can be applied to any problem where you have a large collection of text documents and you want to understand who the major entities are, where they appear in the document, and what they're doing. DocumentCloud uses a [similar approach](https://www.documentcloud.org/public/search/) to this with their "View Entities" analysis option.
+This approach can be applied to any problem where you have a large collection of text documents and you want to understand who the major entities are, where they appear in the document, and what they're doing. For example, DocumentCloud uses a [similar approach](https://www.documentcloud.org/public/search/) to this with their "View Entities" analysis option.
 
 ### Tokens & Part of Speech Tagging
 
 One way to extract meaning from text is to analyze individual words. The processes of breaking up a text into words is called tokenization -- the resulting words are referred to as tokens. Punctuation marks are also tokens. Each token in a sentence has several attributes we can use for analysis. The part of speech of a word is one example: nouns are a person, place, or thing; verbs are actions or occurrences; adjectives are words that describe nouns. Using these attributes, it's straightforward to create a summary of a piece of text by counting the most common nouns, verbs, and adjectives. 
 
-Using `spaCy`, we can tokenize a piece of text and access the part of speech attribute for each token. As an example application, we'll tokenize the previous paragraph and count the most common nouns with the code below.
+Using `spaCy`, we can tokenize a piece of text and access the part of speech attribute for each token. As an example application, we'll tokenize the previous paragraph and count the most common nouns with the code below. We'll also lemmatize the tokens, which gives the root form a word to help us standardize across forms of a word.
 
 
 ```python
@@ -154,13 +154,16 @@ bible_json = [line['fields'] for line in r.json()]
 print('Number of Verses:', len(bible_json))
 
 text_generator = (line['text'] for line in bible_json)
-verse_docs = [doc for doc in nlp.pipe(text_generator, n_threads=-1)]
+
+%time verse_docs = [doc for doc in nlp.pipe(text_generator, n_threads=-1)]
 ```
 
     Number of Verses: 31102
+    CPU times: user 4min 41s, sys: 46.6 s, total: 5min 28s
+    Wall time: 3min 15s
 
 
-We've pulled only the text from the json into `verse_docs`. For reference, here's what the first 3 rows of `bible_json` look like:
+We've parsed the text from the json into `verse_docs` in a little over 3 minutes, about 160 verses a second. For reference, here's what the first 3 rows of `bible_json` look like:
 
 ```javascript
 [{'book_id': 1,
@@ -538,7 +541,7 @@ We'll add in some separators to separate different sections of the Bible. Not be
 - **Prophecy / Apocalyptic Literature:** Revelation
 
 
-In addition, we'll separate the Old Testament from the New Testment with a red indicator line.
+In addition, we'll separate the Old Testament from the New Testament with a red indicator line.
 
 
 ```python
@@ -594,7 +597,7 @@ ax.set_title("Where Actions Occur in the Bible\nCharacters Sorted by First Appea
 
 ## Issues with this Approach
 - Entity Recognition can't tell the difference between two different people with the same name.
-    - King Saul (Old Testmanet)
+    - King Saul (Old Testament)
     - Paul (The Apostle) is referred to as Saul until midway through the book of Acts
 - Some nouns are not actual entities. (Ye)
 - Some nouns could use more context with full names. (Pilate)
@@ -608,6 +611,7 @@ As always, there are ways to extend and improve this analysis. Here's a few I've
 
 ## Wrap Up
 We can get pretty far doing some interesting analysis by only using token-level attributes from text! In this blog post, we covered three key NLP tools:
+
 1. **Part of Speech Tagging** - What type of word is this?
 2. **Dependency Parsing** - How is this word related to other words in this sentence?
 3. **Named Entity Recognition** - Is this word a proper noun?
@@ -615,4 +619,4 @@ We can get pretty far doing some interesting analysis by only using token-level 
 We applied these three tools together to discover who the major actors are in the Bible and what actions they take. We plotted those actors and actions to understand where each actor had their major actions.
 
 ### Thanks
-Thanks to [Vicki Boykis](http://www.vickiboykis.com/) for providing feedback on earlier versions of this post. 
+Thanks to [Vicki Boykis](http://www.vickiboykis.com/) and [Austin Rochford](http://austinrochford.com/) for providing feedback on earlier versions of this post. 
