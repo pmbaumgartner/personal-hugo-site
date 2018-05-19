@@ -3,7 +3,12 @@ title: "Holy NLP! Understanding Part of Speech Tags, Dependency Parsing, and Nam
 date: 2018-05-17T19:29:07-06:00
 draft: false
 ---
-
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@pmbaumgartner">
+<meta name="twitter:creator" content="@pmbaumgartner">
+<meta name="twitter:title" content="Holy NLP!">
+<meta name="twitter:description" content="How to use Part of Speech Tags, Dependency Parsing, and Named Entity Recognition to understand the characters of the Bible">
+<meta name="twitter:image" content="https://s31.postimg.cc/8vbgq54jf/Screen_Shot_2018-05-19_at_1.09.00_PM.png">
 
 ## Introduction
 
