@@ -11,4 +11,4 @@ date: 2018-05-19
 
 ### What's in this notebook?
 
-This is the notebook behind my blog post [Holy NLP! Understanding Part of Speech Tags, Dependency Parsing, and Named Entity Recognition]({{< relref "blog/holy-nlp.md" >}}). It's an exploration into Earth/Word Movers Distance algorithm that includes a there's a lot of great matplotlib plots and some pandas-fu.
+This is the notebook behind my blog post [Holy NLP! Understanding Part of Speech Tags, Dependency Parsing, and Named Entity Recognition]({{< relref "blog/holy-nlp.md" >}}). It's an exploration into three common NLP tasks applied on the Bible as a corpus, with some pandas aggregations and seaborn plotting to round things out.
