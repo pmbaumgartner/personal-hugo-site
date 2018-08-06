@@ -9,7 +9,7 @@ draft: false
 <meta name="twitter:creator" content="@pmbaumgartner">
 <meta name="twitter:title" content="Notes on NLP Projects">
 <meta name="twitter:description" content="These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal's PyData Berlin 2018 talk: Building new NLP solutions with spaCy and Prodigy.">
-<meta name="twitter:image" content="https://s8.postimg.cc/4k1bfn0kl/Screen_Shot_2018-08-06_at_11.43.26_AM.png">
+<meta name="twitter:image" content="https://s8.postimg.cc/t1tf3rg2d/Screen_Shot_2018-08-06_at_11.51.25_AM.png">
 
 **Summary**: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal's PyData Berlin 2018 talk: _Building new NLP solutions with spaCy and Prodigy_. I intended to use these as a reference when starting new NLP projects.
 
