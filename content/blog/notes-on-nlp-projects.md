@@ -4,6 +4,13 @@ date: 2018-08-06T10:59:48-04:00
 draft: false
 ---
 
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@pmbaumgartner">
+<meta name="twitter:creator" content="@pmbaumgartner">
+<meta name="twitter:title" content="Notes on NLP Projects">
+<meta name="twitter:description" content="These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal's PyData Berlin 2018 talk: Building new NLP solutions with spaCy and Prodigy.">
+<meta name="twitter:image" content="https://s8.postimg.cc/4k1bfn0kl/Screen_Shot_2018-08-06_at_11.43.26_AM.png">
+
 **Summary**: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal's PyData Berlin 2018 talk: _Building new NLP solutions with spaCy and Prodigy_. I intended to use these as a reference when starting new NLP projects.
 
 <blockquote class="twitter-tweet" data-lang="en"><p lang="en" dir="ltr">In NLP and ML we talk a lot about models and optimization. But this isn&#39;t where the battle is really won! I&#39;ve been trying to explain my thoughts on this lately. Big thanks to <a href="https://twitter.com/pydataberlin?ref_src=twsrc%5Etfw">@PyDataBerlin</a> for a great event.<br><br>📺 Slides: <a href="https://t.co/OqpBeY0uwP">https://t.co/OqpBeY0uwP</a><a href="https://t.co/TzhQrBsefP">https://t.co/TzhQrBsefP</a></p>&mdash; Matthew Honnibal (@honnibal) <a href="https://twitter.com/honnibal/status/1025093783426359296?ref_src=twsrc%5Etfw">August 2, 2018</a></blockquote>
@@ -13,7 +20,7 @@ draft: false
 ### Essential Questions from the Machine Learning Hierarchy of Needs
 
 1. **How will the model fit into the larger application or business process?**
-   1. What is the *decision* that will be influenced by the model?
+   1. What is the *decision* that will be impacted by a machine learning solution?
    2. Is there an existing software application we can plug into? Can we develop an API?
    2. Do we need to build something entirely custom?
 2. **What is the annotation scheme? What is being labeled? How will the corpus be built?**
