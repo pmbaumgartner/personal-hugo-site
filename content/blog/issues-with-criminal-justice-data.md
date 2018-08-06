@@ -6,7 +6,7 @@ draft: false
 
 **Summary:** I wrote this document based on my experience validating a risk assessment instrument. These were some of the issues, rewritten for generalizability, that we encountered. Accessible, quality data is often a project bottleneck, and I've found these helpful to consider before working on a project with criminal justice data.
 
-**Comments:** I wrote these notes in the context of assessing a risk assessment instrument, so "risk factors" are independent variables and "outcomes" are dependent variables.
+**Comments:** I wrote these notes in the context of evaluating a risk assessment instrument, so "risk factors" are independent variables and "outcomes" are dependent variables.
 
 ### Potential Issues
 
