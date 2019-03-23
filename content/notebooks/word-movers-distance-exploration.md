@@ -11,4 +11,4 @@ date: 2017-06-18
 
 ### What's in this notebook?
 
-This is the notebook behind my blog post [An Exploration in Earth & Word Movers Distance]({{< relref "blog/word-movers-distance-exploration.md" >}}). It's an exploration into Earth/Word Movers Distance algorithm that includes a there's a lot of great matplotlib plots and some pandas-fu.
+This is the notebook behind my blog post [An Exploration in Earth & Word Movers Distance]({{< relref "/blog/word-movers-distance-exploration.md" >}}). It's an exploration into Earth/Word Movers Distance algorithm that includes a there's a lot of great matplotlib plots and some pandas-fu.

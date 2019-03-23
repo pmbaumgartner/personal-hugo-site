@@ -6,7 +6,11 @@ draft: false
 
 > Why did the chicken cross the road? Because it had no legs.
 
-These are the types of hilarious jokes the GPT-2 model can generate for you. If you're into "forcing" robots to do stuff, this is the blog post for you. We'll use a dataset of jokes pulled from the `/r/jokes` subreddit to fine tune the GPT-2 small model to generate new jokes. 
+These are the types of *hilarious* jokes the GPT-2 model can generate for you. 
+
+After reading a few blog posts [here](https://www.gwern.net/RNN-metadata#finetuning-the-gpt-2-small-transformer-for-english-poetry-generation) and [here](https://svilentodorov.xyz/blog/gpt-finetune) I thought I would write up the process I used to fine tune gpt-2.
+
+For this example, we'll use a dataset of jokes pulled from the `/r/jokes` subreddit to fine tune the GPT-2 small model to generate new jokes. 
 
 You'll need a computer with a GPU and nvidia-docker for this.
 
@@ -135,15 +139,17 @@ A man walks into a bar and asks for a drink|Bartender looks at him and says, "Th
 Puns aren't jokes.|...they're punchlines.
 ```
 
-
 1250:
-```The bartender says.
+
+```
+The bartender says.
 
 "How much is $0.5 for an idiot?" The mathematician says "Not that much, I just went bowling.
 ```
 
 
 1500:
+
 ```
 Why did the chicken cross the road?|Because it had no legs.
 What do you get when you cross a sheep with a goat?|I'm a sheep with no legs. Just look at that sheep!
@@ -166,6 +172,7 @@ Model prompt >>> Why did the chicken cross the road?|
 ```
 
 Some answers:
+
 ```
 > So I can get my steak
 > To the left... I'll see myself out
@@ -190,5 +197,5 @@ Model prompt >>> What's the difference between
 ```
 
 ## Wrap-up
-My personal thought is that we've probably overfit on the data. The examples I'm not selecting are pretty reflective of the typical jokes on `r/jokes` (lots of dogs, "whats the difference?" and racial stereotyping). For my sense of humor, favoring a little more generality and abstractness, I'd prefer text from the models after 500-1000 epochs of training.
+My personal thought is that we've probably overfit on the data. The examples I'm not selecting are pretty reflective of the typical jokes on `/r/jokes` (lots of dogs, "whats the difference?" and racial stereotyping). For my sense of humor, favoring a little more generality and abstractness, I'd prefer text from the models after 500-1000 epochs of training.
 

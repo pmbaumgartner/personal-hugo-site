@@ -11,4 +11,4 @@ date: 2017-05-21
 
 ### What's in this notebook?
 
-This is the notebook behind my blog post [The Impact of Model Output Transformations on ROC]({{< relref "blog/output-transformations-roc-impact.md" >}}). It contains some seaborn plots, some pandas-fu with method chaining, a simulation of analyzing model results, and some plots with seaborn.
+This is the notebook behind my blog post [The Impact of Model Output Transformations on ROC]({{< relref "/blog/output-transformations-roc-impact.md" >}}). It contains some seaborn plots, some pandas-fu with method chaining, a simulation of analyzing model results, and some plots with seaborn.
