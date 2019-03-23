@@ -4,6 +4,13 @@ date: 2019-03-23T11:16:39-04:00
 draft: false
 ---
 
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@pmbaumgartner">
+<meta name="twitter:creator" content="@pmbaumgartner">
+<meta name="twitter:title" content="Fine-Tuning GPT-2 Small for Generative Text">
+<meta name="twitter:description" content="Finally, you too can force a robot to tell you why the chicken crossed the road.">
+<meta name="twitter:image" content="https://i.postimg.cc/qBNcrC6V/Screen-Shot-2019-03-23-at-2-17-43-PM.png">
+
 > Why did the chicken cross the road? Because it had no legs.
 
 These are the types of *hilarious* jokes the GPT-2 model can generate for you. 
