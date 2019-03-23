@@ -13,13 +13,14 @@ draft: false
 
 > Why did the chicken cross the road? Because it had no legs.
 
-These are the types of *hilarious* jokes the GPT-2 model can generate for you. 
+These are the types of *hilarious* jokes the `gpt-2 small` model can generate for you. 
 
-After reading a few blog posts [here](https://www.gwern.net/RNN-metadata#finetuning-the-gpt-2-small-transformer-for-english-poetry-generation) and [here](https://svilentodorov.xyz/blog/gpt-finetune) I thought I would write up the process I used to fine tune gpt-2.
+After reading a few blog posts [here](https://www.gwern.net/RNN-metadata#finetuning-the-gpt-2-small-transformer-for-english-poetry-generation) and [here](https://svilentodorov.xyz/blog/gpt-finetune), and playing around with `gpt-2 small` myself, I thought I would write up the full process I used to fine-tune and produce generative text.
 
-For this example, we'll use a dataset of jokes pulled from the `/r/jokes` subreddit to fine tune the GPT-2 small model to generate new jokes. 
+For this example, we'll use a dataset of jokes pulled from the `/r/jokes` subreddit to fine tune the GPT-2 small model to generate new jokes. You'll need a computer with a GPU and `nvidia-docker` for this.
 
-You'll need a computer with a GPU and nvidia-docker for this.
+
+## Getting Started
 
 We'll start by cloning the code to download and train the GPT-2 Small model. Fortunately, others have done the hard work of adding code to train on top of the `gpt-2 small` model that OpenAI released. 
 
@@ -187,7 +188,7 @@ Some answers:
 > I don't know, but his face is too close to the road.
 > Because it was a chicken.
 > The chicken crossed the road in the morning, and the morning is fine, the morning is fine.
-````
+```
 
 What happens when `A guy walks into a bar...`?
 
@@ -202,6 +203,8 @@ What about `What's the difference between`?
 Model prompt >>> What's the difference between
 " a woman that's going to have a baby and a guy that's never gonna have a baby?|One's a girl that's going to have a baby and the other is a guy that's never gonna have a baby.
 ```
+
+Hilarious.
 
 ## Wrap-up
 My personal thought is that we've probably overfit on the data. The examples I'm not selecting are pretty reflective of the typical jokes on `/r/jokes` (lots of dogs, "whats the difference?" and racial stereotyping). For my sense of humor, favoring a little more generality and abstractness, I'd prefer text from the models after 500-1000 epochs of training.
