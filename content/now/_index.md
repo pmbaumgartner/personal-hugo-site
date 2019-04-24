@@ -3,6 +3,7 @@ title: Now
 linkTitle: Now
 menu: main
 weight: 3
+draft: true
 ---
 
 *(last updated 2018-04-08)*
