@@ -14,7 +14,7 @@ draft: false
 These are the main points and resources for my talk, *Applied NLP: Lessons from the Field*, delivered at spaCy IRL 2019.
 
 ## Summary
-Natural Language Processing projects often fail in their conception, in their delivery, or in their impact. To identify good candidate problems for NLP, talk to the subject matter expert presenting you with a problem and discuss how you would solve the problem without NLP. To successfully deliver an NLP project, acknowledge that project management is a skill and learn how to do it well: communicate the uncertainty you face and come up with metaphors to explain your work to non-technical stakeholders. Communicate your work beyond your clients to guide other applied NLP practitioners towards success and point them away from pitfalls.
+Natural Language Processing projects often fail in their conception, in their delivery, or in their impact. To identify good candidate problems for NLP, talk to the client presenting you with a problem and first discuss how you would solve the problem without NLP. To successfully deliver an NLP project, acknowledge that project management is a skill and learn how to do it well: communicate the uncertainty you face and come up with metaphors to explain your work to non-technical stakeholders. Communicate your work beyond your client deliverables to guide other applied NLP practitioners, guiding them towards success and pointing them away from pitfalls.
  
 
 ## 1. Identifying Good Problems & Partners
@@ -38,15 +38,15 @@ Natural Language Processing projects often fail in their conception, in their de
    </td>
   </tr>
   <tr>
-   <td><strong>Show-off Sam </strong>wants to do “AI”
-   </td>
-   <td>They might expect magic or your results will be ignored. Set expectations, describe data requirements, show them NLP examples and make sure they understand the limitations.
-   </td>
-  </tr>
-  <tr>
    <td><strong>Easy Ed </strong>wants other options
    </td>
    <td>They have a data collection or data  management problem for you to solve first. This can set the groundwork for future NLP problems.
+   </td>
+  </tr>
+  <tr>
+   <td><strong>Show-off Sarah </strong>wants to do “AI”
+   </td>
+   <td>They might expect magic or your results will be ignored. Set expectations, describe data requirements, show them NLP examples and make sure they understand the limitations.
    </td>
   </tr>
   <tr>
