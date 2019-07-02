@@ -13,7 +13,7 @@ install:
 script:
   - pygmentize -V
   - git submodule update --init --recursive
-  - hugo -v
+  - hugo -v --buildFuture
 
 # Deploy to GitHub pages
 deploy:
