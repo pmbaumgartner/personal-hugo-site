@@ -4,6 +4,13 @@ date: 2019-07-30T13:27:47-04:00
 draft: false
 ---
 
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@pmbaumgartner">
+<meta name="twitter:creator" content="@pmbaumgartner">
+<meta name="twitter:title" content="Tableau and Raw Data as Sneaky Technical Debt">
+<meta name="twitter:description" content="Avoid technical debt by aligning your data with the business problem first.">
+<meta name="twitter:image" content="https://i.postimg.cc/jjbnTCvQ/Screen-Shot-2019-07-30-at-1-44-23-PM.png">
+
 We work on a lot of projects where we need to iterate quickly on visualizations generated from a flat file of data. Tableau is a great tool to get started with this, but its ease of use can quickly lead people towards illusions of progress, misunderstandings of the underlying data, or technical debt.
 
 Usually this comes up in a conversation like this:
