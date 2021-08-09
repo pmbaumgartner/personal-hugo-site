@@ -1,0 +1,130 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="These are the main points and resources for my talk, Applied NLP: Lessons from the Field, delivered at spaCy IRL 2019.
+Summary Natural Language Processing projects often fail in their conception, in their delivery, or in their impact. To identify good candidate problems for NLP, talk to the client presenting you with a problem and first discuss how you would solve the problem without NLP. To successfully deliver an NLP project, acknowledge that project management is a skill and learn how to do it well: communicate the uncertainty you face and come up with metaphors to explain your work to non-technical stakeholders.">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="Applied NLP: Lessons from the Field • Peter Baumgartner">
+<meta property="og:description" content="These are the main points and resources for my talk, Applied NLP: Lessons from the Field, delivered at spaCy IRL 2019.
+Summary Natural Language Processing projects often fail in their conception, in their delivery, or in their impact. To identify good candidate problems for NLP, talk to the client presenting you with a problem and first discuss how you would solve the problem without NLP. To successfully deliver an NLP project, acknowledge that project management is a skill and learn how to do it well: communicate the uncertainty you face and come up with metaphors to explain your work to non-technical stakeholders.">
+<meta property="og:url" content="https://pmbaumgartner.github.io/blog/applied-nlp-lessons/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2019-07-06T06:00:00Z"><meta property="article:modified_time" content="2019-07-06T06:00:00Z"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.87.0">
+<title>Applied NLP: Lessons from the Field • Peter Baumgartner</title>
+<link rel=canonical href=https://pmbaumgartner.github.io/blog/applied-nlp-lessons/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-blog has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class="item current">
+<a aria-current=page href=/blog/>Blog</a>
+</li><li class=item>
+<a href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>Applied NLP: Lessons from the Field</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2019-07-06T06:00:00Z>2019-07-06</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+2 mins read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<p>These are the main points and resources for my talk, <em>Applied NLP: Lessons from the Field</em>, delivered at spaCy IRL 2019.</p>
+<h2 id=summary>Summary</h2>
+<p>Natural Language Processing projects often fail in their conception, in their delivery, or in their impact. To identify good candidate problems for NLP, talk to the client presenting you with a problem and first discuss how you would solve the problem without NLP. To successfully deliver an NLP project, acknowledge that project management is a skill and learn how to do it well: communicate the uncertainty you face and come up with metaphors to explain your work to non-technical stakeholders. Communicate your work beyond your client deliverables to guide other applied NLP practitioners, guiding them towards success and pointing them away from pitfalls.</p>
+<h2 id=1-identifying-good-problems--partners>1. Identifying Good Problems & Partners</h2>
+<h2 id=2-project-delivery>2. Project Delivery</h2>
+<p>Level up in project management. Reduce discomfort and anxiety by communicating uncertainty: use an experiment log as a project status report. (<a href=https://www.amazon.com/Project-Management-Unofficial-Manager-FranklinCovey/dp/194163110X>Project Management for the Unofficial Project Manager</a>, <a href=https://medium.com/@l2k/why-are-machine-learning-projects-so-hard-to-manage-8e9b9cf49641>Why are machine learning projects so hard to manage?</a>, <a href=https://blog.dominodatalab.com/product-management-for-ai/>Product Management for AI</a>)</p>
+<p>Develop metaphors for the work you do. Good metaphors increase understanding and support among non-technical stakeholders. (<a href=https://hackernoon.com/why-businesses-fail-at-machine-learning-fbff41c4d5db>Why do businesses fail at machine learning?</a>, <a href=https://twitter.com/AlliTorban/status/1116505579671969793>Visual Metaphor</a>, <a href=https://www.ideo.com/post/nature-cards>IDEO Nature Cards</a>)</p>
+<h2 id=3-trail-blazing>3. Trail Blazing</h2>
+<p>NLP Researchers do a fantastic job of exploring the frontier; it is our job as Applied NLP Practitioners to help others understand the felicity of NLP.</p>
+<p>Conference proceedings and journals aren’t always appropriate for applied work: communicate what you do, where you succeeded, and possible pitfalls through a blog. (<a href=https://medium.com/@racheltho/why-you-yes-you-should-blog-7d2544ac1045>Why you (yes, you) should blog</a>, <a href=http://matthewrocklin.com/blog/work/2019/06/25/write-short-blogposts>Write Short Blogposts</a>)</p>
+<p>If your project involves private client data, solve an analogous problem with public data. (<a href="https://www.kaggle.com/datasets?search=nlp">Kaggle Datasets; Search: “NLP”</a>, <a href=https://tinyletter.com/data-is-plural>Data is Plural</a>, <a href=https://github.com/niderhoff/nlp-datasets>nlp-datasets on GitHub</a>)</p>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/blog/gpt2-jokes/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>Fine-Tuning GPT-2 Small for Generative Text</a>
+</div><div class="next-entry sep-before">
+<a href=/blog/spacy-rule-based-matcher-workflow/>
+<span class=screen-reader-text>Next post: </span>Making the Most of spaCy's Rule-Based Matcher<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+</span>
+</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>

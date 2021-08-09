@@ -1,0 +1,177 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Summary: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal&rsquo;s PyData Berlin 2018 talk: Building new NLP solutions with spaCy and Prodigy. I intended to use these as a reference when starting new NLP projects.
+Essential Questions from the Machine Learning Hierarchy of Needs  How will the model fit into the larger application or business process?  What is the decision that will be impacted by a machine learning solution?">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="Notes on NLP Projects • Peter Baumgartner">
+<meta property="og:description" content="Summary: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal&rsquo;s PyData Berlin 2018 talk: Building new NLP solutions with spaCy and Prodigy. I intended to use these as a reference when starting new NLP projects.
+Essential Questions from the Machine Learning Hierarchy of Needs  How will the model fit into the larger application or business process?  What is the decision that will be impacted by a machine learning solution?">
+<meta property="og:url" content="https://pmbaumgartner.github.io/blog/notes-on-nlp-projects/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2018-08-06T10:59:48-04:00"><meta property="article:modified_time" content="2018-08-06T10:59:48-04:00"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.87.0">
+<title>Notes on NLP Projects • Peter Baumgartner</title>
+<link rel=canonical href=https://pmbaumgartner.github.io/blog/notes-on-nlp-projects/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-blog has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class="item current">
+<a aria-current=page href=/blog/>Blog</a>
+</li><li class=item>
+<a href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>Notes on NLP Projects</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2018-08-06T10:59:48-04:00>2018-08-06</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+3 mins read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<p><strong>Summary</strong>: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal&rsquo;s PyData Berlin 2018 talk: <em>Building new NLP solutions with spaCy and Prodigy</em>. I intended to use these as a reference when starting new NLP projects.</p>
+<h3 id=essential-questions-from-the-machine-learning-hierarchy-of-needs>Essential Questions from the Machine Learning Hierarchy of Needs</h3>
+<ol>
+<li><strong>How will the model fit into the larger application or business process?</strong>
+<ol>
+<li>What is the <em>decision</em> that will be impacted by a machine learning solution?</li>
+<li>Is there an existing software application we can plug into? Can we develop an API?</li>
+<li>Do we need to build something entirely custom?</li>
+</ol>
+</li>
+<li><strong>What is the annotation scheme? What is being labeled? How will the corpus be built?</strong>
+<ol>
+<li>Are we classifying documents?</li>
+<li>Are we tagging spans of text?</li>
+<li>Are we trying to automatically generate structured data from text?
+<ol>
+<li>What models do we need to build and compose to generate this data?</li>
+</ol>
+</li>
+</ol>
+</li>
+<li><strong>What quality control processes will we use to ensure consistent and clean data?</strong>
+<ol>
+<li>Who are experts who we can get to label data accurately?</li>
+<li>How will we construct a gold standard data set for evaluation?</li>
+<li>How can we break down the NLP problem to improve the ease and consistency of the annotation task?</li>
+</ol>
+</li>
+</ol>
+<h3 id=things-to-avoid>Things to Avoid</h3>
+<ol>
+<li><strong>Overambitious <em>Imagineering</em></strong> — Thinking too big, rather than specifically about what business problem(s) can be solved.</li>
+<li><strong>Forecasting without experimentation</strong> — Most problems will need to be evaluated after experimentation with data: don&rsquo;t put excessive value on arbitrary thresholds of accuracy or other performance metrics up front</li>
+<li><strong>Outsourcing</strong> — You want a dataset and annotation process that is reliable and consistent, not noisy. Outsourcing solves the wrong problem (marginal annotation cost).</li>
+<li><strong>Overengineering & AI FOMO</strong> — Can you compose existing, generic models to solve your task rather than tweaking parameters on the latest algorithms?</li>
+<li><strong>Premature Shipping</strong> — if it fails in development, it certainly won&rsquo;t work in production.</li>
+</ol>
+<h3 id=general-principles-with-timestamp>General Principles (with timestamp)</h3>
+<ul>
+<li>Iterate on your data (labeling, annotation scheme, problem framing), as well as your code. (10:52)</li>
+<li>Rather than make assumptions, get to iterative experimentation as fast as possible. (11:14)</li>
+<li>Start with what you need at output, then work towards breaking down the problem into a series of modeling decisions. (12:17)</li>
+<li>Break down the problem so that your component models can perform accurately and you can cheaply generate annotations. (14:00) Compose generic models into novel solutions (17:00)
+<ul>
+<li><em>Example</em>: Is this document about a crime? If so, what do the entities represent? <em>By comparison</em>: jumping straight to classifying the victim, perpetrator, location is both hard for a model to classify and cognitively burdensome for a human to annotate.</li>
+</ul>
+</li>
+<li>Fine-tuning existing models for your domain, using generic categories, is much cheaper than starting from scratch (17:20)
+<ul>
+<li><em>Example</em>: fine tuning the dependency parsing on conversational or colloquial text might improve the accuracy. (33:50)</li>
+</ul>
+</li>
+<li>Annotate events and topics at the sentence, paragraph, or document level to avoid boundary issues. Additionally, annotation is easier and classification is more accurate. (17:50)</li>
+<li>Bootstrap your project estimates based on contact with the evidence, rather than making assumptions or guesses up front. (23:17)</li>
+<li>Reframe your problem so that the annotator has to consider less information at once: use pre-suggested outputs and make corrections. This reduces error by asking the annotator to correct the model when its wrong (vs. getting tired/lazy on annotation tasks from scratch) (28:57)</li>
+</ul>
+<p><strong>References:</strong></p>
+<p>Honnibal, M. (2018, July). <em>Building new NLP solutions with spaCy and Prodigy</em>. Presented at PyData Berlin 2018, Berlin, Germany.</p>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/blog/holy-nlp/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>Holy NLP! Understanding Part of Speech Tags, Dependency Parsing, and Named Entity Recognition</a>
+</div><div class="next-entry sep-before">
+<a href=/blog/issues-with-criminal-justice-data/>
+<span class=screen-reader-text>Next post: </span>Potential Issues with Criminal Justice Data<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+</span>
+</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>

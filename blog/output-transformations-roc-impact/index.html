@@ -1,0 +1,309 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Risk Assessment tools are currently used to assist in decision-making at several points in the criminal justice system. These tools take in some data about an individual and to provide a &lsquo;risk score&rsquo; for an individual that&rsquo;s reflective of their likelihood of committing a specific behavior in the future. A standard outcome of interest is recidivism, or a person's relapse into criminal behavior, often after the person receives sanctions or undergoes intervention for a previous crime (NIJ).">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="The Impact of Model Output Transformations on ROC • Peter Baumgartner">
+<meta property="og:description" content="Risk Assessment tools are currently used to assist in decision-making at several points in the criminal justice system. These tools take in some data about an individual and to provide a &lsquo;risk score&rsquo; for an individual that&rsquo;s reflective of their likelihood of committing a specific behavior in the future. A standard outcome of interest is recidivism, or a person's relapse into criminal behavior, often after the person receives sanctions or undergoes intervention for a previous crime (NIJ).">
+<meta property="og:url" content="https://pmbaumgartner.github.io/blog/output-transformations-roc-impact/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2017-05-21T00:00:00Z"><meta property="article:modified_time" content="2017-05-21T00:00:00Z"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.87.0">
+<title>The Impact of Model Output Transformations on ROC • Peter Baumgartner</title>
+<link rel=canonical href=https://pmbaumgartner.github.io/blog/output-transformations-roc-impact/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-blog has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class="item current">
+<a aria-current=page href=/blog/>Blog</a>
+</li><li class=item>
+<a href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>The Impact of Model Output Transformations on ROC</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2017-05-21T00:00:00Z>2017-05-21</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+9 mins read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<p>Risk Assessment tools are currently used to assist in decision-making at several points in the criminal justice system. These tools take in some data about an individual and to provide a &lsquo;risk score&rsquo; for an individual that&rsquo;s reflective of their likelihood of committing a specific behavior in the future. A standard outcome of interest is recidivism, or <code>a person's relapse into criminal behavior, often after the person receives sanctions or undergoes intervention for a previous crime</code> (<a href=https://www.nij.gov/topics/corrections/recidivism/Pages/welcome.aspx>NIJ</a>). One thing the field seems to have settled on is using area under the receiver operating characteristic (AUC ROC) scores in evaluating the accuracy of these tools. AUC is a sensible evaluation measure since it&rsquo;s indifferent to base rates and has a straightforward interpretation.</p>
+<p>The hypothetical example below explains what AUC ROC (Ranking Accuracy) measures.</p>
+<h2 id=compas--risk-assessment-scores>COMPAS & Risk Assessment Scores</h2>
+<p>In the world of risk assessment, the most well known risk assessment tool is probably COMPAS by Noirthpointe. COMPAS is a black box algorithm that is used to predict recidivism, and was the subject of an <a href=https://www.propublica.org/article/how-we-analyzed-the-compas-recidivism-algorithm>investigation by ProPublica</a> as well as a <a href=https://www.nytimes.com/2016/06/23/us/backlash-in-wisconsin-against-using-data-to-foretell-defendants-futures.html>lawsuit in Wisconsin</a>.</p>
+<p>Northpointe <a href=http://www.northpointeinc.com/files/downloads/FAQ_Document.pdf>claims</a> that the with the COMPAS tool &ldquo;AUCs ranged from .68 to .71 in the full sample&rdquo; for general recidivism, with an &ldquo;AUC 0.67 for violent recidivism&rdquo;. In reading these claims, it is important to consider there is <a href="http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0072484">some evidence of authorship bias</a> in model evaluation, to the extent that &ldquo;[&mldr;] studies authored by tool designers reported predictive validity findings around two times higher those of investigations reported by independent authors&rdquo;.</p>
+<p>Scores from the COMPAS tool go through several transformations before they end up in a decision maker&rsquo;s hands. The first output is a <code>raw score</code> from the model itself, which appears to be a normally distributed score. These raw scores are converted to a <code>decile score</code>, which I assume is based on the full range of scores. Finally, Northpointe also provides a mapping of decile scores to qualitative risk levels following this mapping:</p>
+<ul>
+<li><strong>1-4</strong>: Low risk</li>
+<li><strong>5-7</strong>: Medium risk</li>
+<li><strong>8+</strong>: High risk</li>
+</ul>
+<p>In evaluating model accuracy, it&rsquo;s relevant to look at the model accuracy of the information presented to the decision maker. That is, if a judicial official views receives a report with the qualitative risk level (High, Medium, Low) then we should be concerned with the accuracy of those model scores. The the accuracy of the <code>raw score</code> or the <code>decile score</code> doesn&rsquo;t really matter &ndash; the user of this tool never sees this underlying information, though the reported accuracy of the tool may depend on these pre-transformed measures.</p>
+<p>We&rsquo;ll evaluate model accuracy at each one of these transformations. Using the <a href=https://github.com/propublica/compas-analysis/>data</a> published by ProPublica that contains COMPAS scores and outcomes for individuals in Broward County, Florida.</p>
+<h2 id=outline>Outline</h2>
+<p>This analysis is comprised of 3 parts:</p>
+<ol>
+<li>Processing & Exploring the COMPAS dataset from ProPublica</li>
+<li>Analyzing AUC ROC scores by raw/decile/qualitative transformation</li>
+<li>Analyzing the general impact of binning on model accuracy</li>
+</ol>
+<h2 id=1-data-processing--exploring>1. Data Processing & Exploring</h2>
+<p>The final dataset ProPublica uses doesn&rsquo;t have the raw score, but they do provide the raw COMPAS data, which we will merge into the clean dataset. I couldn&rsquo;t find a clear ID or case number to merge on at a glance, so we&rsquo;re merging on <code>first name</code>, <code>last name</code>, and <code>compas screening date</code>. This merging scheme may lead to some discrepancies between the dataset ProPublica used for analysis, but should match most cases in general. In general, I follow <a href=https://github.com/propublica/compas-analysis/blob/master/Compas%20Analysis.ipynb>their process</a> of filtering observations based on data quality assumptions.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>import</span> pandas <span style=color:#66d9ef>as</span> pd
+<span style=color:#f92672>import</span> seaborn <span style=color:#66d9ef>as</span> sns; sns<span style=color:#f92672>.</span>set_context(<span style=color:#e6db74>&#39;notebook&#39;</span>, font_scale<span style=color:#f92672>=</span><span style=color:#ae81ff>1.5</span>);
+<span style=color:#f92672>import</span> matplotlib.pyplot <span style=color:#66d9ef>as</span> plt; plt<span style=color:#f92672>.</span>style<span style=color:#f92672>.</span>use(<span style=color:#e6db74>&#39;ggplot&#39;</span>)
+<span style=color:#f92672>import</span> numpy <span style=color:#66d9ef>as</span> np
+<span style=color:#f92672>import</span> scipy
+
+<span style=color:#f92672>from</span> sklearn.metrics <span style=color:#f92672>import</span> roc_auc_score
+<span style=color:#f92672>%</span>matplotlib inline
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>read_pp_compas_data</span>(csv_url):
+    d <span style=color:#f92672>=</span> (pd<span style=color:#f92672>.</span>read_csv(csv_url, parse_dates<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;compas_screening_date&#39;</span>])
+         <span style=color:#f92672>.</span>query(<span style=color:#e6db74>&#39;days_b_screening_arrest &lt;= 30&#39;</span>)
+         <span style=color:#f92672>.</span>query(<span style=color:#e6db74>&#39;days_b_screening_arrest &gt;= -30&#39;</span>)
+         <span style=color:#f92672>.</span>query(<span style=color:#e6db74>&#39;is_recid != -1&#39;</span>)
+         <span style=color:#f92672>.</span>query(<span style=color:#e6db74>&#39;c_charge_degree != &#34;O&#34;&#39;</span>)
+         <span style=color:#f92672>.</span>query(<span style=color:#e6db74>&#39;score_text != &#34;N/A&#34;&#39;</span>)
+         <span style=color:#f92672>.</span>assign(score_text<span style=color:#f92672>=</span><span style=color:#66d9ef>lambda</span> x: x[<span style=color:#e6db74>&#39;score_text&#39;</span>]<span style=color:#f92672>.</span>map({<span style=color:#e6db74>&#39;Low&#39;</span> : <span style=color:#ae81ff>1</span>, <span style=color:#e6db74>&#39;Medium&#39;</span> : <span style=color:#ae81ff>2</span>, <span style=color:#e6db74>&#39;High&#39;</span> : <span style=color:#ae81ff>3</span>}),
+                 v_score_text<span style=color:#f92672>=</span><span style=color:#66d9ef>lambda</span> x: x[<span style=color:#e6db74>&#39;v_score_text&#39;</span>]<span style=color:#f92672>.</span>map({<span style=color:#e6db74>&#39;Low&#39;</span> : <span style=color:#ae81ff>1</span>, <span style=color:#e6db74>&#39;Medium&#39;</span> : <span style=color:#ae81ff>2</span>, <span style=color:#e6db74>&#39;High&#39;</span> : <span style=color:#ae81ff>3</span>}))
+        )
+    <span style=color:#66d9ef>return</span> d
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>compas_recid <span style=color:#f92672>=</span> read_pp_compas_data(<span style=color:#e6db74>&#39;https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years.csv&#39;</span>)
+compas_recid_v <span style=color:#f92672>=</span> read_pp_compas_data(<span style=color:#e6db74>&#39;https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-two-years-violent.csv&#39;</span>)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>compas_recid_simple <span style=color:#f92672>=</span> compas_recid[[<span style=color:#e6db74>&#39;first&#39;</span>, <span style=color:#e6db74>&#39;last&#39;</span>, <span style=color:#e6db74>&#39;compas_screening_date&#39;</span>, <span style=color:#e6db74>&#39;decile_score&#39;</span>, <span style=color:#e6db74>&#39;score_text&#39;</span>, <span style=color:#e6db74>&#39;is_recid&#39;</span>]]
+compas_recid_v_simple <span style=color:#f92672>=</span> compas_recid_v[[<span style=color:#e6db74>&#39;first&#39;</span>, <span style=color:#e6db74>&#39;last&#39;</span>, <span style=color:#e6db74>&#39;compas_screening_date&#39;</span>, <span style=color:#e6db74>&#39;v_decile_score&#39;</span>, <span style=color:#e6db74>&#39;v_score_text&#39;</span>, <span style=color:#e6db74>&#39;is_violent_recid&#39;</span>]]
+
+compas_scores <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>merge(compas_recid_simple, compas_recid_v_simple, on<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;first&#39;</span>, <span style=color:#e6db74>&#39;last&#39;</span>, <span style=color:#e6db74>&#39;compas_screening_date&#39;</span>], how<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;outer&#39;</span>)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>compas_scores<span style=color:#f92672>.</span>head()
+</code></pre></div>
+<h3 id=read-raw-score-data>Read Raw Score Data</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>read_compas_raw</span>(csv_url):
+    columns <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;LastName&#39;</span>, <span style=color:#e6db74>&#39;FirstName&#39;</span>,<span style=color:#e6db74>&#39;Screening_Date&#39;</span>,<span style=color:#e6db74>&#39;RawScore&#39;</span>,<span style=color:#e6db74>&#39;DisplayText&#39;</span>]
+    colnames <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#39;FirstName&#39;</span> : <span style=color:#e6db74>&#39;first&#39;</span>,
+                <span style=color:#e6db74>&#39;LastName&#39;</span> : <span style=color:#e6db74>&#39;last&#39;</span>,
+                <span style=color:#e6db74>&#39;Screening_Date&#39;</span> : <span style=color:#e6db74>&#39;compas_screening_date&#39;</span>}
+    
+    d <span style=color:#f92672>=</span> (pd<span style=color:#f92672>.</span>read_csv(csv_url, parse_dates<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;Screening_Date&#39;</span>], usecols<span style=color:#f92672>=</span>columns)
+         <span style=color:#f92672>.</span>rename(columns<span style=color:#f92672>=</span>colnames)
+         <span style=color:#f92672>.</span>assign(last<span style=color:#f92672>=</span><span style=color:#66d9ef>lambda</span> x: x[<span style=color:#e6db74>&#39;last&#39;</span>]<span style=color:#f92672>.</span>str<span style=color:#f92672>.</span>lower(),
+                first<span style=color:#f92672>=</span><span style=color:#66d9ef>lambda</span> x: x[<span style=color:#e6db74>&#39;first&#39;</span>]<span style=color:#f92672>.</span>str<span style=color:#f92672>.</span>lower())
+        )
+    d_recid <span style=color:#f92672>=</span> d<span style=color:#f92672>.</span>loc[<span style=color:#66d9ef>lambda</span> x: x[<span style=color:#e6db74>&#39;DisplayText&#39;</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;Risk of Recidivism&#39;</span>]
+    d_viol <span style=color:#f92672>=</span> d<span style=color:#f92672>.</span>loc[<span style=color:#66d9ef>lambda</span> x: x[<span style=color:#e6db74>&#39;DisplayText&#39;</span>] <span style=color:#f92672>==</span> <span style=color:#e6db74>&#39;Risk of Violence&#39;</span>]
+    
+    d_recid <span style=color:#f92672>=</span> d_recid<span style=color:#f92672>.</span>rename(columns<span style=color:#f92672>=</span>{<span style=color:#e6db74>&#39;RawScore&#39;</span> : <span style=color:#e6db74>&#39;r_raw_score&#39;</span>})
+    d_viol <span style=color:#f92672>=</span> d_viol<span style=color:#f92672>.</span>rename(columns<span style=color:#f92672>=</span>{<span style=color:#e6db74>&#39;RawScore&#39;</span> : <span style=color:#e6db74>&#39;v_raw_score&#39;</span>})
+    
+    <span style=color:#66d9ef>del</span> d_recid[<span style=color:#e6db74>&#39;DisplayText&#39;</span>]
+    <span style=color:#66d9ef>del</span> d_viol[<span style=color:#e6db74>&#39;DisplayText&#39;</span>]
+    
+    <span style=color:#66d9ef>return</span> d_recid, d_viol
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>recid_raw, viol_raw <span style=color:#f92672>=</span> read_compas_raw(<span style=color:#e6db74>&#39;https://raw.githubusercontent.com/propublica/compas-analysis/master/compas-scores-raw.csv&#39;</span>)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>complete_scores <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>merge(compas_scores, recid_raw, on<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;first&#39;</span>, <span style=color:#e6db74>&#39;last&#39;</span>, <span style=color:#e6db74>&#39;compas_screening_date&#39;</span>], how<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;left&#39;</span>)
+complete_scores <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>merge(complete_scores, viol_raw, on<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;first&#39;</span>, <span style=color:#e6db74>&#39;last&#39;</span>, <span style=color:#e6db74>&#39;compas_screening_date&#39;</span>], how<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;left&#39;</span>)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>complete_scores<span style=color:#f92672>.</span>head()
+</code></pre></div>
+<h4 id=some-final-checks>Some final checks</h4>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>complete_scores <span style=color:#f92672>=</span> complete_scores<span style=color:#f92672>.</span>dropna(subset<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;r_raw_score&#39;</span>, <span style=color:#e6db74>&#39;v_raw_score&#39;</span>])
+
+print(<span style=color:#e6db74>&#34;Has Recid Outcome:</span><span style=color:#ae81ff>\t</span><span style=color:#e6db74>&#34;</span>, complete_scores[<span style=color:#e6db74>&#39;is_recid&#39;</span>]<span style=color:#f92672>.</span>notnull()<span style=color:#f92672>.</span>sum())
+print(<span style=color:#e6db74>&#34;Has Violent Recid:</span><span style=color:#ae81ff>\t</span><span style=color:#e6db74>&#34;</span>, complete_scores[<span style=color:#e6db74>&#39;is_violent_recid&#39;</span>]<span style=color:#f92672>.</span>notnull()<span style=color:#f92672>.</span>sum())
+</code></pre></div><pre><code>Has Recid Outcome:	 6209
+Has Violent Recid:	 3998
+</code></pre>
+<h3 id=explore-distributions-of-scores>Explore Distributions of Scores</h3>
+<p>Below we&rsquo;ll take a look at the distributions of each score to get a better understanding of what the data looks like that&rsquo;s coming out of the model. We examine the general recidivism cases below, the violent recidivism scores are not pictured.</p>
+<h4 id=raw-score-distributions>Raw Score Distributions</h4>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>bin_plot</span>(df, values_column, binary_by_column, n_bins<span style=color:#f92672>=</span><span style=color:#ae81ff>25</span>, bins<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>):
+    d_true <span style=color:#f92672>=</span> df<span style=color:#f92672>.</span>loc[<span style=color:#66d9ef>lambda</span> x: x[binary_by_column] <span style=color:#f92672>==</span> <span style=color:#66d9ef>True</span>][values_column]
+    d_false <span style=color:#f92672>=</span> df<span style=color:#f92672>.</span>loc[<span style=color:#66d9ef>lambda</span> x: x[binary_by_column] <span style=color:#f92672>==</span> <span style=color:#66d9ef>False</span>][values_column]
+    
+    d_min, d_max <span style=color:#f92672>=</span> df[values_column]<span style=color:#f92672>.</span>min(), df[values_column]<span style=color:#f92672>.</span>max()
+    
+    <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> bins:
+        bins <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>arange(d_min, d_max, (d_max <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span> <span style=color:#f92672>-</span> d_min) <span style=color:#f92672>/</span> n_bins)
+    
+    fig, ax <span style=color:#f92672>=</span> plt<span style=color:#f92672>.</span>subplots()
+    sns<span style=color:#f92672>.</span>distplot(d_false, ax<span style=color:#f92672>=</span>ax, bins<span style=color:#f92672>=</span>bins, kde<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>, norm_hist<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>, color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;coral&#39;</span>)
+    sns<span style=color:#f92672>.</span>distplot(d_true, ax<span style=color:#f92672>=</span>ax, bins<span style=color:#f92672>=</span>bins, kde<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>, norm_hist<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>, color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;blue&#39;</span>)
+    sns<span style=color:#f92672>.</span>plt<span style=color:#f92672>.</span>title(<span style=color:#e6db74>&#34;</span><span style=color:#e6db74>%s</span><span style=color:#e6db74> by </span><span style=color:#e6db74>%s</span><span style=color:#e6db74>&#34;</span> <span style=color:#f92672>%</span> (values_column, binary_by_column));
+    
+bin_plot(complete_scores, <span style=color:#e6db74>&#39;r_raw_score&#39;</span>, <span style=color:#e6db74>&#39;is_recid&#39;</span>)
+</code></pre></div><p><img src=/images/Calculating%20ROC%20before%20and%20after%20transformations_16_0.png alt=png></p>
+<p>Raw scores look to be normally distributed and also indicate the model works &ndash; there seems to be a significant shift in raw scores in individual who actually recidivated.</p>
+<h4 id=decile-score-distributions>Decile Score Distributions</h4>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>bin_plot(complete_scores, <span style=color:#e6db74>&#39;decile_score&#39;</span>, <span style=color:#e6db74>&#39;is_recid&#39;</span>, n_bins<span style=color:#f92672>=</span><span style=color:#ae81ff>10</span>)
+</code></pre></div><p><img src=/images/Calculating%20ROC%20before%20and%20after%20transformations_18_0.png alt=png></p>
+<p>Decile scores are uniform among individuals who did recidivate and right skew among those that did not.</p>
+<h4 id=qualitative-scores>Qualitative Scores</h4>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>bin_plot(complete_scores, <span style=color:#e6db74>&#39;score_text&#39;</span>, <span style=color:#e6db74>&#39;is_recid&#39;</span>, bins<span style=color:#f92672>=</span><span style=color:#ae81ff>3</span>)
+</code></pre></div><p><img src=/images/Calculating%20ROC%20before%20and%20after%20transformations_20_0.png alt=png></p>
+<p>Qualitative scores a mapped onto a 1, 2, 3 (low, medium, high) scale. We see a similar pattern to the decile scores since they&rsquo;re just a collapsed version.</p>
+<h2 id=2-calculate-auc-roc-data-for-each-outcome-and-transformation>2. Calculate AUC ROC Data for each Outcome and Transformation</h2>
+<p>Now that the data is merged, we&rsquo;ll calculate the AUC ROC value for each transformation.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>calculate_roc</span>(outcome, score, transformation_name, outcome_name):
+    results <span style=color:#f92672>=</span> complete_scores[complete_scores[outcome]<span style=color:#f92672>.</span>notnull()]
+    auc <span style=color:#f92672>=</span> roc_auc_score(results[outcome], results[score])
+    results <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#39;transformation&#39;</span> : transformation_name,
+               <span style=color:#e6db74>&#39;outcome&#39;</span> : outcome_name,
+               <span style=color:#e6db74>&#39;auc&#39;</span> : auc}
+    <span style=color:#66d9ef>return</span> results
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>roc_data <span style=color:#f92672>=</span> [
+    calculate_roc(<span style=color:#e6db74>&#39;is_recid&#39;</span>, <span style=color:#e6db74>&#39;r_raw_score&#39;</span>, <span style=color:#e6db74>&#39;Raw&#39;</span>, <span style=color:#e6db74>&#39;General Recidivism&#39;</span>),
+    calculate_roc(<span style=color:#e6db74>&#39;is_violent_recid&#39;</span>, <span style=color:#e6db74>&#39;v_raw_score&#39;</span>, <span style=color:#e6db74>&#39;Raw&#39;</span>, <span style=color:#e6db74>&#39;Violent Recidivism&#39;</span>),
+    calculate_roc(<span style=color:#e6db74>&#39;is_recid&#39;</span>, <span style=color:#e6db74>&#39;decile_score&#39;</span>, <span style=color:#e6db74>&#39;Decile&#39;</span>, <span style=color:#e6db74>&#39;General Recidivism&#39;</span>),
+    calculate_roc(<span style=color:#e6db74>&#39;is_violent_recid&#39;</span>, <span style=color:#e6db74>&#39;v_decile_score&#39;</span>, <span style=color:#e6db74>&#39;Decile&#39;</span>, <span style=color:#e6db74>&#39;Violent Recidivism&#39;</span>),
+    calculate_roc(<span style=color:#e6db74>&#39;is_recid&#39;</span>, <span style=color:#e6db74>&#39;score_text&#39;</span>, <span style=color:#e6db74>&#39;Qualitative&#39;</span>, <span style=color:#e6db74>&#39;General Recidivism&#39;</span>),
+    calculate_roc(<span style=color:#e6db74>&#39;is_violent_recid&#39;</span>, <span style=color:#e6db74>&#39;v_score_text&#39;</span>, <span style=color:#e6db74>&#39;Qualitative&#39;</span>, <span style=color:#e6db74>&#39;Violent Recidivism&#39;</span>),
+    ]
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>roc_df <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>DataFrame(roc_data)
+roc_df[[<span style=color:#e6db74>&#39;outcome&#39;</span>, <span style=color:#e6db74>&#39;transformation&#39;</span>, <span style=color:#e6db74>&#39;auc&#39;</span>]]<span style=color:#f92672>.</span>round(<span style=color:#ae81ff>3</span>)
+</code></pre></div>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>sns<span style=color:#f92672>.</span>plt<span style=color:#f92672>.</span>figure(figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>6</span>,<span style=color:#ae81ff>6</span>));
+sns<span style=color:#f92672>.</span>barplot(y<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;auc&#39;</span>, x<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;outcome&#39;</span>, data<span style=color:#f92672>=</span>roc_df, hue<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;transformation&#39;</span>)
+sns<span style=color:#f92672>.</span>plt<span style=color:#f92672>.</span>ylim((<span style=color:#ae81ff>0.5</span>, <span style=color:#ae81ff>1</span>))
+sns<span style=color:#f92672>.</span>plt<span style=color:#f92672>.</span>ylabel(<span style=color:#e6db74>&#39;AUC ROC&#39;</span>);
+</code></pre></div><p><img src=/images/Calculating%20ROC%20before%20and%20after%20transformations_25_0.png alt=png></p>
+<h3 id=accuracy-of-compas-scores-by-transformation>Accuracy of COMPAS scores by transformation</h3>
+<p>For the COMPAS tool, the accuracy of the model decreases as the number of bins gets smaller. The raw scores have the highest ROC values, but not much higher than the decile scores. In Northpointe&rsquo;s rebuttal, they achieved AUC scores on the ProPublica sample of 0.69 for general recidivism and 0.68 for violent in evaluating the decile scores. (<a href=http://go.volarisgroup.com/rs/430-MBX-989/images/ProPublica_Commentary_Final_070616.pdf>source, p. 3</a>)</p>
+<h2 id=3-whats-the-general-case>3. What&rsquo;s the general case?</h2>
+<p>What happens to ROC scores as deciles are composed out of model scores? To find out, we can generate some simulated data. This simulated data is not from a particular model, but is meant to represent a hypothetical model output of scores for positive and negative cases. For simplicity, we&rsquo;ll choose a beta distribution for the model output scores and assume our model has some predictive power, where the scores from the model predicting positive classes is generally higher than those where the model predicts a negative outcome.</p>
+<p>In addition, any cuts of data will be determined from the total distribution of scores. Comparatively, we don&rsquo;t know the original distribution of COMPAS scores (from when the assessment was developed) to map to the original decile scores &ndash; we only use those available in the data.</p>
+<p>We use a <code>Beta(2,2)</code> distribution to represent the scores of negative cases, and a <code>Beta(3.5, 2)</code> distribution for positive cases. There&rsquo;s no rationale for the parameters in these distributions except for applying them gives us hypothetical AUC scores in the same range as the COMPAS model.</p>
+<h3 id=what-does-this-hypothetical-model-output-look-like>What does this hypothetical model output look like?</h3>
+<p>Below is a single simulated example from a hypothetical model &ndash; the blue indicating the distribution of model scores for positive cases and coral for negative cases.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>SAMPLE_SIZE <span style=color:#f92672>=</span> <span style=color:#ae81ff>10000</span>
+
+neg <span style=color:#f92672>=</span> scipy<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>beta(<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>2</span>, size<span style=color:#f92672>=</span>SAMPLE_SIZE)
+pos <span style=color:#f92672>=</span> scipy<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>beta(<span style=color:#ae81ff>3.5</span>, <span style=color:#ae81ff>2</span>, size<span style=color:#f92672>=</span>SAMPLE_SIZE)
+fig, ax <span style=color:#f92672>=</span> plt<span style=color:#f92672>.</span>subplots()
+bins <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>arange(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>0.02</span>)
+sns<span style=color:#f92672>.</span>distplot(neg, ax<span style=color:#f92672>=</span>ax, bins<span style=color:#f92672>=</span>bins, kde<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>, norm_hist<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>, color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;coral&#39;</span>)
+sns<span style=color:#f92672>.</span>distplot(pos, ax<span style=color:#f92672>=</span>ax, bins<span style=color:#f92672>=</span>bins, kde<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>, norm_hist<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>, color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;blue&#39;</span>)
+sns<span style=color:#f92672>.</span>plt<span style=color:#f92672>.</span>title(<span style=color:#e6db74>&#34;Simulated Example&#34;</span>);
+</code></pre></div><p><img src=/images/Calculating%20ROC%20before%20and%20after%20transformations_29_0.png alt=png></p>
+<h3 id=run-simulations>Run simulations</h3>
+<p>The simulation below runs 500 simulations with 10000 samples for each simulation, resulting in 10000 simulated &lsquo;positive&rsquo; cases and the same for &lsquo;negative&rsquo; cases. We will apply quantile cuts ranging from 2 to 15 quantiles on the combined positive and negative predictions, as well as the case where no cuts are applied. From each simulated dataset the ROC is calculated.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>run_simulations</span>(alpha_pos, alpha_neg, beta, qcuts, sample_size, n_sims):
+    sim_data <span style=color:#f92672>=</span> []
+    cuts <span style=color:#f92672>=</span> list(qcuts) <span style=color:#f92672>+</span> [<span style=color:#e6db74>&#39;None&#39;</span>]
+    <span style=color:#66d9ef>for</span> qcut <span style=color:#f92672>in</span> cuts:
+        <span style=color:#66d9ef>for</span> sim <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>0</span>, n_sims):
+            pos <span style=color:#f92672>=</span> scipy<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>beta(alpha_pos, beta, size<span style=color:#f92672>=</span>sample_size)
+            neg <span style=color:#f92672>=</span> scipy<span style=color:#f92672>.</span>random<span style=color:#f92672>.</span>beta(alpha_neg, beta, size<span style=color:#f92672>=</span>sample_size)
+            roc_scores <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>hstack((neg, pos))
+            <span style=color:#66d9ef>if</span> qcut <span style=color:#f92672>!=</span> <span style=color:#e6db74>&#39;None&#39;</span>:
+                roc_scores <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>qcut(roc_scores, q<span style=color:#f92672>=</span>qcut, labels<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>)
+            roc_true <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>array([<span style=color:#ae81ff>0</span>] <span style=color:#f92672>*</span> len(neg) <span style=color:#f92672>+</span> [<span style=color:#ae81ff>1</span>] <span style=color:#f92672>*</span> len(pos))
+            auc <span style=color:#f92672>=</span> roc_auc_score(roc_true, roc_scores)
+            data <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#39;sim&#39;</span> : sim, <span style=color:#e6db74>&#39;AUC&#39;</span> : auc, <span style=color:#e6db74>&#39;qcut&#39;</span> : qcut}
+            sim_data<span style=color:#f92672>.</span>append(data)
+    <span style=color:#66d9ef>return</span> pd<span style=color:#f92672>.</span>DataFrame(sim_data)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>sim_df <span style=color:#f92672>=</span> run_simulations(alpha_pos<span style=color:#f92672>=</span><span style=color:#ae81ff>3.5</span>, alpha_neg<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span>, beta<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span>, qcuts<span style=color:#f92672>=</span>range(<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>16</span>), sample_size<span style=color:#f92672>=</span><span style=color:#ae81ff>10000</span>, n_sims<span style=color:#f92672>=</span><span style=color:#ae81ff>500</span>)
+</code></pre></div><h3 id=plot-data>Plot Data</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>d <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>DataFrame(sim_df)
+sns<span style=color:#f92672>.</span>plt<span style=color:#f92672>.</span>figure(figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>12</span>,<span style=color:#ae81ff>8</span>))
+sns<span style=color:#f92672>.</span>violinplot(data<span style=color:#f92672>=</span>d, x<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;qcut&#39;</span>, y<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;AUC&#39;</span>);
+sns<span style=color:#f92672>.</span>plt<span style=color:#f92672>.</span>xlabel(<span style=color:#e6db74>&#39;Number of Bins&#39;</span>)
+sns<span style=color:#f92672>.</span>plt<span style=color:#f92672>.</span>title(<span style=color:#e6db74>&#39;Simulated AUC Scores by Number of Bins&#39;</span>);
+</code></pre></div><p><img src=/images/Calculating%20ROC%20before%20and%20after%20transformations_34_1.png alt=png></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>pd<span style=color:#f92672>.</span>DataFrame(d<span style=color:#f92672>.</span>groupby(<span style=color:#e6db74>&#39;qcut&#39;</span>)[<span style=color:#e6db74>&#39;AUC&#39;</span>]<span style=color:#f92672>.</span>agg([<span style=color:#e6db74>&#39;median&#39;</span>, <span style=color:#e6db74>&#39;mean&#39;</span>, <span style=color:#e6db74>&#39;std&#39;</span>])<span style=color:#f92672>.</span>round(<span style=color:#ae81ff>3</span>))<span style=color:#f92672>.</span>T
+</code></pre></div>
+<h3 id=how-the-binning-scheme-impacts-roc-scores>How the binning scheme impacts ROC scores</h3>
+<p>Binning schemes can generate ROC scores lower than the same model with no binning. In the hypothetical example above, the model results with no binning scheme achieved a median AUC of ~0.676, while the models with binary or ternary schemes achieved median AUC values of ~0.626 and ~0.652 respectively. This hypothetical example shows that binning schemes can have a negative impact on AUC values in comparison to the untransformed data.</p>
+<h2 id=summary>Summary</h2>
+<p>The findings above show that when reporting model accuracy with AUC, a reader should be wary of any transformation scheme applied to the model output since that scheme can change the AUC value.</p>
+<p>We explored the impact of transformation schemes through the COMPAS dataset provided by ProPublica, demonstrating that when the final output of the model is qualitative scores, in comparison to decile scores or raw scores, the model has lower AUC. We then analyzed a hypothetical example to determine what the general case is when differing binning schemes are applied, inferring that binning schemes with a small number of bins in our hypothetical example can result in lower AUC scores.</p>
+<p>In cases where the output of a model presented to a decision maker is transformed model results, there may be a discrepancy in the accuracy of those presented outputs in comparison to reported accuracy from evaluations. It is important to analyze risk assessments and other models in practice in context of what information is presented to decision makers.</p>
+<h2 id=helpful-resources>Helpful Resources</h2>
+<ul>
+<li>Tom Augspurger&rsquo;s <a href=https://tomaugspurger.github.io/method-chaining.html>post on method chaining</a> was instrumental in refactoring the data reading steps</li>
+</ul>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/blog/jupyter-notebooks-for-pelican/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>Some Tips for Using Jupyter Notebooks with Pelican</a>
+</div><div class="next-entry sep-before">
+<a href=/blog/word-movers-distance-exploration/>
+<span class=screen-reader-text>Next post: </span>An Exploration in Earth & Word Movers Distance<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+</span>
+</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>

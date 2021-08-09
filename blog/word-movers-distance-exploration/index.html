@@ -1,0 +1,608 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="This post will be an exploration into Earth Mover&rsquo;s Distance as well as its application to NLP problems through Word Movers Distance.
+To get started, we&rsquo;ll follow the benign pedagogical path of copying the Wikipedia definition:
+ The earth mover&rsquo;s distance (EMD) is a measure of the distance between two probability distributions over a region D. In mathematics, this is known as the Wasserstein metric. Informally, if the distributions are interpreted as two different ways of piling up a certain amount of dirt over the region D, the EMD is the minimum cost of turning one pile into the other; where the cost is assumed to be amount of dirt moved times the distance by which it is moved.">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="An Exploration in Earth & Word Movers Distance • Peter Baumgartner">
+<meta property="og:description" content="This post will be an exploration into Earth Mover&rsquo;s Distance as well as its application to NLP problems through Word Movers Distance.
+To get started, we&rsquo;ll follow the benign pedagogical path of copying the Wikipedia definition:
+ The earth mover&rsquo;s distance (EMD) is a measure of the distance between two probability distributions over a region D. In mathematics, this is known as the Wasserstein metric. Informally, if the distributions are interpreted as two different ways of piling up a certain amount of dirt over the region D, the EMD is the minimum cost of turning one pile into the other; where the cost is assumed to be amount of dirt moved times the distance by which it is moved.">
+<meta property="og:url" content="https://pmbaumgartner.github.io/blog/word-movers-distance-exploration/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2017-06-18T00:00:00Z"><meta property="article:modified_time" content="2017-06-18T00:00:00Z"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.87.0">
+<title>An Exploration in Earth & Word Movers Distance • Peter Baumgartner</title>
+<link rel=canonical href=https://pmbaumgartner.github.io/blog/word-movers-distance-exploration/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-blog has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class="item current">
+<a aria-current=page href=/blog/>Blog</a>
+</li><li class=item>
+<a href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>An Exploration in Earth & Word Movers Distance</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2017-06-18T00:00:00Z>2017-06-18</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+15 mins read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<p>This post will be an exploration into Earth Mover&rsquo;s Distance as well as its application to NLP problems through Word Movers Distance.</p>
+<p>To get started, we&rsquo;ll follow the benign pedagogical path of copying the Wikipedia definition:</p>
+<blockquote>
+<p>The earth mover&rsquo;s distance (EMD) is a measure of the distance between two probability distributions over a region D. In mathematics, this is known as the Wasserstein metric. Informally, if the distributions are interpreted as two different ways of piling up a certain amount of dirt over the region D, the EMD is the minimum cost of turning one pile into the other; where the cost is assumed to be amount of dirt moved times the distance by which it is moved.</p>
+</blockquote>
+<h2 id=example-sourcehttproboticsstanfordeduscohenresearchemdgemdghtmlemd>Example (<a href=http://robotics.stanford.edu/~scohen/research/emdg/emdg.html#emd>source</a>)</h2>
+<p>In the picture below, imagine the <code>x</code> points are piles of dirt, and <code>y</code> are holes. The <code>u</code> and <code>w</code> values represent the &lsquo;mass&rsquo; (amount) of dirt in in a pile for <code>x</code> and negative amount needing to be filled for <code>y</code> points.</p>
+<p><img src=http://robotics.stanford.edu/~scohen/research/emdg/distns.jpg alt="EMD Example"></p>
+<p>We calculate <em>cost</em> as the amount of dirt moved times the distance moved. If we were moving dirt from <code>x1</code> to fill <code>y1</code>, and the distance between them is 155.7 units, the cost to fill that hole is <code>0.23×155.7 = 35.8</code>.</p>
+<p>It is easy to generate inefficient ways to move all the dirt &ndash; moving <code>x2</code>&rsquo;s dirt to <code>y1</code> covers a longer distance and leaves less dirt in <code>x2</code> to eventually fill the remaining y holes. We want to find the most efficient way that minimizes cost. Stated formally:</p>
+<blockquote>
+<p>What is the minimum cumulative cost to fill all the holes <code>y</code> with dirt from <code>x</code>?</p>
+</blockquote>
+<p>This minimum cumulative cost Earth Movers Distance. Calculating EMD boils down to a linear programming problem (a <a href=http://orms.pef.czu.cz/text/transProblem.html>transportation problem</a>) in order to find that cost. Several people smarter than me have figured out how to calculate this efficiently. Traditionally, Earth Movers Distance has <a href=http://ttic.uchicago.edu/~ssameer/Research/Papers/WEMD_CVPR08.pdf>high computational complexity</a>: <code>O(N3 * log N))</code>, but some other smart people have <a href=http://www.ariel.ac.il/sites/ofirpele/fastemd/code/>worked hard to reduce it</a>.</p>
+<h2 id=word-movers-distance>Word Mover&rsquo;s Distance</h2>
+<p>Earth Movers Distance is pretty great on its own, but in 2015 Kusner et al. realized it could be <a href=http://proceedings.mlr.press/v37/kusnerb15.pdf>applied to word embeddings</a> (like those from word2vec) in order to calculate how semantically similar two pieces of text are. Following the idea of calculating EMD in two dimensions like we covered above, an example of comparing the distance between two sentences looks something like this:</p>
+<p><img src=https://raw.githubusercontent.com/mkusner/wmd/master/fig1.png alt="word movers distance"></p>
+<h2 id=outline>Outline</h2>
+<p>We&rsquo;re going to incrementally explore EMD/WMD through four use cases below:</p>
+<ol>
+<li>Calculating EMD for a predefined example (the pile distribution above)</li>
+<li>Calculating EMD for a random example</li>
+<li>Calculating WMD for a predefined example with a 2-dimensional projection of word vectors (to build visual intuition)</li>
+<li>Calculating WMD for a predefined example with 300-dimensional word vectors</li>
+</ol>
+<h2 id=1-calculating-emd-for-a-predefined-example>1. Calculating EMD for a predefined example</h2>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>from</span> random <span style=color:#f92672>import</span> randint
+<span style=color:#f92672>from</span> math <span style=color:#f92672>import</span> sqrt
+<span style=color:#f92672>from</span> itertools <span style=color:#f92672>import</span> product
+<span style=color:#f92672>import</span> os.path
+
+<span style=color:#f92672>import</span> matplotlib.pyplot <span style=color:#66d9ef>as</span> plt; plt<span style=color:#f92672>.</span>style<span style=color:#f92672>.</span>use(<span style=color:#e6db74>&#39;ggplot&#39;</span>)
+<span style=color:#f92672>from</span> matplotlib.patches <span style=color:#f92672>import</span> Rectangle
+<span style=color:#f92672>import</span> pandas <span style=color:#66d9ef>as</span> pd
+<span style=color:#f92672>import</span> numpy <span style=color:#66d9ef>as</span> np
+<span style=color:#f92672>from</span> sklearn.metrics <span style=color:#f92672>import</span> euclidean_distances
+<span style=color:#f92672>from</span> pyemd <span style=color:#f92672>import</span> emd, emd_with_flow
+<span style=color:#f92672>import</span> gensim
+<span style=color:#f92672>from</span> MulticoreTSNE <span style=color:#f92672>import</span> MulticoreTSNE <span style=color:#66d9ef>as</span> TSNE
+
+<span style=color:#f92672>%</span>matplotlib inline
+</code></pre></div><p>In order to scaffold our understanding, we&rsquo;ll create two objects to represent ideas in our problem space:</p>
+<ul>
+<li>An individual pile of dirt, <code>DirtPile</code>, which has:
+<ul>
+<li>A location in 2d space</li>
+<li>A mass (amount) of dirt</li>
+<li>An optional label</li>
+</ul>
+</li>
+<li>A distribution of dirt piles, <code>PileDistribution</code>, which represents a collection &ldquo;piles&rdquo; or &ldquo;holes&rdquo;. It contains one attribute:
+<ul>
+<li>A total mass</li>
+</ul>
+</li>
+</ul>
+<p>We&rsquo;re going to attempt to find the EMD from the set of piles in the image in the introduction, which is taken from an introduction to EMD you can find <a href=http://robotics.stanford.edu/~scohen/research/emdg/emdg.html#emd>here</a>. Our solution is an approximation since I&rsquo;ve had to approximate the coordinate system based on the positioning.</p>
+<h3 id=define-classes>Define Classes</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>DirtPile</span>():
+    <span style=color:#66d9ef>def</span> __init__(self, position, mass, label<span style=color:#f92672>=</span><span style=color:#66d9ef>None</span>):
+        self<span style=color:#f92672>.</span>position <span style=color:#f92672>=</span> position
+        self<span style=color:#f92672>.</span>x, self<span style=color:#f92672>.</span>y <span style=color:#f92672>=</span> position
+        self<span style=color:#f92672>.</span>mass <span style=color:#f92672>=</span> mass
+        <span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> label:
+            self<span style=color:#f92672>.</span>label <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>{mass}</span><span style=color:#e6db74> @ (</span><span style=color:#e6db74>{x}</span><span style=color:#e6db74>, </span><span style=color:#e6db74>{y}</span><span style=color:#e6db74>)&#34;</span><span style=color:#f92672>.</span>format(mass<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>mass, x<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>x, y<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>y)
+        <span style=color:#66d9ef>else</span>:
+            self<span style=color:#f92672>.</span>label <span style=color:#f92672>=</span> label
+            
+    <span style=color:#66d9ef>def</span> __str__(self):
+        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#34;</span><span style=color:#e6db74>{mass}</span><span style=color:#e6db74> @ (</span><span style=color:#e6db74>{x}</span><span style=color:#e6db74>, </span><span style=color:#e6db74>{y}</span><span style=color:#e6db74>)&#34;</span><span style=color:#f92672>.</span>format(mass<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>mass, x<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>x, y<span style=color:#f92672>=</span>self<span style=color:#f92672>.</span>y)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>class</span> <span style=color:#a6e22e>PileDistribution</span>():
+    <span style=color:#66d9ef>def</span> __init__(self, <span style=color:#f92672>*</span>piles):
+        self<span style=color:#f92672>.</span>piles <span style=color:#f92672>=</span> list(piles)
+        self<span style=color:#f92672>.</span>masses <span style=color:#f92672>=</span> {tuple(p<span style=color:#f92672>.</span>position): p<span style=color:#f92672>.</span>mass <span style=color:#66d9ef>for</span> p <span style=color:#f92672>in</span> self<span style=color:#f92672>.</span>piles}
+        self<span style=color:#f92672>.</span>mass_sum <span style=color:#f92672>=</span> sum(p<span style=color:#f92672>.</span>mass <span style=color:#66d9ef>for</span> p <span style=color:#f92672>in</span> self<span style=color:#f92672>.</span>piles)
+        
+    <span style=color:#66d9ef>def</span> __str__(self):
+        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#39;</span><span style=color:#f92672>.</span>join([str(pile) <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> self<span style=color:#f92672>.</span>piles])
+    
+    <span style=color:#66d9ef>def</span> __getitem__(self, index):
+        <span style=color:#66d9ef>return</span> self<span style=color:#f92672>.</span>piles[index]
+</code></pre></div><h3 id=build-distributions>Build Distributions</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>x1 <span style=color:#f92672>=</span> DirtPile((<span style=color:#ae81ff>323</span>, <span style=color:#ae81ff>117</span>), <span style=color:#ae81ff>.74</span>, <span style=color:#e6db74>&#39;x1&#39;</span>)
+x2 <span style=color:#f92672>=</span> DirtPile((<span style=color:#ae81ff>38</span>, <span style=color:#ae81ff>342</span>), <span style=color:#ae81ff>.26</span>, <span style=color:#e6db74>&#39;x2&#39;</span>)
+
+y1 <span style=color:#f92672>=</span> DirtPile((<span style=color:#ae81ff>323</span>, <span style=color:#ae81ff>266</span>), <span style=color:#ae81ff>.23</span>, <span style=color:#e6db74>&#39;y1&#39;</span>)
+y2 <span style=color:#f92672>=</span> DirtPile((<span style=color:#ae81ff>57</span>, <span style=color:#ae81ff>38</span>), <span style=color:#ae81ff>.26</span>, <span style=color:#e6db74>&#39;y2&#39;</span>)
+y3 <span style=color:#f92672>=</span> DirtPile((<span style=color:#ae81ff>76</span>, <span style=color:#ae81ff>152</span>), <span style=color:#ae81ff>.51</span>, <span style=color:#e6db74>&#39;y3&#39;</span>)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>pd1 <span style=color:#f92672>=</span> PileDistribution(x1, x2)
+pd2 <span style=color:#f92672>=</span> PileDistribution(y1, y2, y3)
+</code></pre></div><h3 id=plot-dirt-piles>Plot Dirt Piles</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>plot_dirt_piles</span>(pd1, pd2, normed<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>, r_scale<span style=color:#f92672>=</span><span style=color:#ae81ff>5000</span>, figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>8</span>,<span style=color:#ae81ff>8</span>), annotate<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>):
+    p1_x <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>x <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd1<span style=color:#f92672>.</span>piles]
+    p1_y <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>y <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd1<span style=color:#f92672>.</span>piles]
+
+    p2_x <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>x <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd2<span style=color:#f92672>.</span>piles]
+    p2_y <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>y <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd2<span style=color:#f92672>.</span>piles]
+    
+    <span style=color:#66d9ef>if</span> normed:
+        p1_masses <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>mass <span style=color:#f92672>/</span> pd1<span style=color:#f92672>.</span>mass_sum <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd1<span style=color:#f92672>.</span>piles]
+        p2_masses <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>mass <span style=color:#f92672>/</span> pd2<span style=color:#f92672>.</span>mass_sum <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd2<span style=color:#f92672>.</span>piles]
+    <span style=color:#66d9ef>else</span>:
+        p2_masses <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>mass <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd2<span style=color:#f92672>.</span>piles]
+        p1_masses <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>mass <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd1<span style=color:#f92672>.</span>piles]
+
+
+    plt<span style=color:#f92672>.</span>figure(figsize<span style=color:#f92672>=</span>figsize)
+    plt<span style=color:#f92672>.</span>scatter(x<span style=color:#f92672>=</span>p1_x, y<span style=color:#f92672>=</span>p1_y, s<span style=color:#f92672>=</span>[r_scale<span style=color:#f92672>*</span>m <span style=color:#66d9ef>for</span> m <span style=color:#f92672>in</span> p1_masses], c<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;r&#39;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.5</span>)
+    plt<span style=color:#f92672>.</span>scatter(x<span style=color:#f92672>=</span>p2_x, y<span style=color:#f92672>=</span>p2_y, s<span style=color:#f92672>=</span>[r_scale<span style=color:#f92672>*</span>m <span style=color:#66d9ef>for</span> m <span style=color:#f92672>in</span> p2_masses], c<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;b&#39;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.5</span>)
+
+    <span style=color:#66d9ef>if</span> annotate:
+        <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd1<span style=color:#f92672>.</span>piles:
+            plt<span style=color:#f92672>.</span>annotate(xy<span style=color:#f92672>=</span>[pile<span style=color:#f92672>.</span>x, pile<span style=color:#f92672>.</span>y], s<span style=color:#f92672>=</span>pile<span style=color:#f92672>.</span>label, textcoords<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;data&#39;</span>)
+        <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd2<span style=color:#f92672>.</span>piles:
+            plt<span style=color:#f92672>.</span>annotate(xy<span style=color:#f92672>=</span>[pile<span style=color:#f92672>.</span>x, pile<span style=color:#f92672>.</span>y], s<span style=color:#f92672>=</span>pile<span style=color:#f92672>.</span>label, textcoords<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;data&#39;</span>)
+                
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>plot_dirt_piles(pd1, pd2)
+</code></pre></div><p><img src=/images/Word%20Movers%20Distance%20Exploration_12_0.png alt=png></p>
+<h3 id=process-data-for-emd-calculation>Process Data for EMD Calculation</h3>
+<p>We&rsquo;re going to use the <code>pyemd</code> library. Getting the data in the correct format to calculate EMD is a bit of a chore. We need to generate what&rsquo;s called a <code>signature</code> for each pile distribution. A signature is another way to represent data we have above. To build a signature, we need the set of all points (union) between the two distributions and the mass from each distribution for that point.</p>
+<p>We&rsquo;re also going to normalize the signatures so that the masses sum to 1. In this specific example they already do, but when we move on to WMD we&rsquo;ll want to make sure they&rsquo;re normalized.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>generate_signatures</span>(piledist1, piledist2, normalize<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>):
+    
+    <span style=color:#75715e># build unique list of pile positions</span>
+    <span style=color:#75715e># sorted by distance from the origin</span>
+    all_piles <span style=color:#f92672>=</span> piledist1<span style=color:#f92672>.</span>piles <span style=color:#f92672>+</span> piledist2<span style=color:#f92672>.</span>piles
+    positions <span style=color:#f92672>=</span> sorted(list(set(pile<span style=color:#f92672>.</span>position <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> all_piles)),
+                       key<span style=color:#f92672>=</span><span style=color:#66d9ef>lambda</span> x: sqrt(x[<span style=color:#ae81ff>0</span>]<span style=color:#f92672>**</span><span style=color:#ae81ff>2</span> <span style=color:#f92672>+</span> x[<span style=color:#ae81ff>1</span>]<span style=color:#f92672>**</span><span style=color:#ae81ff>2</span>))
+    
+    <span style=color:#75715e># build signatures</span>
+    <span style=color:#75715e># check if the distribution has a mass at this position or return 0</span>
+    p1_signature <span style=color:#f92672>=</span> []
+    p2_signature <span style=color:#f92672>=</span> []
+    <span style=color:#66d9ef>for</span> position <span style=color:#f92672>in</span> positions:
+        p1_location_mass <span style=color:#f92672>=</span> piledist1<span style=color:#f92672>.</span>masses<span style=color:#f92672>.</span>get(position, <span style=color:#ae81ff>0</span>)
+        p2_location_mass <span style=color:#f92672>=</span> piledist2<span style=color:#f92672>.</span>masses<span style=color:#f92672>.</span>get(position, <span style=color:#ae81ff>0</span>)
+        p1_signature<span style=color:#f92672>.</span>append(p1_location_mass)
+        p2_signature<span style=color:#f92672>.</span>append(p2_location_mass)
+    <span style=color:#66d9ef>if</span> normalize:
+        p1_signature <span style=color:#f92672>=</span> [mass <span style=color:#f92672>/</span> sum(p1_signature) <span style=color:#66d9ef>for</span> mass <span style=color:#f92672>in</span> p1_signature]
+        p2_signature <span style=color:#f92672>=</span> [mass <span style=color:#f92672>/</span> sum(p2_signature) <span style=color:#66d9ef>for</span> mass <span style=color:#f92672>in</span> p2_signature]
+    
+    <span style=color:#66d9ef>return</span> positions, p1_signature, p2_signature
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>positions, p1_signature, p2_signature <span style=color:#f92672>=</span> generate_signatures(pd1, pd2, normalize<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>print(<span style=color:#e6db74>&#34;Pile 1 Signature:&#34;</span>)
+<span style=color:#66d9ef>for</span> position, mass <span style=color:#f92672>in</span> zip(positions, p1_signature):
+    print(<span style=color:#e6db74>&#34;Position:&#34;</span>, position, <span style=color:#e6db74>&#34;Mass:&#34;</span>, mass)
+    
+print()
+print(<span style=color:#e6db74>&#34;Pile 2 Signature:&#34;</span>)
+<span style=color:#66d9ef>for</span> position, mass <span style=color:#f92672>in</span> zip(positions, p2_signature):
+    print(<span style=color:#e6db74>&#34;Position:&#34;</span>, position, <span style=color:#e6db74>&#34;Mass:&#34;</span>, mass)
+</code></pre></div><pre><code>Pile 1 Signature:
+Position: (57, 38) Mass: 0.0
+Position: (76, 152) Mass: 0.0
+Position: (323, 117) Mass: 0.74
+Position: (38, 342) Mass: 0.26
+Position: (323, 266) Mass: 0.0
+
+Pile 2 Signature:
+Position: (57, 38) Mass: 0.26
+Position: (76, 152) Mass: 0.51
+Position: (323, 117) Mass: 0.0
+Position: (38, 342) Mass: 0.0
+Position: (323, 266) Mass: 0.23
+</code></pre>
+<p>So the signatures themselves are the mass values indexed by the unique set of locations between the two distributions.</p>
+<h3 id=calculate-distances>Calculate Distances</h3>
+<p>Now that we have the set of all coordinates between the two distributions, we&rsquo;re going to calculate the distance between each pair of coordinates.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>dist <span style=color:#f92672>=</span> euclidean_distances(positions, positions)
+print(pd<span style=color:#f92672>.</span>DataFrame(dist<span style=color:#f92672>.</span>round(<span style=color:#ae81ff>1</span>), index<span style=color:#f92672>=</span>positions, columns<span style=color:#f92672>=</span>positions))
+</code></pre></div><pre><code>            (57, 38)  (76, 152)  (323, 117)  (38, 342)  (323, 266)
+(57, 38)         0.0      115.6       277.5      304.6       350.3
+(76, 152)      115.6        0.0       249.5      193.8       272.0
+(323, 117)     277.5      249.5         0.0      363.1       149.0
+(38, 342)      304.6      193.8       363.1        0.0       295.0
+(323, 266)     350.3      272.0       149.0      295.0         0.0
+</code></pre>
+<h3 id=calculate-earth-movers-distance>Calculate Earth Movers Distance</h3>
+<p><code>pyemd</code> requires that the input arrays be of type <code>np.double</code>, so we&rsquo;re going to cast them as such. After that, we&rsquo;ll just use the <code>emd_with_flow</code> to calculate the EMD value as well as take a look at the flow, which tells us how much earth moved where under the optimal solution.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>calculate_emd</span>(signature_1, signature_2, distance_matrix):
+    first_signature <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>array(signature_1, dtype<span style=color:#f92672>=</span>np<span style=color:#f92672>.</span>double)
+    second_signature <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>array(signature_2, dtype<span style=color:#f92672>=</span>np<span style=color:#f92672>.</span>double)
+    distances <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>array(distance_matrix, dtype<span style=color:#f92672>=</span>np<span style=color:#f92672>.</span>double)
+    emd, flow <span style=color:#f92672>=</span> emd_with_flow(first_signature, second_signature, distances)
+    flow <span style=color:#f92672>=</span> np<span style=color:#f92672>.</span>array(flow)
+    <span style=color:#66d9ef>return</span> emd, flow
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>emd, flow <span style=color:#f92672>=</span> calculate_emd(p1_signature, p2_signature, dist)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>print(<span style=color:#e6db74>&#34;EMD: </span><span style=color:#e6db74>{0:.2f}</span><span style=color:#e6db74>&#34;</span><span style=color:#f92672>.</span>format(emd))
+</code></pre></div><pre><code>EMD: 219.16
+</code></pre>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>print(<span style=color:#e6db74>&#34;Flow:</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74>&#34;</span>, pd<span style=color:#f92672>.</span>DataFrame(flow, index<span style=color:#f92672>=</span>positions, columns<span style=color:#f92672>=</span>positions))
+</code></pre></div><pre><code>Flow:
+             (57, 38)  (76, 152)  (323, 117)  (38, 342)  (323, 266)
+(57, 38)        0.00       0.00         0.0        0.0        0.00
+(76, 152)       0.00       0.00         0.0        0.0        0.00
+(323, 117)      0.26       0.25         0.0        0.0        0.23
+(38, 342)       0.00       0.26         0.0        0.0        0.00
+(323, 266)      0.00       0.00         0.0        0.0        0.00
+</code></pre>
+<h3 id=plot-solution>Plot Solution</h3>
+<p>The flow matrix is helpful in understanding the solution since we can trace how masses were moved between locations. A visualization of the piles and flow will also help illustrate this specific solution.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>plot_emd_solution</span>(pd1, pd2, positions, emd, flow, normed<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>, r_scale<span style=color:#f92672>=</span><span style=color:#ae81ff>5000</span>, figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>8</span>,<span style=color:#ae81ff>8</span>), annotate<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>):
+    p1_x <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>x <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd1<span style=color:#f92672>.</span>piles]
+    p1_y <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>y <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd1<span style=color:#f92672>.</span>piles]
+
+    p2_x <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>x <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd2<span style=color:#f92672>.</span>piles]
+    p2_y <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>y <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd2<span style=color:#f92672>.</span>piles]
+    
+    <span style=color:#66d9ef>if</span> normed:
+        p1_masses <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>mass <span style=color:#f92672>/</span> pd1<span style=color:#f92672>.</span>mass_sum <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd1<span style=color:#f92672>.</span>piles]
+        p2_masses <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>mass <span style=color:#f92672>/</span> pd2<span style=color:#f92672>.</span>mass_sum <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd2<span style=color:#f92672>.</span>piles]
+    <span style=color:#66d9ef>else</span>:
+        p2_masses <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>mass <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd2<span style=color:#f92672>.</span>piles]
+        p1_masses <span style=color:#f92672>=</span> [pile<span style=color:#f92672>.</span>mass <span style=color:#66d9ef>for</span> pile <span style=color:#f92672>in</span> pd1<span style=color:#f92672>.</span>piles]
+        
+    flow_measures <span style=color:#f92672>=</span> []
+    <span style=color:#66d9ef>for</span> to_pos_ix, from_pos_ix <span style=color:#f92672>in</span> zip(<span style=color:#f92672>*</span>np<span style=color:#f92672>.</span>nonzero(flow)):
+        to_pos <span style=color:#f92672>=</span> positions[to_pos_ix]
+        from_pos <span style=color:#f92672>=</span> positions[from_pos_ix]
+        measure <span style=color:#f92672>=</span> {<span style=color:#e6db74>&#39;to&#39;</span> : to_pos, <span style=color:#e6db74>&#39;from&#39;</span> : from_pos,
+                   <span style=color:#e6db74>&#39;xs&#39;</span> : (to_pos[<span style=color:#ae81ff>0</span>], from_pos[<span style=color:#ae81ff>0</span>]),
+                   <span style=color:#e6db74>&#39;ys&#39;</span> : (to_pos[<span style=color:#ae81ff>1</span>], from_pos[<span style=color:#ae81ff>1</span>]),
+                   <span style=color:#e6db74>&#39;value&#39;</span> : flow[to_pos_ix, from_pos_ix]}
+        flow_measures<span style=color:#f92672>.</span>append(measure)
+
+    plt<span style=color:#f92672>.</span>figure(figsize<span style=color:#f92672>=</span>figsize)
+
+    plt<span style=color:#f92672>.</span>scatter(x<span style=color:#f92672>=</span>p1_x, y<span style=color:#f92672>=</span>p1_y, s<span style=color:#f92672>=</span>[r_scale<span style=color:#f92672>*</span>m <span style=color:#66d9ef>for</span> m <span style=color:#f92672>in</span> p1_masses], c<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;r&#39;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.8</span>)   
+    plt<span style=color:#f92672>.</span>scatter(x<span style=color:#f92672>=</span>p2_x, y<span style=color:#f92672>=</span>p2_y, s<span style=color:#f92672>=</span>[r_scale<span style=color:#f92672>*</span>m <span style=color:#66d9ef>for</span> m <span style=color:#f92672>in</span> p2_masses], c<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;b&#39;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.8</span>)
+
+    <span style=color:#66d9ef>for</span> measure <span style=color:#f92672>in</span> flow_measures:
+        plt<span style=color:#f92672>.</span>plot([<span style=color:#f92672>*</span>measure[<span style=color:#e6db74>&#39;xs&#39;</span>]], [<span style=color:#f92672>*</span>measure[<span style=color:#e6db74>&#39;ys&#39;</span>]],
+                 color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;black&#39;</span>, lw<span style=color:#f92672>=</span>measure[<span style=color:#e6db74>&#39;value&#39;</span>]<span style=color:#f92672>*</span>r_scale<span style=color:#f92672>/</span><span style=color:#ae81ff>100</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.7</span>, solid_capstyle<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;round&#39;</span>)
+
+    (<span style=color:#e6db74>&#34;Example Earth Movers Distance Solution</span><span style=color:#ae81ff>\n</span><span style=color:#e6db74> EMD: </span><span style=color:#e6db74>{0:.2f}</span><span style=color:#e6db74>&#34;</span><span style=color:#f92672>.</span>format(emd));
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>plot_emd_solution(pd1, pd2, positions, emd, flow)
+</code></pre></div><p><img src=/images/Word%20Movers%20Distance%20Exploration_26_0.png alt=png></p>
+<h2 id=2-calculating-emd-for-a-random-example>2. Calculating EMD for a random example</h2>
+<p>For fun, let&rsquo;s see what a larger problem with EMD looks like. We&rsquo;ll simulate two random distributions with 100 dirt piles each. Each point will be randomly placed on a 100 by 100 plane with random mass from 25 to 100.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>big_piles1 <span style=color:#f92672>=</span> [DirtPile((randint(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>100</span>), randint(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>100</span>)), randint(<span style=color:#ae81ff>25</span>, <span style=color:#ae81ff>100</span>)) <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>100</span>)]
+big_piles2 <span style=color:#f92672>=</span> [DirtPile((randint(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>100</span>), randint(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>100</span>)), randint(<span style=color:#ae81ff>25</span>, <span style=color:#ae81ff>100</span>)) <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>100</span>)]
+
+big_pd1 <span style=color:#f92672>=</span> PileDistribution(<span style=color:#f92672>*</span>big_piles1)
+big_pd2 <span style=color:#f92672>=</span> PileDistribution(<span style=color:#f92672>*</span>big_piles2)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>big_positions, big_p1_signature, big_p2_signature <span style=color:#f92672>=</span> generate_signatures(big_pd1, big_pd2, normalize<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>big_distances <span style=color:#f92672>=</span> euclidean_distances(big_positions, big_positions)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>big_emd, big_flow <span style=color:#f92672>=</span> calculate_emd(big_p1_signature, big_p2_signature, big_distances)
+</code></pre></div><h3 id=visually-analyzing-cost>Visually Analyzing Cost</h3>
+<p>It would be odd if mass had to be moved from the point <code>(0, 0)</code> to <code>(100, 100)</code>, since that would mean there are no closer piles between the corners of our plane. Since the index generated for the signature is the set of positions sorted by distance from the origin, flow should occur near points next to each other in our index. This also means that the more a flow is off diagonal, the more distance will impact the total cost (at least for these simulated distributions).</p>
+<p>We can visualize the cost matrix by multiplying the flow (how much mass was moved) by the distance</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>big_cost <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>DataFrame((big_flow <span style=color:#f92672>*</span> big_distances), index<span style=color:#f92672>=</span>big_positions, columns<span style=color:#f92672>=</span>big_positions)
+plt<span style=color:#f92672>.</span>figure(figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>12</span>,<span style=color:#ae81ff>12</span>), dpi<span style=color:#f92672>=</span><span style=color:#ae81ff>72</span>)
+plt<span style=color:#f92672>.</span>pcolor(big_cost, cmap<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;viridis&#39;</span>)
+plt<span style=color:#f92672>.</span>show()
+</code></pre></div><p><img src=/images/Word%20Movers%20Distance%20Exploration_33_0.png alt=png></p>
+<h4 id=most-costly-move>Most Costly Move</h4>
+<p>Below we calculate which move incurred the highest cost. We&rsquo;ll also point it out in our final visualization to verify.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>most_costly_from <span style=color:#f92672>=</span> big_cost<span style=color:#f92672>.</span>max(axis<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>)<span style=color:#f92672>.</span>idxmax()
+most_costly_from_ix <span style=color:#f92672>=</span> big_positions<span style=color:#f92672>.</span>index(most_costly_from)
+most_costly_to <span style=color:#f92672>=</span> big_cost<span style=color:#f92672>.</span>max(axis<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>)<span style=color:#f92672>.</span>idxmax()
+most_costly_to_ix <span style=color:#f92672>=</span> big_positions<span style=color:#f92672>.</span>index(most_costly_to)
+most_costly_mass <span style=color:#f92672>=</span> big_cost<span style=color:#f92672>.</span>values<span style=color:#f92672>.</span>max()<span style=color:#f92672>.</span>round(<span style=color:#ae81ff>2</span>)
+
+most_costly_info <span style=color:#f92672>=</span> (most_costly_from_ix, most_costly_from, most_costly_mass, most_costly_to_ix, most_costly_to)
+
+print(<span style=color:#e6db74>&#34;Most Costly Move:&#34;</span>)
+print(<span style=color:#e6db74>&#34;Index: [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>], Position: </span><span style=color:#e6db74>{}</span><span style=color:#e6db74> &#34;</span><span style=color:#f92672>.</span>format(most_costly_from_ix, most_costly_from))
+print(<span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\t\t</span><span style=color:#e6db74>↓↓&#34;</span>)
+print(<span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\t</span><span style=color:#e6db74>    cost: </span><span style=color:#e6db74>{}</span><span style=color:#e6db74>&#34;</span><span style=color:#f92672>.</span>format(most_costly_mass))
+print(<span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\t\t</span><span style=color:#e6db74>↓↓&#34;</span>)
+print(<span style=color:#e6db74>&#34;Index: [</span><span style=color:#e6db74>{}</span><span style=color:#e6db74>], Position: </span><span style=color:#e6db74>{}</span><span style=color:#e6db74> &#34;</span><span style=color:#f92672>.</span>format(most_costly_to_ix, most_costly_to))
+
+</code></pre></div><pre><code>Most Costly Move:
+Index: [9], Position: (14, 27) 
+        ↓↓
+        cost: 0.26
+        ↓↓
+Index: [4], Position: (24, 5) 
+</code></pre>
+<h3 id=plot-solution-1>Plot Solution</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>plot_emd_solution(big_pd1, big_pd2, big_positions, big_emd, big_flow, figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>12</span>, <span style=color:#ae81ff>12</span>), r_scale<span style=color:#f92672>=</span><span style=color:#ae81ff>8000</span>)
+<span style=color:#75715e># highlight most costly move</span>
+plt<span style=color:#f92672>.</span>plot([most_costly_from[<span style=color:#ae81ff>0</span>], most_costly_to[<span style=color:#ae81ff>0</span>]], [most_costly_from[<span style=color:#ae81ff>1</span>], most_costly_to[<span style=color:#ae81ff>1</span>]],
+         color<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;lime&#39;</span>, lw<span style=color:#f92672>=</span><span style=color:#ae81ff>5</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.5</span>, solid_capstyle<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;round&#39;</span>);
+</code></pre></div><p><img src=/images/Word%20Movers%20Distance%20Exploration_37_0.png alt=png></p>
+<p>This visualization of the solution gives us additional visual confirmation that the algorithm works. There are no piles that need to travel across the plane. Indeed, it&rsquo;s possible to see clusters of flow grouped together by proximal piles. The highlighted most costly move makes sense: it&rsquo;s one large pile to another over one of the longer distances between the two piles.</p>
+<h2 id=3-calculating-word-movers-distance-for-a-predefined-example-with-a-2-dimensional-projection-of-word-vectors>3. Calculating Word Movers Distance for a predefined example with a 2-dimensional projection of word vectors</h2>
+<p>We&rsquo;re now going to attempt to build some intuition around what Word Movers Distance is. To start, imagine we have two sentences for which we want to calculate their similarity. Pulling from the original WMD paper, let&rsquo;s use the following two sentences:</p>
+<ul>
+<li><strong>Obama speaks</strong> to the <strong>media</strong> in <strong>Illinois</strong></li>
+<li>The <strong>President greets</strong> the <strong>press</strong> in <strong>Chicago</strong></li>
+</ul>
+<p>The bolded words are the words we&rsquo;ll actually use (non-stopwords). This is a great example for WMD because the sentences are about the same concept, but contain no similar words, so traditional approaches like TFIDF won&rsquo;t work.</p>
+<p>In EMD we calculate the cost of moving dirt between two distributions of dirt piles. In WMD, the parallel ideas to EMD are:</p>
+<ul>
+<li>Pile Distribution → A Sentence / Bag of Words</li>
+<li>Dirt Pile Mass → Normalized Count of word in sentence</li>
+<li>Dirt Pile Location → A single word vector in a word embedding</li>
+</ul>
+<p>We have our two pile distributions (sentences) and masses (counts of words), and our locations will be provided by an existing word embedding. We&rsquo;ll be using the Google News word vectors. We&rsquo;re going to subset the full word embedding of 3 billion words to the 333,333 most common english words [<a href=http://norvig.com/ngrams/>ref</a>].</p>
+<h3 id=building-intuition-through-visualization>Building Intuition through Visualization</h3>
+<p>The original vectors are in 300-dimensions, so we&rsquo;re going to first project down to 2-dimensions using TSNE to make it easier to visualize and compare to the models we&rsquo;ve built above. This will change the results for WMD, but will help with the visual comparison.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>read_1w_corpus</span>(name, sep<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;</span><span style=color:#ae81ff>\t</span><span style=color:#e6db74>&#34;</span>):
+    <span style=color:#66d9ef>for</span> line <span style=color:#f92672>in</span> open(name):
+        <span style=color:#66d9ef>yield</span> line<span style=color:#f92672>.</span>split(sep)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>print(<span style=color:#e6db74>&#34;Loading GoogleNews Vectors&#34;</span>)
+<span style=color:#f92672>%</span>time model <span style=color:#f92672>=</span> gensim<span style=color:#f92672>.</span>models<span style=color:#f92672>.</span>KeyedVectors<span style=color:#f92672>.</span>load_word2vec_format(<span style=color:#e6db74>&#39;/Users/pbaumgartner/data/GoogleNews-vectors-negative300.bin.gz&#39;</span>, binary<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+vocabulary <span style=color:#f92672>=</span> set(model<span style=color:#f92672>.</span>vocab)
+relevant_words <span style=color:#f92672>=</span> [word <span style=color:#66d9ef>for</span> (word, count) <span style=color:#f92672>in</span> read_1w_corpus(<span style=color:#e6db74>&#39;/Users/pbaumgartner/data/count_1w.txt&#39;</span>) <span style=color:#66d9ef>if</span> word <span style=color:#f92672>in</span> vocabulary]
+model_reduced <span style=color:#f92672>=</span> model[[w <span style=color:#66d9ef>for</span> w <span style=color:#f92672>in</span> relevant_words]]
+</code></pre></div><pre><code>Loading GoogleNews Vectors
+CPU times: user 2min 15s, sys: 5.44 s, total: 2min 20s
+Wall time: 2min 21s
+</code></pre>
+<p>The Full TSNE of the word vectors took around 22min on my computer, so I&rsquo;ve saved the projection. If you run this notebook, the cell below will rebuild the projection for you.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>if</span> <span style=color:#f92672>not</span> os<span style=color:#f92672>.</span>path<span style=color:#f92672>.</span>isfile(<span style=color:#e6db74>&#39;w2v_tsne.csv&#39;</span>):
+    tsne <span style=color:#f92672>=</span> TSNE(n_components<span style=color:#f92672>=</span><span style=color:#ae81ff>2</span>, n_jobs<span style=color:#f92672>=-</span><span style=color:#ae81ff>1</span>, random_state<span style=color:#f92672>=</span><span style=color:#ae81ff>666</span>)
+    print(<span style=color:#e6db74>&#34;Performing TSNE on GoogleNews Vectors&#34;</span>)
+    <span style=color:#f92672>%</span>time tsne_vectors <span style=color:#f92672>=</span> tsne<span style=color:#f92672>.</span>fit_transform(model_reduced<span style=color:#f92672>.</span>astype(np<span style=color:#f92672>.</span>float64)) 
+    d <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>DataFrame(tsne_vectors, columns<span style=color:#f92672>=</span>[<span style=color:#e6db74>&#39;c1&#39;</span>, <span style=color:#e6db74>&#39;c2&#39;</span>])
+    d[<span style=color:#e6db74>&#39;word&#39;</span>] <span style=color:#f92672>=</span> relevant_words
+    d<span style=color:#f92672>.</span>to_csv(<span style=color:#e6db74>&#39;w2v_tsne.csv&#39;</span>)
+<span style=color:#66d9ef>else</span>:
+    d <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>read_csv(<span style=color:#e6db74>&#39;w2v_tsne.csv&#39;</span>, index_col<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span>)
+</code></pre></div><h3 id=flag-the-embeddings-that-correspond-to-the-tokens-in-our-sentences>Flag the embeddings that correspond to the tokens in our sentences</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># Obama speaks to the media in Illinois </span>
+sentence1_words <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;obama&#39;</span>, <span style=color:#e6db74>&#39;speaks&#39;</span>, <span style=color:#e6db74>&#39;media&#39;</span>, <span style=color:#e6db74>&#39;illinois&#39;</span>]
+
+<span style=color:#75715e># The President greets the press in Chicago. </span>
+sentence2_words <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;president&#39;</span>, <span style=color:#e6db74>&#39;greets&#39;</span>, <span style=color:#e6db74>&#39;press&#39;</span>, <span style=color:#e6db74>&#39;chicago&#39;</span>]
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>d[<span style=color:#e6db74>&#39;sentence1&#39;</span>] <span style=color:#f92672>=</span> d[<span style=color:#e6db74>&#39;word&#39;</span>]<span style=color:#f92672>.</span>isin(sentence1_words)
+d[<span style=color:#e6db74>&#39;sentence2&#39;</span>] <span style=color:#f92672>=</span> d[<span style=color:#e6db74>&#39;word&#39;</span>]<span style=color:#f92672>.</span>isin(sentence2_words)
+</code></pre></div><h3 id=generate-attributes-for-plotting>Generate attributes for plotting</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>colors</span>(row):
+    <span style=color:#66d9ef>if</span> row[<span style=color:#e6db74>&#39;sentence1&#39;</span>]:
+        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;#FF0000&#39;</span>
+    <span style=color:#66d9ef>if</span> row[<span style=color:#e6db74>&#39;sentence2&#39;</span>]:
+        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;#0000FF&#39;</span>
+    <span style=color:#66d9ef>else</span>:
+        <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;#8FBC8F&#39;</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#66d9ef>def</span> <span style=color:#a6e22e>sizes</span>(row):
+    <span style=color:#66d9ef>if</span> row[<span style=color:#e6db74>&#39;sentence1&#39;</span>] <span style=color:#f92672>or</span> row[<span style=color:#e6db74>&#39;sentence2&#39;</span>]:
+        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>100</span>
+    <span style=color:#66d9ef>else</span>:
+        <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>1</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>d[<span style=color:#e6db74>&#39;colors&#39;</span>] <span style=color:#f92672>=</span> d<span style=color:#f92672>.</span>apply(colors, axis<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>)
+d[<span style=color:#e6db74>&#39;sizes&#39;</span>] <span style=color:#f92672>=</span> d<span style=color:#f92672>.</span>apply(sizes, axis<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>)
+</code></pre></div><h3 id=subset-the-dataset-to-make-the-plotting-easier>Subset the dataset to make the plotting easier</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>d_normal <span style=color:#f92672>=</span> d<span style=color:#f92672>.</span>loc[<span style=color:#66d9ef>lambda</span> x: (x[<span style=color:#e6db74>&#39;sentence1&#39;</span>] <span style=color:#f92672>==</span> <span style=color:#66d9ef>False</span>) <span style=color:#f92672>&amp;</span> (x[<span style=color:#e6db74>&#39;sentence2&#39;</span>] <span style=color:#f92672>==</span> <span style=color:#66d9ef>False</span>)]
+d_sentences <span style=color:#f92672>=</span> d<span style=color:#f92672>.</span>loc[<span style=color:#66d9ef>lambda</span> x: (x[<span style=color:#e6db74>&#39;sentence1&#39;</span>] <span style=color:#f92672>==</span> <span style=color:#66d9ef>True</span>) <span style=color:#f92672>|</span> (x[<span style=color:#e6db74>&#39;sentence2&#39;</span>] <span style=color:#f92672>==</span> <span style=color:#66d9ef>True</span>)]
+</code></pre></div><h3 id=calculate-axis-bounds-for-zoomed-plot>Calculate Axis bounds for zoomed plot</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>xmin, xmax, ymin, ymax <span style=color:#f92672>=</span> (d_sentences[<span style=color:#e6db74>&#39;c1&#39;</span>]<span style=color:#f92672>.</span>min()<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>,
+                          d_sentences[<span style=color:#e6db74>&#39;c1&#39;</span>]<span style=color:#f92672>.</span>max()<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>,
+                          d_sentences[<span style=color:#e6db74>&#39;c2&#39;</span>]<span style=color:#f92672>.</span>min()<span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>,
+                          d_sentences[<span style=color:#e6db74>&#39;c2&#39;</span>]<span style=color:#f92672>.</span>max()<span style=color:#f92672>+</span><span style=color:#ae81ff>1</span>)
+
+d_normal_limited <span style=color:#f92672>=</span> d_normal<span style=color:#f92672>.</span>loc[<span style=color:#66d9ef>lambda</span> x: (
+    (x[<span style=color:#e6db74>&#39;c1&#39;</span>] <span style=color:#f92672>&gt;</span> xmin) <span style=color:#f92672>&amp;</span>
+    (x[<span style=color:#e6db74>&#39;c1&#39;</span>] <span style=color:#f92672>&lt;</span> xmax) <span style=color:#f92672>&amp;</span>
+    (x[<span style=color:#e6db74>&#39;c2&#39;</span>] <span style=color:#f92672>&gt;</span> ymin) <span style=color:#f92672>&amp;</span>
+    (x[<span style=color:#e6db74>&#39;c2&#39;</span>] <span style=color:#f92672>&lt;</span> ymax))]
+</code></pre></div><h3 id=plot-sentence-word-embeddings-with-full-word-embedding-overlay>Plot Sentence Word embeddings with full word embedding overlay</h3>
+<p>The plot below will highlight the positions of the word embeddings from words contained in our two sentences. We&rsquo;ll also overlay any additional vectors in the same location just to show the density of word vectors in this projection.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>fig, (ax1, ax2) <span style=color:#f92672>=</span> plt<span style=color:#f92672>.</span>subplots(<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>24</span>, <span style=color:#ae81ff>12</span>))
+
+ax1<span style=color:#f92672>.</span>scatter(x<span style=color:#f92672>=</span>d_normal[<span style=color:#e6db74>&#39;c1&#39;</span>], y<span style=color:#f92672>=</span>d_normal[<span style=color:#e6db74>&#39;c2&#39;</span>], c<span style=color:#f92672>=</span>d_normal[<span style=color:#e6db74>&#39;colors&#39;</span>], alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>.5</span>, s<span style=color:#f92672>=</span>d_normal[<span style=color:#e6db74>&#39;sizes&#39;</span>], );
+ax1<span style=color:#f92672>.</span>scatter(x<span style=color:#f92672>=</span>d_sentences[<span style=color:#e6db74>&#39;c1&#39;</span>], y<span style=color:#f92672>=</span>d_sentences[<span style=color:#e6db74>&#39;c2&#39;</span>], c<span style=color:#f92672>=</span>d_sentences[<span style=color:#e6db74>&#39;colors&#39;</span>], alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>, s<span style=color:#f92672>=</span>d_sentences[<span style=color:#e6db74>&#39;sizes&#39;</span>], );
+ax1<span style=color:#f92672>.</span>set_title(<span style=color:#e6db74>&#39;TSNE - 333,333 Most Common English Words as Vectors&#39;</span>, fontsize<span style=color:#f92672>=</span><span style=color:#ae81ff>20</span>)
+box <span style=color:#f92672>=</span> Rectangle((xmin, ymin), xmax<span style=color:#f92672>-</span>xmin, ymax<span style=color:#f92672>-</span>ymin, fill<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>, edgecolor<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;black&#39;</span>)
+ax1<span style=color:#f92672>.</span>add_patch(box)
+
+ax2<span style=color:#f92672>.</span>scatter(x<span style=color:#f92672>=</span>d_normal_limited[<span style=color:#e6db74>&#39;c1&#39;</span>], y<span style=color:#f92672>=</span>d_normal_limited[<span style=color:#e6db74>&#39;c2&#39;</span>], c<span style=color:#f92672>=</span>d_normal_limited[<span style=color:#e6db74>&#39;colors&#39;</span>], alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>.5</span>, s<span style=color:#f92672>=</span>d_normal_limited[<span style=color:#e6db74>&#39;sizes&#39;</span>] <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, );
+ax2<span style=color:#f92672>.</span>scatter(x<span style=color:#f92672>=</span>d_sentences[<span style=color:#e6db74>&#39;c1&#39;</span>], y<span style=color:#f92672>=</span>d_sentences[<span style=color:#e6db74>&#39;c2&#39;</span>], c<span style=color:#f92672>=</span>d_sentences[<span style=color:#e6db74>&#39;colors&#39;</span>], alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>1</span>, s<span style=color:#f92672>=</span>d_sentences[<span style=color:#e6db74>&#39;sizes&#39;</span>] <span style=color:#f92672>+</span> <span style=color:#ae81ff>100</span>, );
+ax2<span style=color:#f92672>.</span>set_title(<span style=color:#e6db74>&#39;Enhanced Location for Relevant Words&#39;</span>, fontsize<span style=color:#f92672>=</span><span style=color:#ae81ff>20</span>)
+
+<span style=color:#66d9ef>for</span> word <span style=color:#f92672>in</span> d_sentences<span style=color:#f92672>.</span>to_dict(orient<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;rows&#39;</span>):
+    <span style=color:#66d9ef>if</span> word[<span style=color:#e6db74>&#39;sentence2&#39;</span>]:
+        ax2<span style=color:#f92672>.</span>annotate(xy<span style=color:#f92672>=</span>[word[<span style=color:#e6db74>&#39;c1&#39;</span>], word[<span style=color:#e6db74>&#39;c2&#39;</span>]],
+                     s<span style=color:#f92672>=</span>word[<span style=color:#e6db74>&#39;word&#39;</span>]<span style=color:#f92672>.</span>upper(),
+                     textcoords<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;data&#39;</span>,
+                     horizontalalignment<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;right&#39;</span>,
+                    verticalalignment<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;top&#39;</span>,
+                     bbox<span style=color:#f92672>=</span>dict(boxstyle<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;round&#34;</span>, fc<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;w&#34;</span>, ec<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;b&#34;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.7</span>))
+    <span style=color:#66d9ef>else</span>:
+        ax2<span style=color:#f92672>.</span>annotate(xy<span style=color:#f92672>=</span>[word[<span style=color:#e6db74>&#39;c1&#39;</span>], word[<span style=color:#e6db74>&#39;c2&#39;</span>]] ,
+                     s<span style=color:#f92672>=</span>word[<span style=color:#e6db74>&#39;word&#39;</span>]<span style=color:#f92672>.</span>upper(),
+                     textcoords<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;data&#39;</span>,
+                    horizontalalignment<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;left&#39;</span>,
+                    verticalalignment<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;bottom&#39;</span>,
+                     bbox<span style=color:#f92672>=</span>dict(boxstyle<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;round&#34;</span>, fc<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;w&#34;</span>, ec<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;r&#34;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.7</span>))
+fig<span style=color:#f92672>.</span>tight_layout()
+</code></pre></div><p><img src=/images/Word%20Movers%20Distance%20Exploration_57_0.png alt=png></p>
+<h3 id=build-components-to-calculate-wmd>Build Components to calculate WMD</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>sentence1_piles <span style=color:#f92672>=</span> []
+sentence2_piles <span style=color:#f92672>=</span> []
+
+<span style=color:#66d9ef>for</span> word <span style=color:#f92672>in</span> d_sentences<span style=color:#f92672>.</span>to_dict(orient<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;rows&#39;</span>):
+    <span style=color:#66d9ef>if</span> word[<span style=color:#e6db74>&#39;sentence1&#39;</span>]:
+        sentence1_piles<span style=color:#f92672>.</span>append(DirtPile((word[<span style=color:#e6db74>&#39;c1&#39;</span>], word[<span style=color:#e6db74>&#39;c2&#39;</span>]), <span style=color:#ae81ff>1</span>, word[<span style=color:#e6db74>&#39;word&#39;</span>]))
+    <span style=color:#66d9ef>else</span>:
+        sentence2_piles<span style=color:#f92672>.</span>append(DirtPile((word[<span style=color:#e6db74>&#39;c1&#39;</span>], word[<span style=color:#e6db74>&#39;c2&#39;</span>]), <span style=color:#ae81ff>1</span>, word[<span style=color:#e6db74>&#39;word&#39;</span>]))
+        
+sentence1_dist <span style=color:#f92672>=</span> PileDistribution(<span style=color:#f92672>*</span>sentence1_piles)
+sentence2_dist <span style=color:#f92672>=</span> PileDistribution(<span style=color:#f92672>*</span>sentence2_piles)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>sentence_positions, sentence_p1_signature, sentence_p2_signature <span style=color:#f92672>=</span> generate_signatures(sentence1_dist, sentence2_dist, normalize<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>sentence_dist <span style=color:#f92672>=</span> euclidean_distances(sentence_positions, sentence_positions)
+
+sentence_emd, sentence_flow <span style=color:#f92672>=</span> emd_with_flow(np<span style=color:#f92672>.</span>array(sentence_p1_signature), np<span style=color:#f92672>.</span>array(sentence_p2_signature), sentence_dist)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>plot_emd_solution(sentence1_dist, sentence2_dist, sentence_positions, sentence_emd, np<span style=color:#f92672>.</span>array(sentence_flow), figsize<span style=color:#f92672>=</span>(<span style=color:#ae81ff>12</span>, <span style=color:#ae81ff>12</span>), r_scale<span style=color:#f92672>=</span><span style=color:#ae81ff>1000</span>)
+
+plt<span style=color:#f92672>.</span>scatter(x<span style=color:#f92672>=</span>d_normal_limited[<span style=color:#e6db74>&#39;c1&#39;</span>], y<span style=color:#f92672>=</span>d_normal_limited[<span style=color:#e6db74>&#39;c2&#39;</span>], c<span style=color:#f92672>=</span>d_normal_limited[<span style=color:#e6db74>&#39;colors&#39;</span>], alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>.5</span>, s<span style=color:#f92672>=</span>d_normal_limited[<span style=color:#e6db74>&#39;sizes&#39;</span>] <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>, );
+
+<span style=color:#66d9ef>for</span> word <span style=color:#f92672>in</span> d_sentences<span style=color:#f92672>.</span>to_dict(orient<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;rows&#39;</span>):
+    <span style=color:#66d9ef>if</span> word[<span style=color:#e6db74>&#39;sentence2&#39;</span>]:
+        plt<span style=color:#f92672>.</span>annotate(xy<span style=color:#f92672>=</span>[word[<span style=color:#e6db74>&#39;c1&#39;</span>], word[<span style=color:#e6db74>&#39;c2&#39;</span>]],
+                     s<span style=color:#f92672>=</span>word[<span style=color:#e6db74>&#39;word&#39;</span>]<span style=color:#f92672>.</span>upper(),
+                     textcoords<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;data&#39;</span>,
+                     horizontalalignment<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;right&#39;</span>,
+                    verticalalignment<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;top&#39;</span>,
+                     bbox<span style=color:#f92672>=</span>dict(boxstyle<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;round&#34;</span>, fc<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;w&#34;</span>, ec<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;b&#34;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.7</span>))
+    <span style=color:#66d9ef>else</span>:
+        plt<span style=color:#f92672>.</span>annotate(xy<span style=color:#f92672>=</span>[word[<span style=color:#e6db74>&#39;c1&#39;</span>], word[<span style=color:#e6db74>&#39;c2&#39;</span>]] ,
+                     s<span style=color:#f92672>=</span>word[<span style=color:#e6db74>&#39;word&#39;</span>]<span style=color:#f92672>.</span>upper(),
+                     textcoords<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;data&#39;</span>,
+                    horizontalalignment<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;left&#39;</span>,
+                    verticalalignment<span style=color:#f92672>=</span><span style=color:#e6db74>&#39;bottom&#39;</span>,
+                     bbox<span style=color:#f92672>=</span>dict(boxstyle<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;round&#34;</span>, fc<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;w&#34;</span>, ec<span style=color:#f92672>=</span><span style=color:#e6db74>&#34;r&#34;</span>, alpha<span style=color:#f92672>=</span><span style=color:#ae81ff>0.7</span>))
+</code></pre></div><p><img src=/images/Word%20Movers%20Distance%20Exploration_62_0.png alt=png></p>
+<h2 id=4-calculating-wmd-for-a-predefined-example-with-300-dimensional-word-vectors>4. Calculating WMD for a predefined example with 300-dimensional word vectors</h2>
+<p>We&rsquo;re going to remove the scaffolding we used to understand EMD in two dimensions and calculate EMD using the full 300-dimensional vectors. There&rsquo;s not much mechanical difference here: we still need to generate the signatures using the unique set of words between the two sentences and calculate the distances between each word in that set. However, distances are calculated over 300 dimensions rather than two.</p>
+<p>Since the two dimensional TSNE representation didn&rsquo;t map the variables as we would expect (it missed Obama → President for example), our hypothesis is that the 300 dimensional vectors will be able to fully represent the semantics of each word and the mapping will hold. We verify below.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># Normalize word vectors for comparison to original paper</span>
+<span style=color:#f92672>%</span>time model<span style=color:#f92672>.</span>init_sims(replace<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
+</code></pre></div><pre><code>CPU times: user 18.5 s, sys: 2.37 s, total: 20.8 s
+Wall time: 20.9 s
+</code></pre>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>w2v_sentence1_piles, w2v_sentence2_piles <span style=color:#f92672>=</span> [], []
+
+<span style=color:#66d9ef>for</span> word <span style=color:#f92672>in</span> sentence1_words:
+    w2v_sentence1_piles<span style=color:#f92672>.</span>append({<span style=color:#e6db74>&#39;vector&#39;</span> : model[word], <span style=color:#e6db74>&#39;mass&#39;</span> : <span style=color:#ae81ff>0.25</span>, <span style=color:#e6db74>&#39;label&#39;</span> : word})
+<span style=color:#66d9ef>for</span> word <span style=color:#f92672>in</span> sentence2_words:
+    w2v_sentence2_piles<span style=color:#f92672>.</span>append({<span style=color:#e6db74>&#39;vector&#39;</span> : model[word], <span style=color:#e6db74>&#39;mass&#39;</span> : <span style=color:#ae81ff>0.25</span>, <span style=color:#e6db74>&#39;label&#39;</span> : word})
+    
+all_piles <span style=color:#f92672>=</span> w2v_sentence1_piles <span style=color:#f92672>+</span> w2v_sentence2_piles
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>w2v_p1_signature <span style=color:#f92672>=</span> [<span style=color:#ae81ff>0.25</span>, <span style=color:#ae81ff>0.25</span>, <span style=color:#ae81ff>0.25</span>, <span style=color:#ae81ff>0.25</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>]
+w2v_p2_signature <span style=color:#f92672>=</span> [<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>0.25</span>, <span style=color:#ae81ff>0.25</span>, <span style=color:#ae81ff>0.25</span>, <span style=color:#ae81ff>0.25</span>]
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>w2v_distances <span style=color:#f92672>=</span> euclidean_distances([i[<span style=color:#e6db74>&#39;vector&#39;</span>] <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> all_piles], [i[<span style=color:#e6db74>&#39;vector&#39;</span>] <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> all_piles])
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>w2v_emd, w2v_flow <span style=color:#f92672>=</span> calculate_emd(w2v_p1_signature, w2v_p2_signature, w2v_distances)
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>print(<span style=color:#e6db74>&#34;W2V 300-Dimension EMD:&#34;</span>, round(w2v_emd, <span style=color:#ae81ff>2</span>))
+</code></pre></div><pre><code>W2V 300-Dimension EMD: 1.02
+</code></pre>
+<h3 id=construct-flow-matrix-to-understand-where-masses-traveled>Construct Flow Matrix to understand where masses traveled</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>flow_df <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>DataFrame(w2v_flow, index<span style=color:#f92672>=</span>[i[<span style=color:#e6db74>&#39;label&#39;</span>] <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> all_piles], columns<span style=color:#f92672>=</span>[i[<span style=color:#e6db74>&#39;label&#39;</span>] <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> all_piles])
+flow_df
+</code></pre></div>
+<p>Above we verify that the solution is the same as it is in the original paper, and follows our intuition about which pairs of words were most similar. The matches were:</p>
+<ul>
+<li>President → Obama</li>
+<li>greets → speeks</li>
+<li>press → media</li>
+<li>Chicago → Illinois</li>
+</ul>
+<h3 id=calculate-cost-matrix>Calculate Cost Matrix</h3>
+<p><code>cost = distance × mass</code></p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># first put distance matrix in a DF</span>
+dist_df <span style=color:#f92672>=</span> pd<span style=color:#f92672>.</span>DataFrame(w2v_distances, index<span style=color:#f92672>=</span>[i[<span style=color:#e6db74>&#39;label&#39;</span>] <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> all_piles], columns<span style=color:#f92672>=</span>[i[<span style=color:#e6db74>&#39;label&#39;</span>] <span style=color:#66d9ef>for</span> i <span style=color:#f92672>in</span> all_piles])
+cost_df <span style=color:#f92672>=</span> (flow_df <span style=color:#f92672>*</span> dist_df)
+cost_df
+</code></pre></div>
+<h3 id=verify-total-cost--emd>Verify total cost == EMD</h3>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># using np.isclose due to rounding</span>
+np<span style=color:#f92672>.</span>isclose(w2v_emd, cost_df<span style=color:#f92672>.</span>values<span style=color:#f92672>.</span>sum())
+</code></pre></div><pre><code>True
+</code></pre>
+<h2 id=summary>Summary</h2>
+<p>Through this notebook we&rsquo;ve gone from a basic Earth Movers Distance example in two dimensions to a full Word Movers Distance examples with the 300-dimensional <code>word2vec</code> vectors. Earth Movers Distance is an interesting problem on its own, and the NLP application of Word Movers Distance helps solve problems in calculating the semantic similarity of documents with no shared vocabulary.</p>
+<h3 id=python-implementations>Python Implementations</h3>
+<p>Both <a href=http://textacy.readthedocs.io/en/latest/api_reference.html#textacy.similarity.word_movers>textacy</a> and <a href=https://radimrehurek.com/gensim/models/keyedvectors.html#gensim.models.keyedvectors.KeyedVectors.wmdistance>gensim</a> have implementations of Word Movers Distance you can use. Gensim will require you to load (or build) a word embedding first, and I believe textacy will use the GloVe vectors from spaCy by default.</p>
+<h3 id=related-resources>Related Resources</h3>
+<ul>
+<li><a href=https://markroxor.github.io/gensim/static/notebooks/WMD_tutorial.html>WMD Tutorial</a></li>
+<li><a href=http://vene.ro/blog/word-movers-distance-in-python.html>Word Movers Distance in Python</a></li>
+<li><a href=http://blog.fastforwardlabs.com/2017/05/30/Slack-Maestro-Helping-Users-Stay-on-Topic.html>Slack Maestro: Helping Users Stay on Topic</a></li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>
+</code></pre></div>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/blog/output-transformations-roc-impact/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>The Impact of Model Output Transformations on ROC</a>
+</div><div class="next-entry sep-before">
+<a href=/blog/testing-ipython-magics/>
+<span class=screen-reader-text>Next post: </span>How to Test IPython Magic<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+</span>
+</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>

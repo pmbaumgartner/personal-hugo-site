@@ -1,0 +1,161 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="TL;DR If you want to test ipython magics you can do the following:
+ Import the global ipython app with from IPython.testing.globalipapp import get_ipython Crete an object with the global ipython app with ip = get_ipython() Load your magic with ip.magic('load_ext your_magic_name') Run your magic with ip.run_line_magic('your_magic_function', 'your_magic_arguments') (Optional) Access results of your magic with ip.user_ns (ipython user namespace).  An example test using pytest looks like this:
+import pytest from IPython.">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="How to Test IPython Magic • Peter Baumgartner">
+<meta property="og:description" content="TL;DR If you want to test ipython magics you can do the following:
+ Import the global ipython app with from IPython.testing.globalipapp import get_ipython Crete an object with the global ipython app with ip = get_ipython() Load your magic with ip.magic('load_ext your_magic_name') Run your magic with ip.run_line_magic('your_magic_function', 'your_magic_arguments') (Optional) Access results of your magic with ip.user_ns (ipython user namespace).  An example test using pytest looks like this:
+import pytest from IPython.">
+<meta property="og:url" content="https://pmbaumgartner.github.io/blog/testing-ipython-magics/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2018-02-16T00:00:00Z"><meta property="article:modified_time" content="2018-02-16T00:00:00Z"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.87.0">
+<title>How to Test IPython Magic • Peter Baumgartner</title>
+<link rel=canonical href=https://pmbaumgartner.github.io/blog/testing-ipython-magics/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-blog has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class="item current">
+<a aria-current=page href=/blog/>Blog</a>
+</li><li class=item>
+<a href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>How to Test IPython Magic</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2018-02-16T00:00:00Z>2018-02-16</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+3 mins read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<h2 id=tldr>TL;DR</h2>
+<p>If you want to test <code>ipython magics</code> you can do the following:</p>
+<ol>
+<li>Import the global ipython app with <code>from IPython.testing.globalipapp import get_ipython</code></li>
+<li>Crete an object with the global ipython app with <code>ip = get_ipython()</code></li>
+<li>Load your magic with <code>ip.magic('load_ext your_magic_name')</code></li>
+<li>Run your magic with <code>ip.run_line_magic('your_magic_function', 'your_magic_arguments')</code></li>
+<li>(Optional) Access results of your magic with <code>ip.user_ns</code> (ipython user namespace).</li>
+</ol>
+<p>An example test using pytest looks like this:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>import</span> pytest
+<span style=color:#f92672>from</span> IPython.testing.globalipapp <span style=color:#f92672>import</span> get_ipython
+
+ip <span style=color:#f92672>=</span> get_ipython()
+ip<span style=color:#f92672>.</span>magic(<span style=color:#e6db74>&#39;load_ext excelify&#39;</span>)
+
+<span style=color:#66d9ef>def</span> <span style=color:#a6e22e>test_nonexistent_object</span>():
+    <span style=color:#66d9ef>with</span> pytest<span style=color:#f92672>.</span>raises(<span style=color:#a6e22e>NameError</span>):
+        ip<span style=color:#f92672>.</span>run_line_magic(<span style=color:#e6db74>&#39;excel&#39;</span>, <span style=color:#e6db74>&#39;nonexistentobject&#39;</span>)
+</code></pre></div><h2 id=more-details>More Details</h2>
+<h3 id=background>Background</h3>
+<p>IPython Magics are a nice way to apply command-line like behavior from within an ipython kernel or jupyter notebook. Several magics come built-in (<code>%%time</code> is my favorite), and it&rsquo;s also possible to write your own magics to help with common tasks.</p>
+<p>I ventured into the business of writing a custom magic by creating one that helped export pandas objects into Excel files. The idea emerged as I was running through a notebook where I needed to document a bunch of intermediate data frames, and rather than save them until the end of the notebook and loop through them to export, I figured a magic might be a nice way to handle this export within a cell.</p>
+<p>I&rsquo;ve been working on testing my code more and I figured this was a good project to continue practicing. I understood how to write basic tests that excecuted python code, but running a magic to test present an intersting case. In an ipython shell, magics are prepended with a <code>%</code> and work as expected, but if you type a magic into a regular python shell, it&rsquo;ll give you a <code>SyntaxError</code>.</p>
+<p>Luckily, ipython itself is well tested and they provide access to a shell object that you can send commands to. However, the documentation around how to use this to actually write tests is patchy. I pieced together my understanding from going through the tests for the <a href="https://bitbucket.org/rpy2/rpy2/src/d5d60e9a0f684c27015fa29c26bbb7fd75863bc2/rpy/ipython/tests/test_rmagic.py?at=default&fileviewer=file-view-default">standard magics</a> as well as the tests for the <a href="https://bitbucket.org/rpy2/rpy2/src/d5d60e9a0f684c27015fa29c26bbb7fd75863bc2/rpy/ipython/tests/test_rmagic.py?at=default&fileviewer=file-view-default">rpy2 magics</a>.</p>
+<h3 id=example-detail>Example Detail</h3>
+<p>First, we use the <code>get_ipython</code> method to get a global ipython object. If you actually run this first line in a standard python shell, you&rsquo;ll see something interesting:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> IPython.testing.globalipapp <span style=color:#f92672>import</span> get_ipython
+<span style=color:#f92672>&gt;&gt;&gt;</span> ip <span style=color:#f92672>=</span> get_ipython()
+In :
+</code></pre></div><p>This will both create a shell object that you can reference with <code>ip</code> as well as turn that standard python shell into an ipython shell.</p>
+<p>Second, we load the magic with <code>ip.magic('load_ext excelify')</code>. The <code>.magic()</code> method basically does the of prepending the argument provided with a <code>%</code> if you were in an ipython shell.</p>
+<p>Third, we use the <code>run_line_magic()</code> method on the <code>ip</code> object to run our line magic. This method takes two arguments: the name of the magic function and the remaining of the arguments for that magic. If you were in an ipython shell, this is the equivalent of running <code>%{magic name} {magic arguments}</code>. Note: We can also load in your extension by running <code>ip.run_line_magic('load_ext', 'excelify')</code> instead of using the <code>magic()</code> method.</p>
+<p>Now that we&rsquo;ve put all those parts together, we can use these methods to write more tests. There are other related methods if you&rsquo;re testing magics that might be helpful, including:</p>
+<ul>
+<li><code>run_cell_magic(magic_name, magic_args, cell)</code></li>
+<li><code>run_line_magic(magic_name, magic_args)</code></li>
+<li><code>magic(magic_line)</code></li>
+</ul>
+<p><strong>Potential Gotcha:</strong> If you want to run a magic that doesn&rsquo;t take any arguments, you&rsquo;ll need to pass an empty string for <code>magic_args</code> in the methods above (rather than leave the argument empty or <code>None</code>)</p>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/blog/word-movers-distance-exploration/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>An Exploration in Earth & Word Movers Distance</a>
+</div><div class="next-entry sep-before">
+<a href=/blog/word-embeddings-explainer/>
+<span class=screen-reader-text>Next post: </span>Word Embeddings Explainer<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+</span>
+</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>

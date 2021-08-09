@@ -1,0 +1,143 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Links Link to Notebook
+
+What&rsquo;s in this notebook? This is a worked example derived from my blog post on Making the Most of spaCy&rsquo;s Rule-Based Matcher. It works through developing a matching algorithm to identify reasons people purchase products from a dataset of Amazon product reviews. For example, you can automatically generate a list like this for any product:
+Customers buy this product ... ... as a replacement for a Salton model.">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="Spacy Rule Based Matcher Workflow • Peter Baumgartner">
+<meta property="og:description" content="Links Link to Notebook
+
+What&rsquo;s in this notebook? This is a worked example derived from my blog post on Making the Most of spaCy&rsquo;s Rule-Based Matcher. It works through developing a matching algorithm to identify reasons people purchase products from a dataset of Amazon product reviews. For example, you can automatically generate a list like this for any product:
+Customers buy this product ... ... as a replacement for a Salton model.">
+<meta property="og:url" content="https://pmbaumgartner.github.io/notebooks/spacy-rule-based-matcher/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="notebooks"><meta property="article:published_time" content="2017-05-21T00:00:00Z"><meta property="article:modified_time" content="2017-05-21T00:00:00Z"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.87.0">
+<title>Spacy Rule Based Matcher Workflow • Peter Baumgartner</title>
+<link rel=canonical href=https://pmbaumgartner.github.io/notebooks/spacy-rule-based-matcher/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-notebooks has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class=item>
+<a href=/blog/>Blog</a>
+</li><li class="item current">
+<a aria-current=page href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>Spacy Rule Based Matcher Workflow</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2017-05-21T00:00:00Z>2017-05-21</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+One min read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<h3 id=links>Links</h3>
+<p><a href=https://github.com/pmbaumgartner/binder-notebooks/blob/master/rule-based-matching-with-spacy-matcher.ipynb>Link to Notebook</a></p>
+<p><a href=https://mybinder.org/v2/gh/pmbaumgartner/binder-notebooks/master><img src=https://mybinder.org/badge.svg alt=Binder></a></p>
+<h3 id=whats-in-this-notebook>What&rsquo;s in this notebook?</h3>
+<p>This is a worked example derived from my blog post on <a href=/blog/spacy-rule-based-matcher-workflow/>Making the Most of spaCy&rsquo;s Rule-Based Matcher</a>. It works through developing a matching algorithm to identify reasons people purchase products from a dataset of Amazon product reviews. For example, you can automatically generate a list like this for any product:</p>
+<pre><code>Customers buy this product ...
+... as a replacement for a Salton model.
+... as a Christmas gift for my son in law.  
+... as a new coffee maker for serving guests of an annual retreat we host in our home.  
+... as a spice grinder and are very happy.  
+... as a christmas gift for a friend and it works great.
+... as a spice grinder and a coffee grinder
+... because it was cheap and had good reviews, and I have not been disappointed.
+... because of the excellent reviews. 
+... for grinding dry spices.
+... for grinding coffee
+... to grind beans for cold-brewed coffee.  
+... to grind spices instead of coffee and it works great.  
+... to grind xylitol and truvia sweeteners into a powder for cooking.
+</code></pre>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/notebooks/output-transformations-roc-impact/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>The Impact of Model Output Transformations on ROC</a>
+</div><div class="next-entry sep-before">
+<a href=/notebooks/word-movers-distance-exploration/>
+<span class=screen-reader-text>Next post: </span>An Exploration in Earth & Word Movers Distance<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+</span>
+</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>

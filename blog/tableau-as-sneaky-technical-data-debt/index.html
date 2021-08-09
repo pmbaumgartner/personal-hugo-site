@@ -1,0 +1,136 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="We work on a lot of projects where we need to iterate quickly on visualizations generated from a flat file of data. Tableau is a great tool to get started with this, but its ease of use can quickly lead people towards illusions of progress, misunderstandings of the underlying data, or technical debt.
+Usually this comes up in a conversation like this:
+ Them: I want to build this specific type of chart that represents this information.">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="Tableau and Raw Data as Sneaky Technical Debt • Peter Baumgartner">
+<meta property="og:description" content="We work on a lot of projects where we need to iterate quickly on visualizations generated from a flat file of data. Tableau is a great tool to get started with this, but its ease of use can quickly lead people towards illusions of progress, misunderstandings of the underlying data, or technical debt.
+Usually this comes up in a conversation like this:
+ Them: I want to build this specific type of chart that represents this information.">
+<meta property="og:url" content="https://pmbaumgartner.github.io/blog/tableau-as-sneaky-technical-data-debt/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2019-07-30T13:27:47-04:00"><meta property="article:modified_time" content="2019-07-30T13:27:47-04:00"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.87.0">
+<title>Tableau and Raw Data as Sneaky Technical Debt • Peter Baumgartner</title>
+<link rel=canonical href=https://pmbaumgartner.github.io/blog/tableau-as-sneaky-technical-data-debt/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-blog has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class="item current">
+<a aria-current=page href=/blog/>Blog</a>
+</li><li class=item>
+<a href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>Tableau and Raw Data as Sneaky Technical Debt</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2019-07-30T13:27:47-04:00>2019-07-30</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+3 mins read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<p>We work on a lot of projects where we need to iterate quickly on visualizations generated from a flat file of data. Tableau is a great tool to get started with this, but its ease of use can quickly lead people towards illusions of progress, misunderstandings of the underlying data, or technical debt.</p>
+<p>Usually this comes up in a conversation like this:</p>
+<blockquote>
+<p><strong>Them</strong>: I want to build this specific type of chart that represents this information. I&rsquo;ve tried <code>&lt;a combination of parameters, measure names or measure values, and calculated fields></code> and I just can&rsquo;t get it to work.</p>
+<p><strong>Me</strong>: What does your underlying data look like?</p>
+<p><strong>Them</strong>: Why does that matter? Isn&rsquo;t Tableau supposed to be <em>so easy</em> I can generate whatever chart I want? Can&rsquo;t I use their data manipulation tool to get what I need? I&rsquo;m 90% of the way there with these 4 calculated fields and this parameter. Plus, I can&rsquo;t go back and change the data, this is the format given by the client.</p>
+</blockquote>
+<p><strong>The problem is</strong>: the visualization developer has found effective traction on low-hanging fruit by creating visualizations that are easily facilitated with the existing data structure. However, now that they&rsquo;re trying to answer the business or research questions driving the need for visualization in the first place and they&rsquo;re stuck and frustrated because the data isn&rsquo;t setup correctly. This can evolve into a kind of <a href=https://en.wikipedia.org/wiki/Technical_debt>technical debt</a>: the longer a user puts off structuring the data in a way that aligns with the business problem, the harder it is to continue building visualizations and dashboards in an efficient manner.</p>
+<p><strong>The solution is:</strong></p>
+<ol>
+<li><strong>Notice when you have an abundance of Calculated fields or Parameters that are operating heavily as data manipulation tools.</strong> If the logic of these fields is to manipulate the data into a format to get a chart you want, rather than derive a new variable or do something simple across variables with a parameter, you might need to change your data structure.</li>
+<li><strong>Notice if most of the time you&rsquo;re using Measure Values or Measure Names in your charts.</strong> Typically this happens when you want to visualize data across columns in your original dataset.</li>
+<li><strong>Melt or pivot your column-oriented data to being row-oriented. <a href=https://vita.had.co.nz/papers/tidy-data.pdf>Tidy data</a> principles can get you quite far here.</strong> However, your specific problem means you&rsquo;ll need to think about your data and the semantic and logical structure of it. You probably can&rsquo;t just melt across all columns; some columns might have mutually derived data. Finally, consider how your future aggregations in the dashboard will change to handle your future data. If you&rsquo;re going from wide-to-long, often you&rsquo;ll need to take advantage of <code>COUNT DISTINCT</code> because you have duplicate rows for each of your original records.</li>
+</ol>
+<p>Being able to quickly generate good-looking visualizations is a helpful skill, but don&rsquo;t let a lust for ease blind you to the always necessary alignment between data structure and business problem.</p>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/blog/spacy-rule-based-matcher-workflow/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>Making the Most of spaCy's Rule-Based Matcher</a>
+</div><div class="next-entry sep-before">
+<a href=/blog/the-fastest-way-to-load-data-django-postgresql/>
+<span class=screen-reader-text>Next post: </span>The Fastest Way to Load Data Into Your Django Project using PostgreSQL<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+</span>
+</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>

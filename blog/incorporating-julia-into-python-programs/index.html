@@ -1,0 +1,419 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Context: I&rsquo;ve recently been experimenting with porting portions of a simulation codebase from python to Julia. Setting up a productive development environment, using the packages (PyJulia & PyCall) that allow for communicating between python and Julia, and familiarizing myself with Julia enough to use those packages took quite a bit of time and experimentation. Here&rsquo;s my collection of notes including stumbling blocks, adaptations, and things I took forever to understand to make this process easier for others in the future.">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="Incorporating Julia Into Python Programs • Peter Baumgartner">
+<meta property="og:description" content="Context: I&rsquo;ve recently been experimenting with porting portions of a simulation codebase from python to Julia. Setting up a productive development environment, using the packages (PyJulia & PyCall) that allow for communicating between python and Julia, and familiarizing myself with Julia enough to use those packages took quite a bit of time and experimentation. Here&rsquo;s my collection of notes including stumbling blocks, adaptations, and things I took forever to understand to make this process easier for others in the future.">
+<meta property="og:url" content="https://pmbaumgartner.github.io/blog/incorporating-julia-into-python-programs/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2021-08-09T11:35:27-04:00"><meta property="article:modified_time" content="2021-08-09T11:35:27-04:00"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.87.0">
+<title>Incorporating Julia Into Python Programs • Peter Baumgartner</title>
+<link rel=canonical href=https://pmbaumgartner.github.io/blog/incorporating-julia-into-python-programs/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-blog has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class="item current">
+<a aria-current=page href=/blog/>Blog</a>
+</li><li class=item>
+<a href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>Incorporating Julia Into Python Programs</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2021-08-09T11:35:27-04:00>2021-08-09</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+18 mins read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<p><strong>Context:</strong> I&rsquo;ve recently been experimenting with porting portions of a simulation codebase from python to Julia. Setting up a productive development environment, using the packages (PyJulia & PyCall) that allow for communicating between python and Julia, and familiarizing myself with Julia enough to use those packages took quite a bit of time and experimentation. Here&rsquo;s my collection of notes including stumbling blocks, adaptations, and things I took forever to understand to make this process easier for others in the future.</p>
+<h2 id=prelude-environment-preparation>Prelude: Environment Preparation</h2>
+<p>There are a lot of things that can go wrong with virtual environments, Julia installation, and python linking, so I&rsquo;ve found the easiest way to get things setup is using a Docker image with VSCode&rsquo;s dev containers.</p>
+<p>A basic <code>Dockerfile</code> that works for us looks like this:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-Dockerfile data-lang=Dockerfile><span style=color:#66d9ef>FROM</span><span style=color:#e6db74> python:3.8</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>WORKDIR</span><span style=color:#e6db74> /app</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> pip install julia jill ipython --no-cache-dir<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># julia is pyjulia, our python-julia interface</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># jill is a python package for easy Julia installation</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># IPython is helpful for magic (both %time and %julia)</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Include these in your requirements.txt if you have that instead</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> jill install 1.6.2 --confirm<span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># PyJulia setup (installs PyCall &amp; other necessities)</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> python -c <span style=color:#e6db74>&#34;import julia; julia.install()&#34;</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#75715e># Helpful Development Packages</span><span style=color:#960050;background-color:#1e0010>
+</span><span style=color:#960050;background-color:#1e0010></span><span style=color:#66d9ef>RUN</span> julia -e <span style=color:#e6db74>&#39;using Pkg; Pkg.add([&#34;Revise&#34;, &#34;BenchmarkTools&#34;])&#39;</span><span style=color:#960050;background-color:#1e0010>
+</span></code></pre></div><p>If you&rsquo;re using VSCode, you can set up a <a href=https://code.visualstudio.com/docs/remote/containers>dev container</a> to use this image as a remote container, which allows you to code inside this environment and save all changes locally. To do this, create a <code>devcontainer/devcontainer.json</code> file at your project root with the following:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>For</span> <span style=color:#960050;background-color:#1e0010>format</span> <span style=color:#960050;background-color:#1e0010>details,</span> <span style=color:#960050;background-color:#1e0010>see</span> <span style=color:#960050;background-color:#1e0010>https://aka.ms/devcontainer.json.</span> <span style=color:#960050;background-color:#1e0010>For</span> <span style=color:#960050;background-color:#1e0010>config</span> <span style=color:#960050;background-color:#1e0010>options,</span> <span style=color:#960050;background-color:#1e0010>see</span> <span style=color:#960050;background-color:#1e0010>the</span> <span style=color:#960050;background-color:#1e0010>README</span> <span style=color:#960050;background-color:#1e0010>at:</span>
+<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>https://github.com/microsoft/vscode-dev-containers/tree/v</span><span style=color:#ae81ff>0.187</span><span style=color:#960050;background-color:#1e0010>.</span><span style=color:#ae81ff>0</span><span style=color:#960050;background-color:#1e0010>/containers/python</span><span style=color:#ae81ff>-3</span>
+{
+	<span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;PyJulia Env&#34;</span>,
+	<span style=color:#f92672>&#34;build&#34;</span>: {
+		<span style=color:#f92672>&#34;dockerfile&#34;</span>: <span style=color:#e6db74>&#34;../Dockerfile&#34;</span>,
+		<span style=color:#f92672>&#34;context&#34;</span>: <span style=color:#e6db74>&#34;../.&#34;</span>,
+	},
+	<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>Set</span> <span style=color:#960050;background-color:#1e0010>*default*</span> <span style=color:#960050;background-color:#1e0010>container</span> <span style=color:#960050;background-color:#1e0010>specific</span> <span style=color:#960050;background-color:#1e0010>settings.json</span> <span style=color:#960050;background-color:#1e0010>values</span> <span style=color:#960050;background-color:#1e0010>on</span> <span style=color:#960050;background-color:#1e0010>container</span> <span style=color:#960050;background-color:#1e0010>create.</span>
+	<span style=color:#f92672>&#34;settings&#34;</span>: {
+		<span style=color:#f92672>&#34;python.pythonPath&#34;</span>: <span style=color:#e6db74>&#34;/usr/local/bin/python&#34;</span>,
+		<span style=color:#f92672>&#34;python.languageServer&#34;</span>: <span style=color:#e6db74>&#34;Pylance&#34;</span>,
+		<span style=color:#f92672>&#34;python.linting.enabled&#34;</span>: <span style=color:#66d9ef>true</span>,
+		<span style=color:#f92672>&#34;python.linting.pylintEnabled&#34;</span>: <span style=color:#66d9ef>true</span>,
+	},
+	<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>Add</span> <span style=color:#960050;background-color:#1e0010>the</span> <span style=color:#960050;background-color:#1e0010>IDs</span> <span style=color:#960050;background-color:#1e0010>of</span> <span style=color:#960050;background-color:#1e0010>extensions</span> <span style=color:#960050;background-color:#1e0010>you</span> <span style=color:#960050;background-color:#1e0010>want</span> <span style=color:#960050;background-color:#1e0010>installed</span> <span style=color:#960050;background-color:#1e0010>when</span> <span style=color:#960050;background-color:#1e0010>the</span> <span style=color:#960050;background-color:#1e0010>container</span> <span style=color:#960050;background-color:#1e0010>is</span> <span style=color:#960050;background-color:#1e0010>created.</span>
+	<span style=color:#f92672>&#34;extensions&#34;</span>: [
+		<span style=color:#e6db74>&#34;ms-python.python&#34;</span>,
+		<span style=color:#e6db74>&#34;ms-python.vscode-pylance&#34;</span>,
+		<span style=color:#e6db74>&#34;julialang.language-julia&#34;</span>
+	],
+	<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#960050;background-color:#1e0010>We</span> <span style=color:#960050;background-color:#1e0010>will</span> <span style=color:#960050;background-color:#1e0010>use</span> <span style=color:#960050;background-color:#1e0010>this</span> <span style=color:#960050;background-color:#1e0010>later,</span> <span style=color:#960050;background-color:#1e0010>leave</span> <span style=color:#960050;background-color:#1e0010>commented</span> <span style=color:#960050;background-color:#1e0010>out</span> <span style=color:#960050;background-color:#1e0010>for</span> <span style=color:#960050;background-color:#1e0010>now.</span>
+	<span style=color:#960050;background-color:#1e0010>//</span> <span style=color:#f92672>&#34;postStartCommand&#34;</span>: <span style=color:#e6db74>&#34;julia -e &#39;import Pkg; Pkg.develop(path=\&#34;MyPackage\&#34;)&#39;&#34;</span>,
+}
+</code></pre></div><p>The rest of this tutorial assumes you are working in a dev container with the <code>Dockerfile</code> and <code>.devcontainer</code> setup above. Alternatively, if you&rsquo;re able to get Julia and Python working with whatever setup you have, congrats!</p>
+<p>(<em>Author&rsquo;s Note</em>: I have macOS 11.5.1 (Big Sur) and typically use <code>conda</code> for environment management and I kept getting a segfault when trying to import PyJulia, hence the docker approach.)</p>
+<h2 id=using-pyjulia>Using PyJulia</h2>
+<p>Now lets write some Julia! Open up a python REPL (we&rsquo;re using IPython, though I&rsquo;m using the standard <code>>>></code> to indicate an input) and run the following:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> julia <span style=color:#f92672>import</span> Main
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>println(<span style=color:#e6db74>&#34;I&#39;m printing from a Julia function!&#34;</span>)
+I<span style=color:#e6db74>&#39;m printing from a Julia function!</span>
+</code></pre></div><p>This will import Julia, start up the Julia interpreter, and print the statement using the Julia <code>println</code> function.</p>
+<p><code>Main</code> is the global namespace of the Julia interpreter. What does this mean? Anything you&rsquo;d have available if you started up a Julia REPL can be called with <code>Main.&lt;function></code>. If you were in a Julia REPL, you&rsquo;d just type <code>&lt;function></code>, but if that worked the same way in python we&rsquo;d have collisions with python functions and not know when we&rsquo;re using Julia. If you have some frequently used Julia functions, you can rewrite references to functions to be more clear:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> rand_jl <span style=color:#f92672>=</span> Main<span style=color:#f92672>.</span>rand
+<span style=color:#f92672>&gt;&gt;&gt;</span> rand_jl(<span style=color:#ae81ff>3</span>)
+array([<span style=color:#ae81ff>0.74949659</span>, <span style=color:#ae81ff>0.50848869</span>, <span style=color:#ae81ff>0.67415476</span>])
+</code></pre></div><p>The above example also illustrates the automatic type conversion that&rsquo;s going to happen when you pass things back and forth between python and Julia. We passed our Julia function a python <code>int</code>, which Julia has a native type for (<code>Int</code>). The return object is a <code>numpy</code> array; a python <code>list</code> in Julia is a <code>Vector</code> or <code>Array</code>, and will always get converted to a <code>numpy</code> array on the return trip.</p>
+<p>Types are very important in Julia because of multiple dispatch. If you need to know the type of something in Julia after PyJulia converts it, you can call <code>Main.typeof</code> to get the type of the thing. This returns a <code>PyCall.jlwrap</code> object, which is used when there&rsquo;s no automatic conversion to a python type in the returned object. The output is a Julia <code>DataType</code>, which has no equivalent in Python (this is shown in the last example).</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>typeof(<span style=color:#ae81ff>3</span>)
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap Int64<span style=color:#f92672>&gt;</span>
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>typeof([<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>])
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap Vector{Int64}<span style=color:#f92672>&gt;</span>
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>typeof((<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>))
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap NTuple{<span style=color:#ae81ff>4</span>, Int64}<span style=color:#f92672>&gt;</span>
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>typeof({<span style=color:#e6db74>&#34;key&#34;</span> : <span style=color:#e6db74>&#34;value&#34;</span>})
+PyCall<span style=color:#f92672>.</span>jlwrap Dict{Any, Any}<span style=color:#f92672>&gt;</span>
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>typeof(<span style=color:#e6db74>&#34;String!&#34;</span>)
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap String<span style=color:#f92672>&gt;</span>
+
+<span style=color:#75715e># Meta!</span>
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>typeof(Main<span style=color:#f92672>.</span>typeof(<span style=color:#ae81ff>3</span>))
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap DataType<span style=color:#f92672>&gt;</span>
+</code></pre></div><p>This is <strong>really important</strong> to understand and is probably the #1 reason why something you think should work in Julia doesn&rsquo;t. You will need to know the types of the objects and convert them when you see a Julia function you want to use that takes an argument that is <strong>not</strong> one of these automatically converted types.</p>
+<p>For example, lets say I want an array of random integers. In Julia I can do this with the <code>rand</code> function by passing it a type and the number of objects of that type I want, e.g. <code>rand(Int, 40)</code>. But how do you get the <code>Int</code> object, which is a <code>Type</code>, which doesn&rsquo;t exist in python, to pass this function?</p>
+<p>Remember you can access any Julia objects in the global namespace with <code>Main</code>, so we can do this like:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#75715e># Our renamed function</span>
+<span style=color:#f92672>&gt;&gt;&gt;</span> rand_jl(Main<span style=color:#f92672>.</span>Int, <span style=color:#ae81ff>4000</span>)
+array([<span style=color:#f92672>-</span><span style=color:#ae81ff>6472840723767327579</span>,  <span style=color:#f92672>-</span><span style=color:#ae81ff>781971358995470358</span>,  <span style=color:#ae81ff>4369709767867909283</span>,
+       <span style=color:#f92672>...</span>,   <span style=color:#ae81ff>342925672839826321</span>, <span style=color:#f92672>-</span><span style=color:#ae81ff>4289054831996301088</span>,
+        <span style=color:#ae81ff>2127432410244721707</span>], dtype<span style=color:#f92672>=</span>int64)
+</code></pre></div><h2 id=packages>Packages</h2>
+<p>Rather than a distinct tool like <code>pip</code> for package management, Julia includes a Julia package for package management called <code>Pkg</code>. You can also call it using PyJulia. Here we&rsquo;ll install <code>StatsBase</code> (still inside ipython):</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>eval(<span style=color:#e6db74>&#39;using Pkg; Pkg.add(&#34;StatsBase&#34;)&#39;</span>)
+</code></pre></div><p>Here you also see the use of <code>Main.eval</code>, which allows you to write and evaluate raw Julia code. <strong>Note the single quotes</strong> for the whole string (in python) and double quotes inside. This is necessary because unlike python, quote types are not interchangeable in Julia. Since this statement is evaluated by Julia, we have to understand how Julia interprets it: a single quote is used for single characters in Julia, and double quotes for strings. If you try the above with <code>'StatsBase'</code> in single quotes, you&rsquo;ll get:</p>
+<pre><code>JuliaError: Exception 'syntax: character literal contains multiple characters' occurred while calling julia code:
+using Pkg; Pkg.add('StatsBase')
+</code></pre><p>Once you have packages installed, you can import those into python with normal import syntax. For example, we have <code>StatsBase</code> installed, so we can do this:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> julia.StatsBase <span style=color:#f92672>import</span> sample <span style=color:#75715e># imports single functions</span>
+<span style=color:#f92672>&gt;&gt;&gt;</span> sample([<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>5</span>])
+<span style=color:#ae81ff>3</span>
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>import</span> StatsBase <span style=color:#75715e># imports whole module</span>
+<span style=color:#f92672>&gt;&gt;&gt;</span> StatsBase<span style=color:#f92672>.</span>sample([<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>5</span>])
+<span style=color:#ae81ff>1</span>
+</code></pre></div><p>At this point, your brain might look like this: 🤯. You&rsquo;ve now got a python API to ✨<strong>any Julia package you can install</strong>✨.</p>
+<h2 id=pyjulia-201>PyJulia 201</h2>
+<p>As mentioned above, the #1 reason things will not work when you think they should is that the inputs are the wrong type. Julia uses a concept called multiple dispatch to determine which method to actually call. This means that there are really <em>several</em> versions of the same <em>function</em>, each version is called a <em>method</em>, and the choice of which method gets used depends on the type(s) of the input.</p>
+<p>As an example let&rsquo;s say we wanted to get a weighted sample using <code>sample</code> in <code>StatsBase</code>. You can see all the methods available for a function with a call to <code>methods(&lt;function>)</code>. Here&rsquo;s a truncated output for <code>sample</code>:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>methods(StatsBase<span style=color:#f92672>.</span>sample) 
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap <span style=color:#75715e># 14 methods for generic function &#34;sample&#34;:</span>
+[<span style=color:#ae81ff>1</span>] sample(wv::StatsBase<span style=color:#f92672>.</span>AbstractWeights) <span style=color:#f92672>in</span> StatsBase at <span style=color:#f92672>/</span>root<span style=color:#f92672>/.</span>julia<span style=color:#f92672>/</span>packages<span style=color:#f92672>/</span>StatsBase<span style=color:#f92672>/</span>IiL4F<span style=color:#f92672>/</span>src<span style=color:#f92672>/</span>sampling<span style=color:#f92672>.</span>jl:<span style=color:#ae81ff>558</span>
+[<span style=color:#ae81ff>2</span>] sample(a::AbstractArray) <span style=color:#f92672>in</span> StatsBase at <span style=color:#f92672>/</span>root<span style=color:#f92672>/.</span>julia<span style=color:#f92672>/</span>packages<span style=color:#f92672>/</span>StatsBase<span style=color:#f92672>/</span>IiL4F<span style=color:#f92672>/</span>src<span style=color:#f92672>/</span>sampling<span style=color:#f92672>.</span>jl:<span style=color:#ae81ff>432</span>
+<span style=color:#f92672>...</span>
+[<span style=color:#ae81ff>14</span>] sample(rng::Random<span style=color:#f92672>.</span>AbstractRNG, a::AbstractArray{T, N} where N, wv::StatsBase<span style=color:#f92672>.</span>AbstractWeights, dims::Tuple{Vararg{Int64, N}} where N; replace, ordered) where T <span style=color:#f92672>in</span> StatsBase at <span style=color:#f92672>/</span>root<span style=color:#f92672>/.</span>julia<span style=color:#f92672>/</span>packages<span style=color:#f92672>/</span>StatsBase<span style=color:#f92672>/</span>IiL4F<span style=color:#f92672>/</span>src<span style=color:#f92672>/</span>sampling<span style=color:#f92672>.</span>jl:<span style=color:#ae81ff>936</span><span style=color:#f92672>&gt;</span>
+</code></pre></div><p>In the previous section, the method <code>[2]</code> was actually called when we passed it our array. We can verify this with the <code>which</code> function &ndash; which itself takes a function and a tuple of types as its arguments and returns the method that would be called with arguments of those types.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> a <span style=color:#f92672>=</span> [<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>5</span>]
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>which(sample, (Main<span style=color:#f92672>.</span>typeof(a),))
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap sample(a::AbstractArray) <span style=color:#f92672>in</span> StatsBase at <span style=color:#f92672>/</span>root<span style=color:#f92672>/.</span>julia<span style=color:#f92672>/</span>packages<span style=color:#f92672>/</span>StatsBase<span style=color:#f92672>/</span>IiL4F<span style=color:#f92672>/</span>src<span style=color:#f92672>/</span>sampling<span style=color:#f92672>.</span>jl:<span style=color:#ae81ff>432</span><span style=color:#f92672>&gt;</span>
+</code></pre></div><p>Now we have a dilemma: how can we do weighted sampling (i.e. call method <code>[1]</code>) when our type is automatically converted? Let&rsquo;s try first casting our weighted array to a type that would cause the first method to be called.</p>
+<p>In this example, we&rsquo;ll use <code>ProbabilityWeights</code>.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> julia.StatsBase <span style=color:#f92672>import</span> sample, ProbabilityWeights
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> wv <span style=color:#f92672>=</span> ProbabilityWeights([<span style=color:#ae81ff>0.1</span>, <span style=color:#ae81ff>0.2</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.1</span>])
+<span style=color:#f92672>&gt;&gt;&gt;</span> sample(wv)
+<span style=color:#ae81ff>0.3</span>
+</code></pre></div><p>Well, that&rsquo;s not right! We expect this method to return the index of the sampled value (<code>1 to len(array)</code>, and yes, we&rsquo;ll talk about 1-indexing). It appears as if it&rsquo;s still calling the wrong method because of the automatic type conversion. We can verify with <code>Main.typeof(wv)</code> as it indicates its a <code>Vector{Float64}</code>, when we want <code>ProbabilityWeights{Float64, Float64, Vector{Float64}}</code>.</p>
+<p>It&rsquo;s time to write some Julia code to solve this problem!</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> weighted_sample_def <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&#34;&#34;
+</span><span style=color:#e6db74>using StatsBase
+</span><span style=color:#e6db74>
+</span><span style=color:#e6db74>function weighted_sample(weights)
+</span><span style=color:#e6db74>    wv = ProbabilityWeights(weights)
+</span><span style=color:#e6db74>    return sample(wv)
+</span><span style=color:#e6db74>end
+</span><span style=color:#e6db74>&#34;&#34;&#34;</span>
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>eval(weighted_sample_def)
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>weighted_sample([<span style=color:#ae81ff>0.1</span>, <span style=color:#ae81ff>0.2</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.1</span>])
+<span style=color:#ae81ff>4</span>
+</code></pre></div><p>Here we&rsquo;ve defined the Julia function as a string, told the Julia interpreter to evaluate that code, which brought that function into the Julia namespace, and then called that function using Julia. The function itself handles the conversion from <code>Vector</code> to <code>ProbabilityWeights</code> prior to calling <code>sample</code>. Note that we had to import <code>StatsBase</code> into our Julia namespace: we only imported it as a python module into our python namespace before. (<em>Authors Note</em>: I&rsquo;m not sure this is exactly right, I was still a little surprised by having to reimport this in Julia.)</p>
+<p>This works in a pinch, but if we have lots of Julia code we don&rsquo;t want to write and manage that as a series of python strings 🤢.</p>
+<h2 id=writing-julia-code-in-jl-files>Writing Julia Code in .jl files</h2>
+<p>Remember way back at the beginning when we created a docker image with Julia and connected to the container using VSCode? That&rsquo;s really going to come in handy now. We also installed the Julia VSCode extension in that step, so we can have our editor help out in writing Julia code.</p>
+<p>Let&rsquo;s create a new file called <code>functions.jl</code>. You may have to open up a Julia REPL and install the <code>StatsBase</code> package - or run <code>julia -e 'using Pkg; Pkg.add("StatsBase")'</code> from your shell, for this to work (if you didn&rsquo;t do this above).</p>
+<p>In this file, we&rsquo;re going to write the Julia code for our function.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-julia data-lang=julia><span style=color:#75715e># functions.jl</span>
+<span style=color:#66d9ef>using</span> StatsBase
+
+<span style=color:#66d9ef>function</span> weighted_sample(weights)
+    wv <span style=color:#f92672>=</span> ProbabilityWeights(weights)
+    <span style=color:#66d9ef>return</span> sample(wv)
+<span style=color:#66d9ef>end</span>
+</code></pre></div><p>Great, now we&rsquo;ve got the Julia code in it&rsquo;s own file. We can now import it into python for use in our package.</p>
+<p>This might be good time to restart your python REPL to clear all the state and function names we had defined in there. When you restart it, rerun <code>from julia import Main</code>.</p>
+<p>We&rsquo;re now going to use <code>include</code> to &ldquo;import&rdquo; our Julia code into our Main Julia namespace in python, then attempt to call our weighted sample function. To do that, run the following:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> julia <span style=color:#f92672>import</span> Main
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>include(<span style=color:#e6db74>&#34;functions.jl&#34;</span>)
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap weighted_sample<span style=color:#f92672>&gt;</span>
+<span style=color:#f92672>&gt;&gt;&gt;</span> wv <span style=color:#f92672>=</span> [<span style=color:#ae81ff>0.1</span>, <span style=color:#ae81ff>0.2</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.1</span>]
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>weighted_sample(wv)
+<span style=color:#ae81ff>2</span>
+</code></pre></div><p>Excellent! We can now write and manage our Julia code in a bit more organized fashion. One thing to note is that if you update any Julia functions in your <code>.jl</code> file, all you have to do is rerun <code>Main.include</code>.</p>
+<h3 id=1-indexing-and-broadcasting>1-indexing and Broadcasting</h3>
+<p>Let&rsquo;s sidestep a trivial programming debate and get to the point: Julia is 1-indexed, python is 0-indexed. This means our <code>weighted_sample</code> function is going to return values 1 higher than we would expect in python.</p>
+<p>If we wanted to look up the weight associated with the index returned from a sample, we&rsquo;ll see this problem:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> wv <span style=color:#f92672>=</span> [<span style=color:#ae81ff>0.1</span>, <span style=color:#ae81ff>0.2</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.1</span>]
+<span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#66d9ef>for</span> _ <span style=color:#f92672>in</span> range(<span style=color:#ae81ff>100</span>):
+<span style=color:#f92672>&gt;&gt;&gt;</span>     index <span style=color:#f92672>=</span> Main<span style=color:#f92672>.</span>weighted_sample(wv)
+<span style=color:#f92672>&gt;&gt;&gt;</span>     print(wv[index])
+<span style=color:#ae81ff>0.1</span>
+<span style=color:#a6e22e>IndexError</span>: list index out of range
+</code></pre></div><p>This highlights an important issue: <strong>it&rsquo;s a good idea to unit test your functions with very basic assertions.</strong> This will expose any small issues like this, which will inevitably arise due to the complexity of shipping objects back and forth between languages.</p>
+<p>To fix this, we need to update our function to subtract 1 from the return value:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-julia data-lang=julia><span style=color:#66d9ef>function</span> weighted_sample(weights)
+    wv <span style=color:#f92672>=</span> ProbabilityWeights(weights)
+    <span style=color:#66d9ef>return</span> sample(wv) <span style=color:#f92672>-</span> <span style=color:#ae81ff>1</span>
+<span style=color:#66d9ef>end</span>
+</code></pre></div><p>If we have a function that returns multiple index values, we can use broadcasting to apply this subtraction to the whole vector. To broadcast a function (depending on the function), you either prefix it (if it&rsquo;s an operator) or suffix it (if it&rsquo;s a function) with a period (<code>.</code>).</p>
+<p>For example, let&rsquo;s say we want to implement a function that finds the index of all values in an array greater than some number, like so:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-julia data-lang=julia><span style=color:#66d9ef>function</span> array_gt(array, value)
+    <span style=color:#66d9ef>return</span> findall(<span style=color:#f92672>&gt;</span>(value), array) <span style=color:#f92672>.-</span> <span style=color:#ae81ff>1</span> 
+<span style=color:#66d9ef>end</span>
+</code></pre></div><p>Now if we checked this in python, we should get the following (assuming you&rsquo;ve rerun <code>include(&lt;yourfile>)</code>):</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>array_gt([<span style=color:#ae81ff>5</span>, <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>3</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>1</span>], <span style=color:#ae81ff>2</span>)
+array([<span style=color:#ae81ff>0</span>, <span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>], dtype<span style=color:#f92672>=</span>int64)
+</code></pre></div><p>Look at that, broadcasting and avoiding <code>IndexError</code> like a pro.</p>
+<h2 id=helpful-tools-for-include>Helpful tools for <code>include</code></h2>
+<p>If we want to include this code in a python codebase, there are a few helpful tools in python&rsquo;s <code>pathlib</code> to help.</p>
+<p>Getting the parent directory of the currently running file can be helpful, if you know where your Julia code is relative to that file. Or in the REPL, it might be helpful to know the current working directory and import from there. For example:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> pathlib <span style=color:#f92672>import</span> Path
+
+<span style=color:#75715e># File being executed Example</span>
+<span style=color:#f92672>&gt;&gt;&gt;</span> file_dir <span style=color:#f92672>=</span> Path(__file__)<span style=color:#f92672>.</span>parent
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>include(<span style=color:#e6db74>f</span><span style=color:#e6db74>&#34;</span><span style=color:#e6db74>{</span>file_dir<span style=color:#e6db74>}</span><span style=color:#e6db74>/functions.jl&#34;</span>)
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap weighted_sample<span style=color:#f92672>&gt;</span>
+
+<span style=color:#75715e># Working Directory Example (for REPL)</span>
+<span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>include(str(Path<span style=color:#f92672>.</span>cwd() <span style=color:#f92672>/</span> <span style=color:#e6db74>&#34;functions.jl&#34;</span>))
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap weighted_sample<span style=color:#f92672>&gt;</span>
+</code></pre></div><h2 id=benchmarking--timing>Benchmarking & Timing</h2>
+<p>Ready to get into the nitty-gritty? Let&rsquo;s go!</p>
+<p>It&rsquo;s a good idea to time our Julia functions, especially if they have python equivalents. Let&rsquo;s do that below. (We&rsquo;re in an IPython REPL here, and we&rsquo;re going to re-import our functions)</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> Main<span style=color:#f92672>.</span>include(str(Path<span style=color:#f92672>.</span>cwd() <span style=color:#f92672>/</span> <span style=color:#e6db74>&#34;functions.jl&#34;</span>))
+<span style=color:#f92672>&lt;</span>PyCall<span style=color:#f92672>.</span>jlwrap weighted_sample<span style=color:#f92672>&gt;</span>
+<span style=color:#f92672>&gt;&gt;&gt;</span> wv <span style=color:#f92672>=</span> [<span style=color:#ae81ff>0.1</span>, <span style=color:#ae81ff>0.2</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.1</span>]
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>%</span>time Main<span style=color:#f92672>.</span>weighted_sample(wv)
+CPU times: user <span style=color:#ae81ff>14.7</span> ms, sys: <span style=color:#ae81ff>0</span> ns, total: <span style=color:#ae81ff>14.7</span> ms
+Wall time: <span style=color:#ae81ff>14.5</span> ms
+<span style=color:#ae81ff>1</span>
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>%</span>time Main<span style=color:#f92672>.</span>weighted_sample(wv)
+CPU times: user <span style=color:#ae81ff>787</span> µs, sys: <span style=color:#ae81ff>0</span> ns, total: <span style=color:#ae81ff>787</span> µs
+Wall time: <span style=color:#ae81ff>891</span> µs
+<span style=color:#ae81ff>1</span>
+</code></pre></div><p>Wait, so the first time I use it it takes <code>14.5ms</code>, and the second time it&rsquo;s 16x faster and takes <code>891µs</code>? What?</p>
+<p>If you&rsquo;ve ever used <code>numba</code>, you might know what&rsquo;s going on. The first time we call a function in Julia, it&rsquo;s compiling it.</p>
+<p>Not only that, but each package that&rsquo;s imported for the first time also has a loading time cost. See the example below.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> julia <span style=color:#f92672>import</span> Main
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>%</span>time Main<span style=color:#f92672>.</span>eval(<span style=color:#e6db74>&#34;using StatsBase&#34;</span>)
+CPU times: user <span style=color:#ae81ff>211</span> ms, sys: <span style=color:#ae81ff>7.06</span> ms, total: <span style=color:#ae81ff>218</span> ms
+Wall time: <span style=color:#ae81ff>220</span> ms
+
+<span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>%</span>time Main<span style=color:#f92672>.</span>eval(<span style=color:#e6db74>&#34;using StatsBase&#34;</span>)
+CPU times: user <span style=color:#ae81ff>270</span> µs, sys: <span style=color:#ae81ff>35</span> µs, total: <span style=color:#ae81ff>305</span> µs
+Wall time: <span style=color:#ae81ff>322</span> µs
+</code></pre></div><p>In projects with code that runs for a long time, this isn&rsquo;t going to matter too much. There are python packages that also take as long, if not longer, to import. But, if you are doing benchmarking at this level, it&rsquo;s very good to be aware of this fact if you&rsquo;re doing direct comparisons between Julia and Python equivalents.</p>
+<h2 id=getting-organized--scaling-up-developing-a-julia-package>Getting Organized & Scaling Up: Developing a Julia Package</h2>
+<p>As soon as you have more than a handful of functions, you&rsquo;ll probably want some additional structure to organize your code. Wouldn&rsquo;t it be nice to have something like <code>from julia import MyPackage</code> and have all your Julia functions nicely namespaced in python instead of a hodge-podge of include statements and file path shenanigans? (Yes, it would!) Additionally, if you were looking to give this codebase to a colleague to help you develop, one problem is that the environment and project isn&rsquo;t replicable. We added <code>StatsBase</code> from the REPL, but if we gave our current codebase to a colleague, we&rsquo;d have to tell them to open a REPL and run the install commands above after they got set up. We could add it to the <code>Dockerfile</code>, since we already have <code>Revise</code> and <code>BenchmarkTools</code>, but those are there solely to ease the development process: they aren&rsquo;t requirements for executing our Julia code.</p>
+<p>To facilitate organizing our code, we&rsquo;re going to create a Julia package. To do that, we&rsquo;ll load up the Julia REPL and run the following:</p>
+<pre><code>julia&gt; ]
+(@v1.6) pkg&gt; generate MyPackage
+  Generating  project MyPackage:
+    MyPackage/Project.toml
+    MyPackage/src/MyPackage.jl
+</code></pre><p>This might seem weird, but, Julia comes with a package management REPL. Up to this point, we&rsquo;ve been using the functional API in <code>Pkg</code>. This time, we opened a Julia REPL and hit <code>]</code> which entered the <code>Pkg</code> REPL. If we wanted to use the functional API, we could have done the following as well:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-julia data-lang=julia>julia<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>import</span> Pkg; Pkg<span style=color:#f92672>.</span>generate(<span style=color:#e6db74>&#34;MyPackage&#34;</span>)
+</code></pre></div><p>We&rsquo;ve now got a new directory named for our package, and two generated files for our package within it: a <code>Project.toml</code> which will list the dependencies when we add them, and a <code>src/MyPackage.jl</code> which will house our package code.</p>
+<p>While we&rsquo;re in the package REPL, let&rsquo;s add our <code>StatsBase</code> dependency. We first have to <em>activate</em> the environment for our package by typing <code>activate MyPackage</code>. Once you do this, you should see the REPL change to indicate the active environment. Then, type <code>add StatsBase</code> to add the dependency.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-julia data-lang=julia>(<span style=color:#a6e22e>@v1</span><span style=color:#ae81ff>.6</span>) pkg<span style=color:#f92672>&gt;</span> activate MyPackage
+  Activating environment at <span style=color:#e6db74>`/workspaces/pyjulia-demo/MyPackage/Project.toml`</span>
+
+(MyPackage) pkg<span style=color:#f92672>&gt;</span> add StatsBase
+    Updating registry at <span style=color:#e6db74>`~/.julia/registries/General`</span>
+	[<span style=color:#f92672>...</span> packages being installed <span style=color:#f92672>...</span>]
+Precompiling project<span style=color:#f92672>...</span>
+  <span style=color:#ae81ff>1</span> dependency successfully precompiled <span style=color:#66d9ef>in</span> <span style=color:#ae81ff>2</span> seconds (<span style=color:#ae81ff>11</span> already precompiled)
+</code></pre></div><p>You should see that the <code>Project.toml</code> file now includes a line with <code>StatsBase</code> and a UUID. Great, we&rsquo;ve successfully declared our dependency.</p>
+<p>Now let&rsquo;s update our package with our functions. Since we already had our code in a <code>functions.jl</code> file, copy this to the <code>MyPackage/src</code> folder. Then, update the <code>src/MyPackage.jl</code> file to the following:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-julia data-lang=julia><span style=color:#66d9ef>module</span> MyPackage
+
+<span style=color:#66d9ef>export</span> weighted_sample
+
+include(<span style=color:#e6db74>&#34;functions.jl&#34;</span>)
+
+<span style=color:#66d9ef>end</span> <span style=color:#75715e># module</span>
+</code></pre></div><p>The one new line here, <code>export weighted_sample</code>, is indicating that we want to export that function as a part of the public API of this module.</p>
+<p>(<em>Authors Note:</em> I had to do this initially, but then I removed the <code>export</code> statement later and things still worked. 🤷)</p>
+<p>Finally, we need to tell our development container that we want to use this package locally in development mode. Back in the <code>.devcontainer/devcontainer.json</code> file, you can uncomment the last line, which looks like this:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-json data-lang=json><span style=color:#e6db74>&#34;postStartCommand&#34;</span><span style=color:#960050;background-color:#1e0010>:</span> <span style=color:#e6db74>&#34;julia -e &#39;import Pkg; Pkg.develop(path=\&#34;MyPackage\&#34;)&#39;&#34;</span><span style=color:#960050;background-color:#1e0010>,</span>
+</code></pre></div><p>This will add the local file path as a package in development mode.</p>
+<p>Now, rebuild your dev container in VSCode. At the end of the rebuild process, you should see a new terminal window that will run the above command, installing our package in development mode.</p>
+<p>To check that everything is working correctly, open the Julia REPL and try loading our package:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-julia data-lang=julia>julia<span style=color:#f92672>&gt;</span> <span style=color:#66d9ef>using</span> MyPackage
+[ Info<span style=color:#f92672>:</span> Precompiling MyPackage [e94922da<span style=color:#f92672>-</span><span style=color:#ae81ff>031</span>a<span style=color:#f92672>-</span><span style=color:#ae81ff>4938</span><span style=color:#f92672>-</span><span style=color:#ae81ff>8</span>ed5<span style=color:#f92672>-</span><span style=color:#ae81ff>8</span>bef1659fee7]
+</code></pre></div><p>We&rsquo;re in business!</p>
+<p>Since our objective is to be able to use Julia from python, let&rsquo;s open up our IPython REPL and also verify that our package works.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> julia <span style=color:#f92672>import</span> MyPackage
+<span style=color:#f92672>&gt;&gt;&gt;</span> MyPackage<span style=color:#f92672>.</span>weighted_sample([<span style=color:#ae81ff>0.1</span>, <span style=color:#ae81ff>0.2</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.1</span>])
+<span style=color:#ae81ff>4</span>
+</code></pre></div><p>Look at that: we can just import the package like a regular python package! No more <code>include</code> scattered throughout.</p>
+<h2 id=continuing-development>Continuing Development</h2>
+<p>You&rsquo;ll likely want to be able to continue development of your package now that we&rsquo;ve got things setup. One helpful tool here is the <code>Revise.jl</code> package we installed through the <code>Dockerfile</code>. You can even set this up to work with ipython, similar to the <code>%autoreload</code> magic, so that any change in your Julia package code is reflected in your python environment. Let&rsquo;s check that out.</p>
+<p>Start up an ipython REPL, and then immediately type these magic commands:</p>
+<pre><code>%config JuliaMagics.revise = True
+%load_ext julia.magic
+</code></pre><p>This will turn on <code>Revise</code> for this REPL session. Let&rsquo;s load our package and play around.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> <span style=color:#f92672>from</span> julia <span style=color:#f92672>import</span> MyPackage
+<span style=color:#f92672>&gt;&gt;&gt;</span> MyPackage<span style=color:#f92672>.</span>weighted_sample([<span style=color:#ae81ff>0.1</span>, <span style=color:#ae81ff>0.2</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.3</span>, <span style=color:#ae81ff>0.1</span>])
+<span style=color:#ae81ff>1</span>
+</code></pre></div><p>Nothing new here. Keeping your IPython REPL session open, let&rsquo;s add a new function to our package, in <code>MyPackage/src/functions.jl</code>:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-julia data-lang=julia><span style=color:#75715e># MyPackage/src/functions.jl</span>
+newfunc() <span style=color:#f92672>=</span> println(<span style=color:#e6db74>&#34;A new function, cool!&#34;</span>)
+</code></pre></div><p>Now, back in the REPL, you should be able to call this new function:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>&gt;&gt;&gt;</span> MyPackage<span style=color:#f92672>.</span>newfunc()
+A new function, cool<span style=color:#960050;background-color:#1e0010>!</span>
+</code></pre></div><p>You can also add these commands to your <a href=https://ipython.org/ipython-doc/3/config/intro.html>ipython config</a> to automatically do this upon startup.</p>
+<h2 id=wrap-up--next-steps>Wrap Up & Next Steps</h2>
+<p>You now have a workflow that should allow you to develop a Julia package alongside your python code. As you continue with development, some natural next steps might be:</p>
+<ul>
+<li>Finalize your Julia package: pulling it into it&rsquo;s own repo, checking it into version control, and publishing it to a remote and optionally a registry. You&rsquo;ll then need to <a href=http://pkgdocs.julialang.org/v1/managing-packages/#developing>free</a> your development version and add the remote version.</li>
+<li>Create a Julia <a href=https://julialang.github.io/PackageCompiler.jl/dev/sysimages.html>sysimage</a> to speed up the startup time. This will be helpful if you add a lot of dependencies with longer startup times. In addition, <a href=https://pyjulia.readthedocs.io/en/latest/sysimage.html>PyJulia</a> has a function to do this specifically for the dependencies it installs.</li>
+</ul>
+<h2 id=helpful-references>Helpful References</h2>
+<ul>
+<li><a href=https://pyjulia.readthedocs.io/en/latest/index.html>PyJulia Documentation</a></li>
+<li><a href="https://www.youtube.com/watch?v=EnkfGuH6Qhg">Rewriting Pieces of a Python Codebase in Julia | Satvik Souza Beri | JuliaCon2021</a></li>
+<li>Stack Overflow: <a href=https://stackoverflow.com/a/66047402>R renv vs Python virtual environments vs Julia environments</a></li>
+<li><a href=http://pkgdocs.julialang.org/v1/glossary/>Pkg.jl Glossary</a></li>
+</ul>
+<h2 id=the-why-didnt-you-section>The &ldquo;Why Didn&rsquo;t You&rdquo; Section</h2>
+<p>At several points you might be saying &ldquo;but Peter, why didn&rsquo;t you X?&rdquo; Here&rsquo;s why:</p>
+<ul>
+<li><strong>Why didn&rsquo;t you</strong> add the package in development mode through the Dockerfile?</li>
+</ul>
+<p>In development mode, Julia links to a local package path. Within our <code>Dockerfile</code> during the build process, we&rsquo;re operating in a different directory than the working directory of the development container once we&rsquo;re in it. Thus, we need to declare the path to the dev version of the package relative to the source tree we&rsquo;re working in, not the docker build context.</p>
+<ul>
+<li><strong>Why didn&rsquo;t you</strong> create a new Julia environment, then declare your local package as a dependency?</li>
+</ul>
+<p>Coming from python, my mental model of environment and package management is a little different than how Julia&rsquo;s works. I wanted to get a reader up and running without getting bogged down in Julia&rsquo;s package/project/environment documentation. My understanding is that a &ldquo;more correct&rdquo; way to do this, which would be required once the package is finalized, would be to create a root level project and <code>Project.toml</code>, then declare our finalized version of <code>MyPackage</code> as a dependency. This would also be required if we were developing locally, not inside the dev container. However, getting there within this tutorial means potentially managing nested <code>Project.toml</code> files and possibly confusing the reader&mldr; but maybe I&rsquo;m the only one who is confused.</p>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/blog/the-fastest-way-to-load-data-django-postgresql/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>The Fastest Way to Load Data Into Your Django Project using PostgreSQL</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>

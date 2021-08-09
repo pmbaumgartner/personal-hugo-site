@@ -1,0 +1,190 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="TL;DR The Rule-Based Matcher in spaCy is awesome when you have small datasets, need to explain your algorithm, locate specific language patterns within a document, favor performance and speed, and you&rsquo;re comfortable with the token attributes needed to write rules. I created a notebook runnable in binder with a worked example on a dataset of product reviews from Amazon that replicates a workflow I successfully used on a recent project.">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="Making the Most of spaCy's Rule-Based Matcher • Peter Baumgartner">
+<meta property="og:description" content="TL;DR The Rule-Based Matcher in spaCy is awesome when you have small datasets, need to explain your algorithm, locate specific language patterns within a document, favor performance and speed, and you&rsquo;re comfortable with the token attributes needed to write rules. I created a notebook runnable in binder with a worked example on a dataset of product reviews from Amazon that replicates a workflow I successfully used on a recent project.">
+<meta property="og:url" content="https://pmbaumgartner.github.io/blog/spacy-rule-based-matcher-workflow/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2019-07-18T00:00:00Z"><meta property="article:modified_time" content="2019-07-18T00:00:00Z"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.87.0">
+<title>Making the Most of spaCy's Rule-Based Matcher • Peter Baumgartner</title>
+<link rel=canonical href=https://pmbaumgartner.github.io/blog/spacy-rule-based-matcher-workflow/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-blog has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class="item current">
+<a aria-current=page href=/blog/>Blog</a>
+</li><li class=item>
+<a href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>Making the Most of spaCy's Rule-Based Matcher</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2019-07-18T00:00:00Z>2019-07-18</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+7 mins read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<h2 id=tldr>TL;DR</h2>
+<p>The <a href=https://spacy.io/usage/rule-based-matching>Rule-Based Matcher</a> in spaCy is awesome when you have small datasets, need to explain your algorithm, locate specific language patterns within a document, favor performance and speed, and you&rsquo;re comfortable with the token attributes needed to write rules. I created a <a href=/notebooks/spacy-rule-based-matcher/>notebook runnable in binder</a> with a worked example on a dataset of product reviews from Amazon that replicates a workflow I successfully used on a recent project.</p>
+<h2 id=overview>Overview</h2>
+<p>Recently I&rsquo;ve been spending time with <a href=https://spacy.io/usage/rule-based-matching>spaCy&rsquo;s Rule-Based Matcher</a> for a client project. I&rsquo;ve found it really helpful for our particular case, where we have a small dataset of about 2000 text narratives that document different aspects of a recurring business process meeting. Within the text, we&rsquo;re looking to identify any issues that might have been documented in the narrative, but not documented in any structured data, and bring them to management&rsquo;s attention.</p>
+<p>All the usual tricks were attempted on this data to try and extract something useful: topic modeling (LDA, Embeddings>UMAP>DBSCAN), supervised learning, even labeling thousands of narratives. None of them panned out with anything helpful, mostly due to the size and diversity of the dataset. However, as I was labeling data, I took notes on patterns I was seeing in the data. These patterns were then used to start making rules to surface issues from patterns in the text. As a plus, we are able to explain what the rules do and how they work to stakeholders; some are even simple enough that the stakeholders have provided feedback and ideas to expand the rules.</p>
+<p>I&rsquo;m assuming that the rule-based matcher is an underused or unknown tool in many practitioner&rsquo;s NLP toolboxes. It might not be as &ldquo;cool&rdquo; as a machine learning approach (though you&rsquo;ll still training models with my workflow) and requires some linguistics knowledge. Also, in the spaCy ecosystem, it&rsquo;s a tool I found difficult to make useful in isolation. Rather, the power comes from combining matches with a specific <a href=https://spacy.io/usage/rule-based-matching#on_match>match callback</a> for your problem, <a href=https://spacy.io/usage/processing-pipelines#custom-components-attributes>extension attributes</a>, and taking advantage of <a href=https://spacy.io/usage/training#textcat>training some pragmatic models</a> to improve your match rules.</p>
+<h2 id=advantages-and-challenges-of-rule-based-matching>Advantages and Challenges of Rule-Based Matching</h2>
+<p><strong>✅ Why rule-based matching is awesome ✅</strong></p>
+<ul>
+<li>No training data required (good for smaller datasets)</li>
+<li>Match results give you flexibility for returning relevant sections from your document.
+<ul>
+<li>i.e. document classification works on whole documents. What if you wanted to find a sentence or phras that was relevant to your problem? The matcher allows you to work with specific sentences and spans after matching.</li>
+</ul>
+</li>
+<li>It&rsquo;s Fast!</li>
+<li>Easy to integrate into an NLP pipeline</li>
+<li>Composable and cheap
+<ul>
+<li>e.g. you could write a bunch of quick, simple rules and use boolean logic on the matches to interesting match combinations.</li>
+<li>e.g. you can write a really general rule to find relevant documents, then some mutually exclusive sub-rules that operate only on documents that match a general rule.</li>
+</ul>
+</li>
+<li>Usually explainable to non-technical stakeholders</li>
+</ul>
+<p><strong>⚠️ Why rule-based matching is challenging ⚠️</strong></p>
+<ul>
+<li>Good rules require lots of iteration and experimentation</li>
+<li>Writing rules requires some linguistics knowledge about parts-of-speech and dependency parsing</li>
+<li>Token matching operators are greedy
+<ul>
+<li>Requires frequent sanity checking, testing, and iterating to be sure the matcher is returning what you think it is</li>
+</ul>
+</li>
+<li>Requires complementary tools for maximum benefit
+<ul>
+<li>You&rsquo;ll probably want to use an <code>on_match</code> callback to work with the full document or a span after a match. Often times the match itself is just the start.</li>
+<li>We train a text classification model on our matches to help us iterate. I found parameter tuning difficult and training very fragile due to the rare outcome rate for matches.</li>
+</ul>
+</li>
+</ul>
+<h2 id=the-workflow>The Workflow</h2>
+<p><img src=https://i.postimg.cc/Vv18XQ7z/Pattern-Match-4.png alt="Pattern Match Workflow"></p>
+<p>Here&rsquo;s the iterative workflow that I developed to solve these types of problems. The steps are:</p>
+<ol>
+<li><strong>Create Match Rules.</strong> Developing a rule is a way to answer to the following questions: &ldquo;What is the information I want?&rdquo;, &ldquo;How would people write about this information?&rdquo;, &ldquo;What attributes on tokens exist to help match the information I want?&rdquo;. Your answer to the last question may just be the tokens themselves - in my example, we don&rsquo;t use any advanced token attributes for our first rule, just the lowercase token. For more complex attributes, you might want to put some examples into the <a href=https://explosion.ai/demos/displacy>displaCy</a> visualizer. It can be helpful to identify a single example from your dataset that you would want to match. From here, write your first rule. Then, think of variations in how people would write about the information you want. I use WordNet and synonyms in my example, but you could also used a pretrained word embedding model to identify synonyms.</li>
+<li><strong>Match Docs Against Rules.</strong> Here you use the matcher to identify documents with matches and store those matches on a custom attribute of that object. This allows you to identify which documents have a match and what that match is. You will want to sanity check your match at this point to verify if it&rsquo;s capturing what you want.</li>
+<li><strong>Train a Text Classification Model.</strong> Here we&rsquo;re borrowing from an idea referred to as <a href=http://ai.stanford.edu/blog/weak-supervision/>weak supervision</a>. We&rsquo;re going to treat all our documents as if we labeled them and our matched documents as if they have a positive label. The idea here is that a trained model will pick up on other patterns of the text that our rules missed. After training, we predict this label on all of our documents. Then, by treating the matched documents as <em>actual</em> labels, we will inspect potential <em>False Negatives</em> from the model predictions.</li>
+<li><strong>Review False Negatives</strong> Filter and sort the documents so that they include documents that did not have matches but have high predicted probabilities. These documents should have language similar to documents that were matched, but you don&rsquo;t have rules for so they weren&rsquo;t captured. You&rsquo;ll need to manually review these and consider again some of the same ideas you thought about in step 1 when originally creating the rules. At this stage, I usually take notes into 3 categories: <strong>Rule Additions</strong> for things I want to add a rule for, <strong>Noted Exclusions</strong> for patterns that might be what we&rsquo;re looking for, but we&rsquo;ll ignore for this iteration, and <strong>Other Ideas</strong> for things I thought of while reviewing.</li>
+<li><strong>Repeat or Finalize Rules.</strong> Either repeat steps 2-4 with your new match rules, or finalize the rules you want to match on.</li>
+</ol>
+<h2 id=examples-please>Examples Please</h2>
+<p>This is the use case I cover in the notebook.</p>
+<blockquote>
+<p>Let&rsquo;s say we work at Amazon, and our boss wants us to explore a potential a new feature for product pages: a list of reasons why people purchased that item. If we assume people write things like <code>I bought this because my old whisk broke</code> in their reviews, we could use the text from product reviews to initially build this feature.</p>
+</blockquote>
+<p>Using this workflow, we have a process for automatically extracting these patterns from reviews. As an example, using reviews from a coffee grinder, everything after &ldquo;Customers by this product &mldr;&rdquo; below was extracted automatically with the matcher.</p>
+<pre><code>Customers buy this product ...
+... as a replacement for a Salton model.
+... as a Christmas gift for my son in law.  
+... as a new coffee maker for serving guests of an annual retreat we host in our home.  
+... as a spice grinder and are very happy.  
+... as a christmas gift for a friend and it works great.
+... as a spice grinder and a coffee grinder
+... because it was cheap and had good reviews, and I have not been disappointed.
+... because of the excellent reviews. 
+... for grinding dry spices.
+... for grinding coffee
+... to grind beans for cold-brewed coffee.  
+... to grind spices instead of coffee and it works great.  
+... to grind xylitol and truvia sweeteners into a powder for cooking.
+</code></pre><h2 id=wrap-up>Wrap Up</h2>
+<p>This workflow was the perfect fit for me on a project where I had smaller data, a vague prompt for entering text, and specific language patterns I wanted to extract from text. The pipeline really started to provide value once I understood how all the tools I had available worked together and developed a consistent workflow around them. Next time you&rsquo;re tackling a problem that has similar constraints or you want to give a new tool a shot, don&rsquo;t hesitate to reach for the rule-based matcher.</p>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/blog/applied-nlp-lessons/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>Applied NLP: Lessons from the Field</a>
+</div><div class="next-entry sep-before">
+<a href=/blog/tableau-as-sneaky-technical-data-debt/>
+<span class=screen-reader-text>Next post: </span>Tableau and Raw Data as Sneaky Technical Debt<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+</span>
+</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>

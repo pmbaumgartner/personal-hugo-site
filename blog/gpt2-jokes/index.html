@@ -1,0 +1,229 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="Why did the chicken cross the road? Because it had no legs.
+ These are the types of hilarious jokes the gpt-2 small model can generate for you.
+After reading a few blog posts here and here, and playing around with gpt-2 small myself, I thought I would write up the full process I used to fine-tune and produce generative text.
+For this example, we&rsquo;ll use a dataset of jokes pulled from the /r/jokes subreddit to fine tune the GPT-2 small model to generate new jokes.">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="Fine-Tuning GPT-2 Small for Generative Text • Peter Baumgartner">
+<meta property="og:description" content="Why did the chicken cross the road? Because it had no legs.
+ These are the types of hilarious jokes the gpt-2 small model can generate for you.
+After reading a few blog posts here and here, and playing around with gpt-2 small myself, I thought I would write up the full process I used to fine-tune and produce generative text.
+For this example, we&rsquo;ll use a dataset of jokes pulled from the /r/jokes subreddit to fine tune the GPT-2 small model to generate new jokes.">
+<meta property="og:url" content="https://pmbaumgartner.github.io/blog/gpt2-jokes/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2019-03-23T11:16:39-04:00"><meta property="article:modified_time" content="2019-03-23T11:16:39-04:00"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.87.0">
+<title>Fine-Tuning GPT-2 Small for Generative Text • Peter Baumgartner</title>
+<link rel=canonical href=https://pmbaumgartner.github.io/blog/gpt2-jokes/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-blog has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class="item current">
+<a aria-current=page href=/blog/>Blog</a>
+</li><li class=item>
+<a href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>Fine-Tuning GPT-2 Small for Generative Text</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2019-03-23T11:16:39-04:00>2019-03-23</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+7 mins read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<blockquote>
+<p>Why did the chicken cross the road? Because it had no legs.</p>
+</blockquote>
+<p>These are the types of <em>hilarious</em> jokes the <code>gpt-2 small</code> model can generate for you.</p>
+<p>After reading a few blog posts <a href=https://www.gwern.net/RNN-metadata#finetuning-the-gpt-2-small-transformer-for-english-poetry-generation>here</a> and <a href=https://svilentodorov.xyz/blog/gpt-finetune>here</a>, and playing around with <code>gpt-2 small</code> myself, I thought I would write up the full process I used to fine-tune and produce generative text.</p>
+<p>For this example, we&rsquo;ll use a dataset of jokes pulled from the <code>/r/jokes</code> subreddit to fine tune the GPT-2 small model to generate new jokes. You&rsquo;ll need a computer with a GPU and <code>nvidia-docker</code> for this.</p>
+<h2 id=getting-started>Getting Started</h2>
+<p>We&rsquo;ll start by cloning the code to download and train the GPT-2 Small model. Fortunately, others have done the hard work of adding code to train on top of the <code>gpt-2 small</code> model that OpenAI released.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git clone https://github.com/nshepperd/gpt-2
+cd gpt-2
+sh download_model.sh 117M
+</code></pre></div><p>We&rsquo;re going to use docker from here on out, just because it&rsquo;s easier to manage the code and dependencies. The repository comes with a dockerfile, let&rsquo;s build the image:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker build --tag gpt-2 -f Dockerfile.gpu .
+</code></pre></div><p>Great! Let&rsquo;s get to a shell using our image:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker run --runtime<span style=color:#f92672>=</span>nvidia -it <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  -v <span style=color:#66d9ef>$(</span>pwd<span style=color:#66d9ef>)</span>:/gpt-2 <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  -e NVIDIA_VISIBLE_DEVICES<span style=color:#f92672>=</span><span style=color:#ae81ff>0</span> <span style=color:#ae81ff>\
+</span><span style=color:#ae81ff></span>  gpt-2 bash
+</code></pre></div><p>At this point, you can play with the base <code>gpt-2 small</code> model and generate some text. Let&rsquo;s try it out with this prompt:</p>
+<blockquote>
+<p>&ldquo;A pair of jumper cables walks into a bar&rdquo;</p>
+</blockquote>
+<pre><code>$ python src/interactive_conditional_samples.py --top_k 40 --temperature 0.9
+[...some tensorflow logging]
+Model prompt &gt;&gt;&gt; A pair of jumper cables walks into a bar
+======================================== SAMPLE 1 ========================================
+ and a few minutes later, they are all turned on. A man in jeans and a black dress, comes out of the bar and says he got a job and wanted to know if he could tell me what he is wearing, how much he is wearing and whether he's wearing something different. He's wearing a red skirt, a blue T-shirt and black heels, on a black tie, like a red cape with two red crosses, the same as on the white one.
+</code></pre><p>The original punchline was:</p>
+<blockquote>
+<p>The bartender sighs and says; &ldquo;I&rsquo;ll serve you, but don&rsquo;t start anything!&rdquo;</p>
+</blockquote>
+<p>That&rsquo;s the level of sense we can expect out of this thing without fine tuning.</p>
+<h2 id=fine-tuning-on-a-specific-corpus>Fine-Tuning on a Specific Corpus</h2>
+<p>We&rsquo;re going to fine-tune it a set of jokes. What this is going to do is train the model to pick up both the structure of the joke (setup, punchline) as well as how language is used (both vocabulary and structure).</p>
+<p>We&rsquo;ll download a set of jokes from <a href=https://github.com/taivop/joke-dataset>this repository</a>. Note that there is some NSFW and racist, sexist, and plain unfunny content in some of these jokes, look out for this both in the training data and in our model output.</p>
+<p>There are a few different structures for jokes in our dataset. For short jokes, the setup will be the title of the post, and the punchline will be the body. For longer jokes that have a bit of setup, typically the title of the post is also the first sentence of the joke. Fine-tuning the model will pick up on the structure and language of the jokes, so what we&rsquo;ll do is separate the setup (post title) and punchline (post body) with a pipe (<code>|</code>). Additionally, <code>gpt-2</code> uses a special token <code>&lt;|endoftext|></code>, to signify the end of a piece of text, so we&rsquo;ll be formatting data with those structural constraints.</p>
+<p>First, let&rsquo;s download the data:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>curl -O https://raw.githubusercontent.com/taivop/joke-dataset/master/reddit_jokes.json
+</code></pre></div><p>The following python script will get the data in the format we need:</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python><span style=color:#f92672>import</span> json
+<span style=color:#f92672>from</span> pathlib <span style=color:#f92672>import</span> Path
+
+jokes_raw <span style=color:#f92672>=</span> json<span style=color:#f92672>.</span>loads(Path(<span style=color:#e6db74>&#34;reddit_jokes.json&#34;</span>)<span style=color:#f92672>.</span>read_text())
+
+jokes_parsed <span style=color:#f92672>=</span> <span style=color:#e6db74>&#34;&lt;|endoftext|&gt;&#34;</span><span style=color:#f92672>.</span>join(<span style=color:#e6db74>&#34;</span><span style=color:#e6db74>{0}</span><span style=color:#e6db74>|</span><span style=color:#e6db74>{1}</span><span style=color:#e6db74>&#34;</span><span style=color:#f92672>.</span>format(j[<span style=color:#e6db74>&#39;title&#39;</span>], j[<span style=color:#e6db74>&#39;body&#39;</span>]) <span style=color:#66d9ef>for</span> j <span style=color:#f92672>in</span> jokes_raw)
+
+Path(<span style=color:#e6db74>&#34;input-text.txt&#34;</span>)<span style=color:#f92672>.</span>write_text(jokes_parsed)
+</code></pre></div><p>(side note: <code>pathlib</code> is amazing, you should be using it if you aren&rsquo;t already)</p>
+<p>Now we must encode our text in the input format for gpt-2. This is something that normally would happen during training anyway, but we can speed it up by preprocessing.</p>
+<p>The <code>requirements.txt</code> needs to be updated with the <code>tqdm</code> dependency, so you will need to install it in the container before running the encoding script.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>pip install tqdm
+PYTHONPATH<span style=color:#f92672>=</span>src ./encode.py input-text.txt input-text.txt.npz
+</code></pre></div><p>And with that, let&rsquo;s get training! This script will train until you <code>Ctrl-C</code> out of it. The flags that we&rsquo;re passing will print out a sample as well as checkpoint the model every 250 epochs.</p>
+<div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>PYTHONPATH<span style=color:#f92672>=</span>src ./train.py --dataset input-text.txt.npz --sample_every<span style=color:#f92672>=</span><span style=color:#ae81ff>250</span> --save_every<span style=color:#f92672>=</span><span style=color:#ae81ff>250</span>
+</code></pre></div><p>Choosing the right amount of training for these types of things is difficult. Personally, I enjoy the surrealism, absurdity, and nonsense of jokes from models with fewer training epochs.</p>
+<h3 id=training-examples>Training Examples</h3>
+<p>Below I&rsquo;ll post some jokes from the sample output that gets generated every 250 epochs:</p>
+<p>250:</p>
+<pre><code>What do you call it when the baby is on your chin?|Lion's Pie
+Did you hear about the guy who lost a job for eating his lunch?|He was just going to eat it.
+I tried to take my dog to the bathroom in the hospital...|My dog was a dachshund.
+What did the priest say after an elephant died?|&quot;What is it for?&quot;
+</code></pre><p>500 epochs:</p>
+<pre><code>I bought my car last week, and it wasn't working really well.|I was going to give it a better start, but the engine just wasn't good enough.
+</code></pre><p>750:</p>
+<pre><code>Two dogs are walking through the woods|When they meet up the first dog yells &quot;Hey is this dog our friend?&quot;. The second dog thinks it's funny and says &quot;Is this dog that he walks around alone&quot;.
+
+And the two dogs quickly stop walking.
+
+&quot;I don't think so, your mom always walks by his yard.&quot;
+Why did the chicken cross the road?|To get a job at the hen.
+What do you call a man with dyslexia?|A dyslexic.
+A man walks into a bar and asks for a drink|Bartender looks at him and says, &quot;This is not a drinking game.&quot;
+</code></pre><p>1000:</p>
+<pre><code>Puns aren't jokes.|...they're punchlines.
+</code></pre><p>1250:</p>
+<pre><code>The bartender says.
+
+&quot;How much is $0.5 for an idiot?&quot; The mathematician says &quot;Not that much, I just went bowling.
+</code></pre><p>1500:</p>
+<pre><code>Why did the chicken cross the road?|Because it had no legs.
+What do you get when you cross a sheep with a goat?|I'm a sheep with no legs. Just look at that sheep!
+I've been in some really terrible relationships and wanted to share.|So I made some tea and got out.`
+</code></pre><h3 id=after-training>After Training</h3>
+<p>When you&rsquo;ve finished training, you&rsquo;ll need to copy the checkpointed model weights to the model directory like so:</p>
+<p><code>cp -r /gpt-2/checkpoint/run1/* /gpt-2/models/117M/</code></p>
+<p>Now, you can use your fine-tuned joke model to generate a bunch of jokes for a certain prompt. Let&rsquo;s figure out more ways the chicken could cross the road&mldr;</p>
+<pre><code>python src/interactive_conditional_samples.py --top_k 40 --temperature 0.7 --nsamples 10
+[... wait for startup...]
+Model prompt &gt;&gt;&gt; Why did the chicken cross the road?|
+</code></pre><p>Some answers:</p>
+<pre><code>&gt; So I can get my steak
+&gt; To the left... I'll see myself out
+&gt; Because I thought the chicken crossed the road.
+&gt; I don't know, but his face is too close to the road.
+&gt; Because it was a chicken.
+&gt; The chicken crossed the road in the morning, and the morning is fine, the morning is fine.
+</code></pre><p>What happens when <code>A guy walks into a bar...</code>?</p>
+<pre><code>Model prompt &gt;&gt;&gt; A guy walks into a bar...|
+&gt; A guy walks into a bar and orders a drink. The bartender asks him what the occasion is. The guy says that it's the new year and all the old ladies are going to get married. The bartender says no worries, they'll be there in time for the anniversary. The guy says that he's really excited and he's a bit nervous. The bartender is a bit more hesitant and asks him what the occasion is. The guy says &quot;I'm a new guy, I was going to give a speech about my experience with alcohol.&quot; So the bartender gives him a little push and the guy says &quot;You know what, I'm drunk.&quot; Then the bartender says &quot;Sorry, but you don't have the guts to talk like that.&quot;
+</code></pre><p>What about <code>What's the difference between</code>?</p>
+<pre><code>Model prompt &gt;&gt;&gt; What's the difference between
+&quot; a woman that's going to have a baby and a guy that's never gonna have a baby?|One's a girl that's going to have a baby and the other is a guy that's never gonna have a baby.
+</code></pre><p>Hilarious.</p>
+<h2 id=wrap-up>Wrap-up</h2>
+<p>My personal thought is that we&rsquo;ve probably overfit on the data. The examples I&rsquo;m not selecting are pretty reflective of the typical jokes on <code>/r/jokes</code> (lots of dogs, &ldquo;whats the difference?&rdquo; and racial stereotyping). For my sense of humor, favoring a little more generality and abstractness, I&rsquo;d prefer text from the models after 500-1000 epochs of training.</p>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/blog/issues-with-criminal-justice-data/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>Potential Issues with Criminal Justice Data</a>
+</div><div class="next-entry sep-before">
+<a href=/blog/applied-nlp-lessons/>
+<span class=screen-reader-text>Next post: </span>Applied NLP: Lessons from the Field<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
+</span>
+</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>
