@@ -79,17 +79,15 @@ username = ""
 repository = ""
 branch = "master"
 
-[taxonomies]
-author = "authors"
-category = "categories"
-series = "series"
-tag = "tags"
+
 
 [permalinks]
 page = "/:slug/"
 
 [blackfriday]
 hrefTargetBlank = false
+
+Incorporating Julia Into Python Programs
 
 [languages]
 # edit this block for your own language
