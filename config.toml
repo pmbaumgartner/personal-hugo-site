@@ -79,15 +79,11 @@ username = ""
 repository = ""
 branch = "master"
 
-
-
 [permalinks]
 page = "/:slug/"
 
 [blackfriday]
 hrefTargetBlank = false
-
-Incorporating Julia Into Python Programs
 
 [languages]
 # edit this block for your own language
