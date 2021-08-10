@@ -1,12 +1,10 @@
 <!doctype html><html lang=en><head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="Part 1: Setting Up Our Workflow and a Simple Application A few weekends ago my pet project was to set up a drive time slash command in Slack. Searching through our organization&rsquo;s Slack conversation history, on top of overhearing several conversations, it seems like traffic is both a source of anguish and a favorite topic for smalltalk in our office.
-With that in mind, I set out to create a Slash Command for our Slack team.">
+<meta name=description content="Note (2018-04-09): Slack's API has changed since I wrote this article. I also never wrote a part 2. If you want an up to date tutorial this blog from DigitalOcean is good. Part 1: Setting Up Our Workflow and a Simple Application A few weekends ago my pet project was to set up a drive time slash command in Slack. Searching through our organization&rsquo;s Slack conversation history, on top of overhearing several conversations, it seems like traffic is both a source of anguish and a favorite topic for smalltalk in our office.">
 <meta name=theme-color content="#297FD5">
 <meta property="og:title" content="Creating Slack Slash Commands with Python and Flask: Part 1 • Peter Baumgartner">
-<meta property="og:description" content="Part 1: Setting Up Our Workflow and a Simple Application A few weekends ago my pet project was to set up a drive time slash command in Slack. Searching through our organization&rsquo;s Slack conversation history, on top of overhearing several conversations, it seems like traffic is both a source of anguish and a favorite topic for smalltalk in our office.
-With that in mind, I set out to create a Slash Command for our Slack team.">
+<meta property="og:description" content="Note (2018-04-09): Slack's API has changed since I wrote this article. I also never wrote a part 2. If you want an up to date tutorial this blog from DigitalOcean is good. Part 1: Setting Up Our Workflow and a Simple Application A few weekends ago my pet project was to set up a drive time slash command in Slack. Searching through our organization&rsquo;s Slack conversation history, on top of overhearing several conversations, it seems like traffic is both a source of anguish and a favorite topic for smalltalk in our office.">
 <meta property="og:url" content="https://www.peterbaumgartner.com/blog/slack-commands-with-python-and-flask/">
 <meta property="og:site_name" content="Peter Baumgartner">
 <meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2016-01-18T00:00:00Z"><meta property="article:modified_time" content="2016-01-18T00:00:00Z"><meta name=twitter:card content="summary">
@@ -86,6 +84,7 @@ Data Scientist
 </div>
 </header>
 <div class="container entry-content">
+<div class=note><strong>Note (2018-04-09): </strong>Slack's API has changed since I wrote this article. I also never wrote a part 2. If you want an up to date tutorial <a href=https://www.digitalocean.com/community/tutorials/how-to-write-a-slash-command-with-flask-and-python-3-on-ubuntu-16-04>this blog</a> from DigitalOcean is good.</div>
 <h2 id=part-1-setting-up-our-workflow-and-a-simple-application>Part 1: Setting Up Our Workflow and a Simple Application</h2>
 <p>A few weekends ago my pet project was to set up a drive time slash command in Slack. Searching through our organization&rsquo;s Slack conversation history, on top of overhearing several conversations, it seems like traffic is both a source of anguish and a favorite topic for smalltalk in our office.</p>
 <p>With that in mind, I set out to create a Slash Command for our Slack team. The end product was a slash command command that returned real time traffic and drive time data from the Google Directions API to Slack.</p>

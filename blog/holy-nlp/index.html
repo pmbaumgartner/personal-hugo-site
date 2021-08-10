@@ -80,12 +80,18 @@ Data Scientist
 <time class=entry-date datetime=2018-05-17T19:29:07-06:00>2018-05-17</time>
 </span>
 <span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
-12 mins read
+13 mins read
 </span>
 </div>
 </div>
 </header>
 <div class="container entry-content">
+<meta name=twitter:card content="summary">
+<meta name=twitter:site content="@pmbaumgartner">
+<meta name=twitter:creator content="@pmbaumgartner">
+<meta name=twitter:title content="Holy NLP!">
+<meta name=twitter:description content="How to use Part of Speech Tags, Dependency Parsing, and Named Entity Recognition to understand the characters of the Bible">
+<meta name=twitter:image content="https://s31.postimg.cc/5r0stbl63/Screen_Shot_2018-05-19_at_1.15.32_PM.png">
 <h2 id=introduction>Introduction</h2>
 <p>When we think of data science, we often think of statistical analysis of numbers. But, more and more frequently, organizations generate a lot of unstructured text data that can be quantified and analyzed. A few examples are social network comments, product reviews, emails, interview transcripts.</p>
 <p>For analyzing text, data scientists often use Natural Language Processing (NLP). In this blog post we&rsquo;ll 3 we&rsquo;ll walk through 3 common NLP tasks and look at how they can be used together to analyze text. The three tasks we&rsquo;ll cover are:</p>
@@ -293,16 +299,100 @@ most_unique <span style=color:#f92672>=</span> (action_df[action_df[<span style=
 </code></pre>
 <p>Let&rsquo;s take a look at the top 15 actors by verb counts and their most common verb.</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>most_common<span style=color:#f92672>.</span>sort_values(<span style=color:#e6db74>&#39;Count&#39;</span>, ascending<span style=color:#f92672>=</span><span style=color:#66d9ef>False</span>)<span style=color:#f92672>.</span>head(<span style=color:#ae81ff>15</span>)
-</code></pre></div>
-<pre><code>.dataframe tbody tr th {
-    vertical-align: top;
-}
-
-.dataframe thead th {
-    text-align: right;
-}
-</code></pre>
-<p></p>
+</code></pre></div><div>
+<style scoped>.dataframe tbody tr th:only-of-type{vertical-align:middle}<pre><code>.dataframe tbody tr th{vertical-align:top}.dataframe thead th{text-align:right}</code></pre><p></style></p>
+<table border=1 class=dataframe>
+<thead>
+<tr style=text-align:right>
+<th></th>
+<th>Most Common</th>
+<th>Count</th>
+</tr>
+<tr>
+<th>name</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>LORD</th>
+<td>said</td>
+<td>197</td>
+</tr>
+<tr>
+<th>Jesus</th>
+<td>said</td>
+<td>89</td>
+</tr>
+<tr>
+<th>David</th>
+<td>said</td>
+<td>88</td>
+</tr>
+<tr>
+<th>Moses</th>
+<td>said</td>
+<td>62</td>
+</tr>
+<tr>
+<th>Saul</th>
+<td>said</td>
+<td>42</td>
+</tr>
+<tr>
+<th>Ye</th>
+<td>are</td>
+<td>34</td>
+</tr>
+<tr>
+<th>Samuel</th>
+<td>said</td>
+<td>28</td>
+</tr>
+<tr>
+<th>Blessed</th>
+<td>be</td>
+<td>24</td>
+</tr>
+<tr>
+<th>God</th>
+<td>said</td>
+<td>23</td>
+</tr>
+<tr>
+<th>Solomon</th>
+<td>made</td>
+<td>20</td>
+</tr>
+<tr>
+<th>Joshua</th>
+<td>said</td>
+<td>18</td>
+</tr>
+<tr>
+<th>Peter</th>
+<td>said</td>
+<td>18</td>
+</tr>
+<tr>
+<th>Jacob</th>
+<td>said</td>
+<td>17</td>
+</tr>
+<tr>
+<th>Joseph</th>
+<td>said</td>
+<td>17</td>
+</tr>
+<tr>
+<th>Pharaoh</th>
+<td>said</td>
+<td>16</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>Looks like a lot of people said things in the Bible, with the exception of Solomon who made a lot of things.</p>
 <p>And what were the most unique verbs, as measured by their probability of occurence?
 (We&rsquo;ll drop duplicates here so each word is unique)</p>
@@ -311,16 +401,100 @@ most_unique <span style=color:#f92672>=</span> (action_df[action_df[<span style=
  <span style=color:#f92672>.</span>sort_values(<span style=color:#e6db74>&#39;Log Prob.&#39;</span>, ascending<span style=color:#f92672>=</span><span style=color:#66d9ef>True</span>)
  <span style=color:#f92672>.</span>head(<span style=color:#ae81ff>15</span>)
 )
-</code></pre></div>
-<pre><code>.dataframe tbody tr th {
-    vertical-align: top;
-}
-
-.dataframe thead th {
-    text-align: right;
-}
-</code></pre>
-<p></p>
+</code></pre></div><div>
+<style scoped>.dataframe tbody tr th:only-of-type{vertical-align:middle}<pre><code>.dataframe tbody tr th{vertical-align:top}.dataframe thead th{text-align:right}</code></pre><p></style></p>
+<table border=1 class=dataframe>
+<thead>
+<tr style=text-align:right>
+<th></th>
+<th>Most Unique</th>
+<th>Log Prob.</th>
+</tr>
+<tr>
+<th>name</th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>Abraham</th>
+<td>sojourned</td>
+<td>-19.502029</td>
+</tr>
+<tr>
+<th>John</th>
+<td>forbad</td>
+<td>-19.497028</td>
+</tr>
+<tr>
+<th>Saul</th>
+<td>compassed</td>
+<td>-19.282370</td>
+</tr>
+<tr>
+<th>David</th>
+<td>tarried</td>
+<td>-19.168381</td>
+</tr>
+<tr>
+<th>Whosoever</th>
+<td>smiteth</td>
+<td>-19.147064</td>
+</tr>
+<tr>
+<th>Haman</th>
+<td>standeth</td>
+<td>-19.006294</td>
+</tr>
+<tr>
+<th>Jehoahaz</th>
+<td>besought</td>
+<td>-18.932726</td>
+</tr>
+<tr>
+<th>Benjamin</th>
+<td>ravin</td>
+<td>-18.910282</td>
+</tr>
+<tr>
+<th>Jeroboam</th>
+<td>drave</td>
+<td>-18.904749</td>
+</tr>
+<tr>
+<th>Julius</th>
+<td>entreated</td>
+<td>-18.723562</td>
+</tr>
+<tr>
+<th>Joshua</th>
+<td>discomfited</td>
+<td>-18.674166</td>
+</tr>
+<tr>
+<th>Philip</th>
+<td>findeth</td>
+<td>-18.523926</td>
+</tr>
+<tr>
+<th>Judas</th>
+<td>surnamed</td>
+<td>-18.512678</td>
+</tr>
+<tr>
+<th>Abram</th>
+<td>hearkened</td>
+<td>-18.380188</td>
+</tr>
+<tr>
+<th>Samuel</th>
+<td>hewed</td>
+<td>-18.333925</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>Looks like we&rsquo;ve got some interesting new words to learn! My favorites are <a href=https://www.merriam-webster.com/dictionary/discomfited>discomfited</a> and <a href=https://www.merriam-webster.com/dictionary/ravin>ravin</a>.</p>
 <h3 id=visualization>Visualization</h3>
 <p>Let&rsquo;s visualize our results next. We&rsquo;re going to take the top 50 names with the most actions and plot which verse those actions occur in the whole text. We&rsquo;ll also draw vertical lines where each book of the Bible starts. The names will be sorted in order of first appearance.</p>

@@ -1,10 +1,10 @@
 <!doctype html><html lang=en><head>
 <meta charset=utf-8>
 <meta name=viewport content="width=device-width,initial-scale=1">
-<meta name=description content="Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I&rsquo;m a python person so I figured I&rsquo;d learn something new and move everything over to Pelican. I had also wanted an organized way to publicly store notebooks, code snippets, and workflows I was using regularly. My current storage system was randomly distributing them among various local folders, my employer&rsquo;s gitlab instance, and Slack.">
+<meta name=description content="Note (2018-04-09): I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in this notebook from Chris Albon. Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I&rsquo;m a python person so I figured I&rsquo;d learn something new and move everything over to Pelican.">
 <meta name=theme-color content="#297FD5">
 <meta property="og:title" content="Some Tips for Using Jupyter Notebooks with Pelican • Peter Baumgartner">
-<meta property="og:description" content="Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I&rsquo;m a python person so I figured I&rsquo;d learn something new and move everything over to Pelican. I had also wanted an organized way to publicly store notebooks, code snippets, and workflows I was using regularly. My current storage system was randomly distributing them among various local folders, my employer&rsquo;s gitlab instance, and Slack.">
+<meta property="og:description" content="Note (2018-04-09): I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in this notebook from Chris Albon. Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I&rsquo;m a python person so I figured I&rsquo;d learn something new and move everything over to Pelican.">
 <meta property="og:url" content="https://www.peterbaumgartner.com/blog/jupyter-notebooks-for-pelican/">
 <meta property="og:site_name" content="Peter Baumgartner">
 <meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2017-03-17T00:00:00Z"><meta property="article:modified_time" content="2017-03-17T00:00:00Z"><meta name=twitter:card content="summary">
@@ -78,12 +78,14 @@ Data Scientist
 <time class=entry-date datetime=2017-03-17T00:00:00Z>2017-03-17</time>
 </span>
 <span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
-5 mins read
+6 mins read
 </span>
 </div>
 </div>
 </header>
 <div class="container entry-content">
+<div class=note><strong>Note (2018-04-09): </strong>I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in <a href=https://github.com/chrisalbon/notes/blob/master/make.ipynb>this notebook</a> from Chris Albon.</div>
+<br>
 <p>Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I&rsquo;m a python person so I figured I&rsquo;d learn something new and move everything over to Pelican. I had also wanted an organized way to publicly store notebooks, code snippets, and workflows I was using regularly. My current storage system was randomly distributing them among various local folders, my employer&rsquo;s gitlab instance, and Slack. Using a static site generator like Pelican, along with the category and tag system, seemed like a good way to publicly share and organize this content.</p>
 <p>I was inspired by <a href=https://chrisalbon.com/>Chris Albon&rsquo;s</a> great site and wanted to build something similar. You&rsquo;ll probably notice the theme and layout of this site are almost exactly the same. His site is built using Pelican and appeared to have a pretty good workflow for handling Jupyter Notebooks, which is the main feature I also need.</p>
 <h2 id=creating-jupyter-notebooks-for-pelican>Creating Jupyter Notebooks for Pelican</h2>
