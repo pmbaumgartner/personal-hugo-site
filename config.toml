@@ -85,6 +85,9 @@ page = "/:slug/"
 [blackfriday]
 hrefTargetBlank = false
 
+[markup.goldmark.renderer]
+unsafe = true
+
 [languages]
 # edit this block for your own language
 [languages.en]
