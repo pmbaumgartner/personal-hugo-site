@@ -4,6 +4,13 @@ date: 2021-08-09T11:35:27-04:00
 draft: false
 ---
 
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@pmbaumgartner">
+<meta name="twitter:creator" content="@pmbaumgartner">
+<meta name="twitter:title" content="Incorporating Julia Into Python Programs">
+<meta name="twitter:description" content="A collection of notes on how to get started writing Julia for inclusion in python programs.">
+<meta name="twitter:image" content="https://i.ibb.co/HTX93vz/jlpy.png">
+
 **Context:** I've recently been experimenting with porting portions of a simulation codebase from python to Julia. Setting up a productive development environment, using the packages (PyJulia & PyCall) that allow for communicating between python and Julia, and familiarizing myself with Julia enough to use those packages took quite a bit of time and experimentation. Here's my collection of notes including stumbling blocks, adaptations, and things I took forever to understand to make this process easier for others in the future.
 
 ## Prelude: Environment Preparation
