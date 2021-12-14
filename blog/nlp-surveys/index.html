@@ -1,0 +1,139 @@
+<!doctype html><html lang=en><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1">
+<meta name=description content="I&rsquo;ve worked on several projects where we&rsquo;re applying some natural language processing techniques on responses to open-ended survey items. Typically this means putting them into categories—either following a pre-existing coding scheme or by creating a new one with unsupervised learning. Through these experiences, I&rsquo;ve developed a few principles for working on these types of problems.
+Put Yourself Out Of Business There&rsquo;s not a project I&rsquo;ve been on where my recommendation wasn&rsquo;t &ldquo;If you want better data, turn this open-ended question into a close-ended question that asks about the specific thing you care about.">
+<meta name=theme-color content="#297FD5">
+<meta property="og:title" content="Notes on NLP for Survey Design • Peter Baumgartner">
+<meta property="og:description" content="I&rsquo;ve worked on several projects where we&rsquo;re applying some natural language processing techniques on responses to open-ended survey items. Typically this means putting them into categories—either following a pre-existing coding scheme or by creating a new one with unsupervised learning. Through these experiences, I&rsquo;ve developed a few principles for working on these types of problems.
+Put Yourself Out Of Business There&rsquo;s not a project I&rsquo;ve been on where my recommendation wasn&rsquo;t &ldquo;If you want better data, turn this open-ended question into a close-ended question that asks about the specific thing you care about.">
+<meta property="og:url" content="https://www.peterbaumgartner.com/blog/nlp-surveys/">
+<meta property="og:site_name" content="Peter Baumgartner">
+<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2021-12-13T21:06:35-05:00"><meta property="article:modified_time" content="2021-12-13T21:06:35-05:00"><meta name=twitter:card content="summary">
+<meta name=generator content="Hugo 0.90.1">
+<title>Notes on NLP for Survey Design • Peter Baumgartner</title>
+<link rel=canonical href=https://www.peterbaumgartner.com/blog/nlp-surveys/>
+<link rel=icon href=/favicon.ico>
+<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
+<script async src=https://www.google-analytics.com/analytics.js></script>
+</head>
+<body class="page type-blog has-sidebar">
+<div class=site><div id=sidebar class=sidebar>
+<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
+<div class=container><section class="widget widget-about sep-after">
+<header>
+<div class=logo>
+<a href=/>
+<img src=/images/LAZERS.jpg>
+</a>
+</div>
+<h2 class="title site-title">
+<a href=/>
+Peter Baumgartner
+</a>
+</h2>
+<div class=desc>
+Data Scientist
+</div>
+</header>
+</section>
+</div>
+<div class=sidebar-overlay></div>
+</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
+<div class=container>
+<a class=screen-reader-text href=#content>Skip to Content</a>
+<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
+<span class=screen-reader-text>Toggle Sidebar</span>
+<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</span>
+<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+</span>
+</button>
+<ul><li class=item>
+<a href=/>Home</a>
+</li><li class="item current">
+<a aria-current=page href=/blog/>Blog</a>
+</li><li class=item>
+<a href=/notebooks/>Notebooks</a>
+</li></ul>
+</div>
+</nav><div class=header-widgets>
+<div class=container></div>
+</div>
+<header id=header class="header site-header">
+<div class="container sep-after">
+<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
+</div>
+</div>
+</header>
+<main id=content>
+<article lang=en class=entry>
+<header class="header entry-header">
+<div class="container sep-after">
+<div class=header-info>
+<h1 class=title>Notes on NLP for Survey Design</h1>
+</div>
+<div class=entry-meta>
+<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+<span class=screen-reader-text>Posted on </span>
+<time class=entry-date datetime=2021-12-13T21:06:35-05:00>2021-12-13</time>
+</span>
+<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
+5 mins read
+</span>
+</div>
+</div>
+</header>
+<div class="container entry-content">
+<meta name=twitter:card content="summary">
+<meta name=twitter:site content="@pmbaumgartner">
+<meta name=twitter:creator content="@pmbaumgartner">
+<meta name=twitter:title content="Notes on NLP for Survey Design">
+<meta name=twitter:description content="How can NLP make survey design easier? How can survey design make NLP easier?">
+<meta name=twitter:image content="https://i.ibb.co/yg70SRL/Frame-1.png">
+<p>I&rsquo;ve worked on several projects where we&rsquo;re applying some natural language processing techniques on responses to open-ended survey items. Typically this means putting them into categories—either following a pre-existing coding scheme or by creating a new one with unsupervised learning. Through these experiences, I&rsquo;ve developed a few principles for working on these types of problems.</p>
+<h3 id=put-yourself-out-of-business>Put Yourself Out Of Business</h3>
+<p>There&rsquo;s not a project I&rsquo;ve been on where my recommendation wasn&rsquo;t &ldquo;If you want better data, turn this open-ended question into a close-ended question that asks about the specific thing you care about.&rdquo;</p>
+<p>One example of how this shows up is that a question often asks for <em>strengths and weaknesses</em> of some topic. Usually this is followed someone mentioning they need to do &ldquo;sentiment analysis&rdquo; to pull apart the strengths and weaknesses from a single long response. One option in this scenario is to split this apart into two questions, one about strengths and one about weaknesses. This way, you can extract the specific strengths and weaknesses and not have to identify which part of the response is a strength of a weakness. The best thing to do is to convert this into a close ended response that operates like a <a href=https://www.betterevaluation.org/en/evaluation-options/rubrics>rubric</a> with a <a href=https://www.qualtrics.com/blog/three-tips-for-effectively-using-scale-point-questions/>scaled response</a>.</p>
+<h3 id=question-development-is-critical>Question Development is Critical</h3>
+<p>I was on a project where one version of the survey asked a question about a process was &ldquo;disrupted&rdquo;, and another version asked about how a process was &ldquo;affected&rdquo;. The goal was to compare responses from those who answered toe &ldquo;disruptions&rdquo; version of the question to those who answered the &ldquo;affect&rdquo; version. The challenge was that there are several things that might &ldquo;affect&rdquo; the process but not be &ldquo;disruptions&rdquo;, and use of the word &ldquo;disruption&rdquo; can anchor folks into</p>
+<p>In this case, combining NLP/ML with cognitive interviewing and question design is a powerful tool—questions that are difficult to structure with supervised or unsupervised methods (i.e. via labeling or clustering) are could be that way because of a wide variety of interpretations of the question itself.</p>
+<p>In addition to question writing for respondent understanding, there&rsquo;s also writing an open-ended question that is easy to analyze requires fine-tuning the specificity of what you ask for and providing a &ldquo;template&rdquo; for how a respondent should answer. Asking for something too broad (e.g. &ldquo;What are your thoughts about dogs?") means that both the semantic aspects of a response are going to have high variability, but also the grammatical aspects of the response are going to have high variability. Usually you care most about the semantic aspects, but often models pick up on grammatical artifacts, so you want to reduce the grammatical variation as much as possible.</p>
+<p>The best way I&rsquo;ve seen to do this is to word the question with an implicit response length. For example, on an <a href=https://osf.io/fueyj/>employee survey</a> I worked on our open-ended question was &ldquo;What is the most important change [COMPANY] could make to improve your experience working here?&rdquo; While this doesn&rsquo;t limit a respondent from providing multiple changes or writing a litany of gripes, it does nudge the respondent to think of <em>one</em> most important thing. Another way to help frame the response is to structure the question as a fill-in-the-blank, e.g. &ldquo;The most important change [COMPANY] could make to improve my experience is _____&rdquo;.</p>
+<h3 id=think-hard-about-question-blocks>Think Hard about Question Blocks</h3>
+<p>Often times a series of questions will appear in a question <em>block</em>: a group of questions that cover the same topic. If these questions are open-ended, respondents can &ldquo;meld&rdquo; their responses together across questions. Remember, you&rsquo;ve got a human on the other side whose goal is to get through the survey as quickly as possible while providing reasonable information.</p>
+<p>If you start the block by asking a broad question, one thing respondents may do is respond to a later question with some variation of &ldquo;see previous&rdquo;. For example, if your first question asks &ldquo;how are you feeling today?&rdquo;, the respondent answers with some variation of &ldquo;good, I have a feeling of satisfaction&rdquo;, and a second question asks &ldquo;What positive feelings are you having today?&rdquo;, saying &ldquo;see above&rdquo; makes sense. In this case, you might need to provide instructions. Here&rsquo;s a few ideas: Instruct the user to copy/paste their response from above, instruct them to use &ldquo;see above&rdquo; with a specific question id like &ldquo;See Previous: Q26&rdquo;, or instruct them to read the whole question block first to understand the topic, then answer the most specific questions first.</p>
+<p>The other complicating factor is the order of the questions. This is because of <a href=https://en.wikipedia.org/wiki/Anchoring_(cognitive_bias)>anchoring</a> and <a href=https://en.wikipedia.org/wiki/Priming_(psychology)>priming</a>. The order in which a respondent proceeds through the questions means that the interpretation and response to each question is influenced by prior questions. In addition, priming means that you can solicit certain responses by the question text alone—commonly by including examples in the question text. If you include examples in your question text, it might make a better close-ended question, lest all your open-ended responses just include the examples you included in the question stem.</p>
+<p><strong>Summary & Recommendations</strong></p>
+<ul>
+<li>If there are consistent patterns in open-ended responses you care about, convert those to close-ended questions</li>
+<li>Consult with the other experts on your team when developing questions, being sure to deliver your recommendations on what makes a good question for analysis</li>
+<li>You need to understand the relationship of any open-ended questions to the other questions in the survey, especially within the same block. The respondent will make their own inferences about how they should answer questions—be explicit in how you would like them to respond if they&rsquo;re providing redundant information.</li>
+</ul>
+</div>
+<footer class=entry-footer>
+<div class="container sep-before">
+</div>
+</footer>
+</article>
+<nav class=entry-nav>
+<div class=container><div class="prev-entry sep-before">
+<a href=/blog/incorporating-julia-into-python-programs/>
+<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
+Previous</span>
+<span class=screen-reader-text>Previous post: </span>Incorporating Julia Into Python Programs</a>
+</div></div>
+</nav>
+</main>
+<footer id=footer class=footer>
+<div class="container sep-before"><div class=copyright>
+<p></p>
+</div>
+</div>
+</footer>
+</div>
+</div><script>window.__assets_js_src="/assets/js/"</script>
+<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+</body>
+</html>

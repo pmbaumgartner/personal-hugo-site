@@ -14,7 +14,7 @@ For this example, we&rsquo;ll use a dataset of jokes pulled from the /r/jokes su
 <meta property="og:url" content="https://www.peterbaumgartner.com/blog/gpt2-jokes/">
 <meta property="og:site_name" content="Peter Baumgartner">
 <meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2019-03-23T11:16:39-04:00"><meta property="article:modified_time" content="2019-03-23T11:16:39-04:00"><meta name=twitter:card content="summary">
-<meta name=generator content="Hugo 0.87.0">
+<meta name=generator content="Hugo 0.90.1">
 <title>Fine-Tuning GPT-2 Small for Generative Text • Peter Baumgartner</title>
 <link rel=canonical href=https://www.peterbaumgartner.com/blog/gpt2-jokes/>
 <link rel=icon href=/favicon.ico>
@@ -118,7 +118,7 @@ sh download_model.sh 117M
 <blockquote>
 <p>&ldquo;A pair of jumper cables walks into a bar&rdquo;</p>
 </blockquote>
-<pre><code>$ python src/interactive_conditional_samples.py --top_k 40 --temperature 0.9
+<pre tabindex=0><code>$ python src/interactive_conditional_samples.py --top_k 40 --temperature 0.9
 [...some tensorflow logging]
 Model prompt &gt;&gt;&gt; A pair of jumper cables walks into a bar
 ======================================== SAMPLE 1 ========================================
@@ -154,14 +154,14 @@ PYTHONPATH<span style=color:#f92672>=</span>src ./encode.py input-text.txt input
 <h3 id=training-examples>Training Examples</h3>
 <p>Below I&rsquo;ll post some jokes from the sample output that gets generated every 250 epochs:</p>
 <p>250:</p>
-<pre><code>What do you call it when the baby is on your chin?|Lion's Pie
+<pre tabindex=0><code>What do you call it when the baby is on your chin?|Lion's Pie
 Did you hear about the guy who lost a job for eating his lunch?|He was just going to eat it.
 I tried to take my dog to the bathroom in the hospital...|My dog was a dachshund.
 What did the priest say after an elephant died?|&quot;What is it for?&quot;
 </code></pre><p>500 epochs:</p>
-<pre><code>I bought my car last week, and it wasn't working really well.|I was going to give it a better start, but the engine just wasn't good enough.
+<pre tabindex=0><code>I bought my car last week, and it wasn't working really well.|I was going to give it a better start, but the engine just wasn't good enough.
 </code></pre><p>750:</p>
-<pre><code>Two dogs are walking through the woods|When they meet up the first dog yells &quot;Hey is this dog our friend?&quot;. The second dog thinks it's funny and says &quot;Is this dog that he walks around alone&quot;.
+<pre tabindex=0><code>Two dogs are walking through the woods|When they meet up the first dog yells &quot;Hey is this dog our friend?&quot;. The second dog thinks it's funny and says &quot;Is this dog that he walks around alone&quot;.
 
 And the two dogs quickly stop walking.
 
@@ -170,34 +170,34 @@ Why did the chicken cross the road?|To get a job at the hen.
 What do you call a man with dyslexia?|A dyslexic.
 A man walks into a bar and asks for a drink|Bartender looks at him and says, &quot;This is not a drinking game.&quot;
 </code></pre><p>1000:</p>
-<pre><code>Puns aren't jokes.|...they're punchlines.
+<pre tabindex=0><code>Puns aren't jokes.|...they're punchlines.
 </code></pre><p>1250:</p>
-<pre><code>The bartender says.
+<pre tabindex=0><code>The bartender says.
 
 &quot;How much is $0.5 for an idiot?&quot; The mathematician says &quot;Not that much, I just went bowling.
 </code></pre><p>1500:</p>
-<pre><code>Why did the chicken cross the road?|Because it had no legs.
+<pre tabindex=0><code>Why did the chicken cross the road?|Because it had no legs.
 What do you get when you cross a sheep with a goat?|I'm a sheep with no legs. Just look at that sheep!
 I've been in some really terrible relationships and wanted to share.|So I made some tea and got out.`
 </code></pre><h3 id=after-training>After Training</h3>
 <p>When you&rsquo;ve finished training, you&rsquo;ll need to copy the checkpointed model weights to the model directory like so:</p>
 <p><code>cp -r /gpt-2/checkpoint/run1/* /gpt-2/models/117M/</code></p>
 <p>Now, you can use your fine-tuned joke model to generate a bunch of jokes for a certain prompt. Let&rsquo;s figure out more ways the chicken could cross the road&mldr;</p>
-<pre><code>python src/interactive_conditional_samples.py --top_k 40 --temperature 0.7 --nsamples 10
+<pre tabindex=0><code>python src/interactive_conditional_samples.py --top_k 40 --temperature 0.7 --nsamples 10
 [... wait for startup...]
 Model prompt &gt;&gt;&gt; Why did the chicken cross the road?|
 </code></pre><p>Some answers:</p>
-<pre><code>&gt; So I can get my steak
+<pre tabindex=0><code>&gt; So I can get my steak
 &gt; To the left... I'll see myself out
 &gt; Because I thought the chicken crossed the road.
 &gt; I don't know, but his face is too close to the road.
 &gt; Because it was a chicken.
 &gt; The chicken crossed the road in the morning, and the morning is fine, the morning is fine.
 </code></pre><p>What happens when <code>A guy walks into a bar...</code>?</p>
-<pre><code>Model prompt &gt;&gt;&gt; A guy walks into a bar...|
+<pre tabindex=0><code>Model prompt &gt;&gt;&gt; A guy walks into a bar...|
 &gt; A guy walks into a bar and orders a drink. The bartender asks him what the occasion is. The guy says that it's the new year and all the old ladies are going to get married. The bartender says no worries, they'll be there in time for the anniversary. The guy says that he's really excited and he's a bit nervous. The bartender is a bit more hesitant and asks him what the occasion is. The guy says &quot;I'm a new guy, I was going to give a speech about my experience with alcohol.&quot; So the bartender gives him a little push and the guy says &quot;You know what, I'm drunk.&quot; Then the bartender says &quot;Sorry, but you don't have the guts to talk like that.&quot;
 </code></pre><p>What about <code>What's the difference between</code>?</p>
-<pre><code>Model prompt &gt;&gt;&gt; What's the difference between
+<pre tabindex=0><code>Model prompt &gt;&gt;&gt; What's the difference between
 &quot; a woman that's going to have a baby and a guy that's never gonna have a baby?|One's a girl that's going to have a baby and the other is a guy that's never gonna have a baby.
 </code></pre><p>Hilarious.</p>
 <h2 id=wrap-up>Wrap-up</h2>

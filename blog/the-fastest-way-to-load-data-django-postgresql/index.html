@@ -10,7 +10,7 @@ When starting a new Django project often my first step is to create a model and 
 <meta property="og:url" content="https://www.peterbaumgartner.com/blog/the-fastest-way-to-load-data-django-postgresql/">
 <meta property="og:site_name" content="Peter Baumgartner">
 <meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2019-10-08T05:52:23-04:00"><meta property="article:modified_time" content="2019-10-08T05:52:23-04:00"><meta name=twitter:card content="summary">
-<meta name=generator content="Hugo 0.87.0">
+<meta name=generator content="Hugo 0.90.1">
 <title>The Fastest Way to Load Data Into Your Django Project using PostgreSQL • Peter Baumgartner</title>
 <link rel=canonical href=https://www.peterbaumgartner.com/blog/the-fastest-way-to-load-data-django-postgresql/>
 <link rel=icon href=/favicon.ico>
@@ -194,34 +194,34 @@ mem_csv <span style=color:#f92672>=</span> in_memory_csv(things)
 <h2 id=performance-comparison>Performance Comparison</h2>
 <p>How much faster is using <code>COPY</code> via <code>django-postgres-copy</code>? <strong>Anywhere from 34-77x faster</strong> than <code>save()</code>, and <strong>3.4-5.8x faster</strong> than <code>bulk_create()</code>.</p>
 <p>Detailed results are below.</p>
-<pre><code>THINGS: 1000
+<pre tabindex=0><code>THINGS: 1000
 Method 01: 0.88s. Speedup: 1.00
 Method 02: 0.56s. Speedup: 1.56
 Method 03: 0.09s. Speedup: 10.03
 Method 04: 0.03s. Speedup: 34.51
-</code></pre><pre><code>THINGS: 10000
+</code></pre><pre tabindex=0><code>THINGS: 10000
 Method 01: 8.56s. Speedup: 1.00
 Method 02: 5.32s. Speedup: 1.61
 Method 03: 0.66s. Speedup: 13.07
 Method 04: 0.15s. Speedup: 58.11
-</code></pre><pre><code>THINGS: 50000
+</code></pre><pre tabindex=0><code>THINGS: 50000
 Method 01: 42.88s. Speedup: 1.00
 Method 02: 27.09s. Speedup: 1.58
 Method 03: 3.48s. Speedup: 12.31
 Method 04: 0.65s. Speedup: 65.91
-</code></pre><pre><code>THINGS: 100000
+</code></pre><pre tabindex=0><code>THINGS: 100000
 Method 01: 97.13s. Speedup: 1.00
 Method 02: 61.38s. Speedup: 1.58
 Method 03: 7.21s. Speedup: 13.48
 Method 04: 1.26s. Speedup: 77.15
-</code></pre><pre><code>THINGS: 500000
+</code></pre><pre tabindex=0><code>THINGS: 500000
 Method 01: 490.28s. Speedup: 1.00
 Method 02: 293.63s. Speedup: 1.67
 Method 03: 46.82s. Speedup: 10.47
 Method 04: 8.03s. Speedup: 61.03
 </code></pre><h2 id=testing-info>Testing Info</h2>
 <p>This was tested locally on my 2018 MacBook Pro using docker with the <code>postgres:11.4</code> image for the database and the following <code>requirements.txt</code> for the Django app:</p>
-<pre><code>Django==2.2.5
+<pre tabindex=0><code>Django==2.2.5
 django-postgres-copy==2.4.2
 Faker==2.0.2
 pandas==0.25.1
