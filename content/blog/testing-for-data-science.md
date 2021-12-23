@@ -4,8 +4,14 @@ date: 2021-12-22T19:48:32-05:00
 draft: false
 ---
 
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@pmbaumgartner">
+<meta name="twitter:creator" content="@pmbaumgartner">
+<meta name="twitter:title" content="Ways I Use Testing as a Data Scientist">
+<meta name="twitter:description" content="How I think about testing code & testing data">
+<meta name="twitter:image" content="https://i.ibb.co/KjyVt3w/Frame-2.png">
 
-In my work, writing tests serves three purposes: to *make sure things work*, *document my understanding*, and *prevent future errors*. When I was starting out implementing tests, I had a hard time understanding what I should be writing tests for. As a beginner, I just assumed my code worked--I was staring right at the output in a notebook and visually inspecting that the output was correct.
+In my work, writing tests serves three purposes: *making sure things work*, *documenting my understanding*, *preventing future errors*. When I was starting out with testing, I had a hard time understanding what I should be writing tests for. As a beginner, I just assumed my code worked--I was staring right at the output in a notebook and visually inspecting that the output was correct.
 
 After gaining some experience writing tests, I realized one of my problems initially was the fact that knowing what to test *requires some experience in knowing what can go wrong*. It requires making mistakes and encountering issues so we know what needs to be tested when we encounter a similar problem. One complicating factor on top of this is that beginner mistakes are often *syntactical* (i.e. "how do I get this code to actually run") and not *conceptual* or *domain-specific*. Telling a beginner to write a test every time they encounter a syntax error to make sure they don't do that again is not valuable. 
 
@@ -20,7 +26,6 @@ When doing a one-time or ad hoc analysis, the `assert` statement in python is my
 One example is merging two datasets by some common id. In this example, assume we have some knowledge that there should be no IDs that are in one data set and not the other. In this case, we can write a quick assert like the following:
 
 ```python
-
 ids1 = set(df1["ID"].unique())
 ids2 = set(df2["ID"].unique())
 
@@ -29,7 +34,7 @@ assert len(ids1.symmetric_difference(ids2)) == 0, "One Dataset Contains Exclusiv
 
 In this test, we create a set out of the unique identifiers (assuming they're in a `DataFrame`), and check that the [symmetric difference](https://docs.python.org/3.8/library/stdtypes.html#frozenset.symmetric_difference) between those two sets is 0.
 
-**Pro Tip:** It's possible to add an expression that runs when the assert fails by adding a comma after the assertion expression and another expression (in this case, just a string). We can use this fact to make a failed assert even more helpful when debugging, e.g.:
+**Pro Tip:** It's possible to add an expression that runs when the assert fails by including it after the assertion expression, separated by a comma. We can use this fact to make a failed assert even more helpful when debugging, e.g.:
 
 ```python
 assert len(ids1.symmetric_difference(ids2)) == 0, f"DF1 not DF2: {ids1 - ids2} - DF2 not DF1: {ids2 - ids1}"
