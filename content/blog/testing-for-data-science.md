@@ -57,7 +57,7 @@ subsequent_question_total = subquestion_question_crosstab["Count"].sum()
 assert prior_question_yes == subsequent_question_total, "Subsequent Question Total Not Matching"
 ```
 
-You might be thinking "this is too obvious of a thing to even test", but it saved me much heartache as I looped over the pairs of parent/child questions and realized I had two typos in my question mapping and my code was referencing the wrong data frames in those cases. This is an important aspect of tests: while they may seem less valuable when running them on a single aspect of the data, they are very helpful as we write code that scales to touching multiple aspects of the data.
+You might be thinking "this is too obvious of a thing to even test", but it saved me in this instance as I looped over the pairs of parent/child questions and realized I had two typos in my question mapping and my code was referencing the wrong data frames in those cases. This is an important aspect of tests: while they may seem less valuable when running them on a single aspect of the data, they are very helpful as we write code that scales to touching multiple aspects of the data.
 
 **Writing More Tests**
 While I've mostly migrated away from notebooks, for some projects they still make sense. One practice I've started is that whenever I *visually* investigate some aspect of my data by writing some disposable code in a notebook, I convert that validation into an assert statement. 
@@ -66,7 +66,7 @@ As a beginner, one might have an idea for *what* to test but struggle to find th
 
 ## Identifying New Tests & Testing Code that Operates on Data: `hypothesis`
 
-If we have a function that operates on data and have a hard time figuring out what to test, [hypothesis](https://hypothesis.readthedocs.io/en/latest/) is a great library that can help.
+If we have a function that operates on data and have a hard time figuring out what to test, [hypothesis](https://hypothesis.readthedocs.io/en/latest/) is a great library that can help. Rather than explicitly state the exact objects you want to run through a test, `hypothesis` generates examples of inputs that follow certain properties you define.
 
 One way I've used this is analyzing code that operated on a [Likert](https://en.wikipedia.org/wiki/Likert_scale)-style question from a survey. These are the type of survey questions that go from "strongly disagree" to "strongly agree", and each value is associated with a number (e.g. 1 to 5).
 
