@@ -64,7 +64,7 @@ While I've mostly migrated away from notebooks, for some projects they still mak
 
 As a beginner, one might have an idea for *what* to test but struggle to find the right tools to write tests. One place to look for help is the documentation and test suite of the libraries that are being used. For example, to check that two arrays of floats are close to each other, with the caveat they might not be *exactly* the same, there's [`np.isclose`](https://numpy.org/doc/stable/reference/generated/numpy.isclose.html). We can see use of `np.isclose` in the [numpy test suite](https://github.com/numpy/numpy/blob/main/numpy/core/tests/test_numeric.py#L2471). If we're using `pandas`, they also have a helpful testing module in case we need to do things like [check if two DataFrames are equal](https://pandas.pydata.org/docs/reference/api/pandas.testing.assert_frame_equal.html).
 
-## Identifying New Tests & Testing Code that Operates on Data: `Hypothesis`
+## Identifying New Tests & Testing Code that Operates on Data: `hypothesis`
 
 If we have a function that operates on data and have a hard time figuring out what to test, [hypothesis](https://hypothesis.readthedocs.io/en/latest/) is a great library that can help.
 
@@ -192,7 +192,7 @@ Great Expectations is a little more involved to setup, so I think the investment
 
 Finally, even if we are not expecting new versions of the data, writing tests about the data is still a good idea. It's great documentation for ourselves when we come back to this project or when others join our team. Additionally, it gives us something to communicate to others to help in validating data assumptions.
 
-## Writing Code for Other People: `Pytest`
+## Writing Code for Other People: `pytest`
 
 The final way I use tests is if I'm writing software for other people. Two recent libraries I've written, [SetFit](https://github.com/pmbaumgartner/setfit) and [EmBuddy](https://github.com/pmbaumgartner/embuddy), are examples of this. In this case, I take a more traditional software testing approach and use [pytest](https://docs.pytest.org/) to create and execute tests.
 
