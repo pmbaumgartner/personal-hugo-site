@@ -3,7 +3,7 @@ title = "Peter Baumgartner"
 # for smart copyright line, leave this blank and check [params.copyright]
 copyright = ""
 
-theme = "minimo"
+theme = "PaperMod"
 
 disqusShortname = ""
 googleAnalytics = "UA-72692144-1"
@@ -20,6 +20,31 @@ enableEmoji = true
 
 # Missing translations will default to this content language
 defaultContentLanguage = "en"
+
+[params.profileMode]
+enabled = true
+title = "Peter Baumgartner"
+subtitle = "Data Scientist & NLP Engineer"
+imageUrl = "https://i.ibb.co/LYz2DyQ/1537215809678.jpg"
+imageTitle = "Peter Baumgartner"
+imageWidth = 120
+imageHeight = 120
+
+[[params.profileMode.buttons]]
+name = "blog"
+url = "/blog"
+
+[[params.socialIcons]]
+name = "twitter"
+url = "https://www.twitter.com/pmbaumgartner"
+
+[[params.socialIcons]]
+name = "Github"
+url = "https://github.com/"
+
+[[params.socialIcons]]
+name = "LinkedIn"
+url = "https://www.linkedin.com/in/peterbaumgartner/"
 
 [params.info]
 description = ""
