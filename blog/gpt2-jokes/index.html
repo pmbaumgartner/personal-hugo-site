@@ -1,96 +1,88 @@
-<!doctype html><html lang=en><head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
+<!doctype html><html lang=en dir=auto>
+<head><meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=robots content="index, follow">
+<title>Fine-Tuning GPT-2 Small for Generative Text | Peter Baumgartner</title>
+<meta name=keywords content>
 <meta name=description content="Why did the chicken cross the road? Because it had no legs.
  These are the types of hilarious jokes the gpt-2 small model can generate for you.
 After reading a few blog posts here and here, and playing around with gpt-2 small myself, I thought I would write up the full process I used to fine-tune and produce generative text.
 For this example, we&rsquo;ll use a dataset of jokes pulled from the /r/jokes subreddit to fine tune the GPT-2 small model to generate new jokes.">
-<meta name=theme-color content="#297FD5">
-<meta property="og:title" content="Fine-Tuning GPT-2 Small for Generative Text • Peter Baumgartner">
+<meta name=author content>
+<link rel=canonical href=https://www.peterbaumgartner.com/blog/gpt2-jokes/>
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css integrity="sha256-yIlj/i15RiAA/Q+xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as=style>
+<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://www.peterbaumgartner.com/favicon.ico>
+<link rel=icon type=image/png sizes=16x16 href=https://www.peterbaumgartner.com/favicon-16x16.png>
+<link rel=icon type=image/png sizes=32x32 href=https://www.peterbaumgartner.com/favicon-32x32.png>
+<link rel=apple-touch-icon href=https://www.peterbaumgartner.com/apple-touch-icon.png>
+<link rel=mask-icon href=https://www.peterbaumgartner.com/safari-pinned-tab.svg>
+<meta name=theme-color content="#2e2e33">
+<meta name=msapplication-TileColor content="#2e2e33">
+<meta name=generator content="Hugo 0.91.0">
+<noscript>
+<style>#theme-toggle,.top-link{display:none}</style>
+<style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--hljs-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style>
+</noscript>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script><meta property="og:title" content="Fine-Tuning GPT-2 Small for Generative Text">
 <meta property="og:description" content="Why did the chicken cross the road? Because it had no legs.
  These are the types of hilarious jokes the gpt-2 small model can generate for you.
 After reading a few blog posts here and here, and playing around with gpt-2 small myself, I thought I would write up the full process I used to fine-tune and produce generative text.
 For this example, we&rsquo;ll use a dataset of jokes pulled from the /r/jokes subreddit to fine tune the GPT-2 small model to generate new jokes.">
-<meta property="og:url" content="https://www.peterbaumgartner.com/blog/gpt2-jokes/">
-<meta property="og:site_name" content="Peter Baumgartner">
-<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2019-03-23T11:16:39-04:00"><meta property="article:modified_time" content="2019-03-23T11:16:39-04:00"><meta name=twitter:card content="summary">
-<meta name=generator content="Hugo 0.90.1">
-<title>Fine-Tuning GPT-2 Small for Generative Text • Peter Baumgartner</title>
-<link rel=canonical href=https://www.peterbaumgartner.com/blog/gpt2-jokes/>
-<link rel=icon href=/favicon.ico>
-<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
-<script async src=https://www.google-analytics.com/analytics.js></script>
-</head>
-<body class="page type-blog has-sidebar">
-<div class=site><div id=sidebar class=sidebar>
-<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
-<div class=container><section class="widget widget-about sep-after">
-<header>
-<div class=logo>
-<a href=/>
-<img src=/images/LAZERS.jpg>
-</a>
-</div>
-<h2 class="title site-title">
-<a href=/>
-Peter Baumgartner
-</a>
-</h2>
-<div class=desc>
-Data Scientist
-</div>
-</header>
-</section>
-</div>
-<div class=sidebar-overlay></div>
-</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
-<div class=container>
-<a class=screen-reader-text href=#content>Skip to Content</a>
-<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
-<span class=screen-reader-text>Toggle Sidebar</span>
-<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</span>
-<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-</span>
-</button>
-<ul><li class=item>
-<a href=/>Home</a>
-</li><li class="item current">
-<a aria-current=page href=/blog/>Blog</a>
-</li><li class=item>
-<a href=/notebooks/>Notebooks</a>
-</li></ul>
-</div>
-</nav><div class=header-widgets>
-<div class=container></div>
-</div>
-<header id=header class="header site-header">
-<div class="container sep-after">
-<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
-</div>
-</div>
-</header>
-<main id=content>
-<article lang=en class=entry>
-<header class="header entry-header">
-<div class="container sep-after">
-<div class=header-info>
-<h1 class=title>Fine-Tuning GPT-2 Small for Generative Text</h1>
-</div>
-<div class=entry-meta>
-<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-<span class=screen-reader-text>Posted on </span>
-<time class=entry-date datetime=2019-03-23T11:16:39-04:00>2019-03-23</time>
-</span>
-<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
-7 mins read
-</span>
-</div>
-</div>
-</header>
-<div class="container entry-content">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.peterbaumgartner.com/blog/gpt2-jokes/"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2019-03-23T11:16:39-04:00">
+<meta property="article:modified_time" content="2019-03-23T11:16:39-04:00">
 <meta name=twitter:card content="summary">
+<meta name=twitter:title content="Fine-Tuning GPT-2 Small for Generative Text">
+<meta name=twitter:description content="Why did the chicken cross the road? Because it had no legs.
+ These are the types of hilarious jokes the gpt-2 small model can generate for you.
+After reading a few blog posts here and here, and playing around with gpt-2 small myself, I thought I would write up the full process I used to fine-tune and produce generative text.
+For this example, we&rsquo;ll use a dataset of jokes pulled from the /r/jokes subreddit to fine tune the GPT-2 small model to generate new jokes.">
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Blog","item":"https://www.peterbaumgartner.com/blog/"},{"@type":"ListItem","position":2,"name":"Fine-Tuning GPT-2 Small for Generative Text","item":"https://www.peterbaumgartner.com/blog/gpt2-jokes/"}]}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Fine-Tuning GPT-2 Small for Generative Text","name":"Fine-Tuning GPT-2 Small for Generative Text","description":"Why did the chicken cross the road? Because it had no legs.\n These are the types of hilarious jokes the gpt-2 small model can generate for you.\nAfter reading a few blog posts here and here, and playing around with gpt-2 small myself, I thought I would write up the full process I used to fine-tune and produce generative text.\nFor this example, we\u0026rsquo;ll use a dataset of jokes pulled from the /r/jokes subreddit to fine tune the GPT-2 small model to generate new jokes.","keywords":[],"articleBody":" Why did the chicken cross the road? Because it had no legs.\n These are the types of hilarious jokes the gpt-2 small model can generate for you.\nAfter reading a few blog posts here and here, and playing around with gpt-2 small myself, I thought I would write up the full process I used to fine-tune and produce generative text.\nFor this example, we’ll use a dataset of jokes pulled from the /r/jokes subreddit to fine tune the GPT-2 small model to generate new jokes. You’ll need a computer with a GPU and nvidia-docker for this.\nGetting Started We’ll start by cloning the code to download and train the GPT-2 Small model. Fortunately, others have done the hard work of adding code to train on top of the gpt-2 small model that OpenAI released.\ngit clone https://github.com/nshepperd/gpt-2 cd gpt-2 sh download_model.sh 117M We’re going to use docker from here on out, just because it’s easier to manage the code and dependencies. The repository comes with a dockerfile, let’s build the image:\ndocker build --tag gpt-2 -f Dockerfile.gpu . Great! Let’s get to a shell using our image:\ndocker run --runtime=nvidia -it \\  -v $(pwd):/gpt-2 \\  -e NVIDIA_VISIBLE_DEVICES=0 \\  gpt-2 bash At this point, you can play with the base gpt-2 small model and generate some text. Let’s try it out with this prompt:\n “A pair of jumper cables walks into a bar”\n $ python src/interactive_conditional_samples.py --top_k 40 --temperature 0.9 [...some tensorflow logging] Model prompt  A pair of jumper cables walks into a bar ======================================== SAMPLE 1 ======================================== and a few minutes later, they are all turned on. A man in jeans and a black dress, comes out of the bar and says he got a job and wanted to know if he could tell me what he is wearing, how much he is wearing and whether he's wearing something different. He's wearing a red skirt, a blue T-shirt and black heels, on a black tie, like a red cape with two red crosses, the same as on the white one. The original punchline was:\n The bartender sighs and says; “I’ll serve you, but don’t start anything!”\n That’s the level of sense we can expect out of this thing without fine tuning.\nFine-Tuning on a Specific Corpus We’re going to fine-tune it a set of jokes. What this is going to do is train the model to pick up both the structure of the joke (setup, punchline) as well as how language is used (both vocabulary and structure).\nWe’ll download a set of jokes from this repository. Note that there is some NSFW and racist, sexist, and plain unfunny content in some of these jokes, look out for this both in the training data and in our model output.\nThere are a few different structures for jokes in our dataset. For short jokes, the setup will be the title of the post, and the punchline will be the body. For longer jokes that have a bit of setup, typically the title of the post is also the first sentence of the joke. Fine-tuning the model will pick up on the structure and language of the jokes, so what we’ll do is separate the setup (post title) and punchline (post body) with a pipe (|). Additionally, gpt-2 uses a special token , to signify the end of a piece of text, so we’ll be formatting data with those structural constraints.\nFirst, let’s download the data:\ncurl -O https://raw.githubusercontent.com/taivop/joke-dataset/master/reddit_jokes.json The following python script will get the data in the format we need:\nimport json from pathlib import Path jokes_raw = json.loads(Path(\"reddit_jokes.json\").read_text()) jokes_parsed = \"\".join(\"{0}|{1}\".format(j['title'], j['body']) for j in jokes_raw) Path(\"input-text.txt\").write_text(jokes_parsed) (side note: pathlib is amazing, you should be using it if you aren’t already)\nNow we must encode our text in the input format for gpt-2. This is something that normally would happen during training anyway, but we can speed it up by preprocessing.\nThe requirements.txt needs to be updated with the tqdm dependency, so you will need to install it in the container before running the encoding script.\npip install tqdm PYTHONPATH=src ./encode.py input-text.txt input-text.txt.npz And with that, let’s get training! This script will train until you Ctrl-C out of it. The flags that we’re passing will print out a sample as well as checkpoint the model every 250 epochs.\nPYTHONPATH=src ./train.py --dataset input-text.txt.npz --sample_every=250 --save_every=250 Choosing the right amount of training for these types of things is difficult. Personally, I enjoy the surrealism, absurdity, and nonsense of jokes from models with fewer training epochs.\nTraining Examples Below I’ll post some jokes from the sample output that gets generated every 250 epochs:\n250:\nWhat do you call it when the baby is on your chin?|Lion's Pie Did you hear about the guy who lost a job for eating his lunch?|He was just going to eat it. I tried to take my dog to the bathroom in the hospital...|My dog was a dachshund. What did the priest say after an elephant died?|\"What is it for?\" 500 epochs:\nI bought my car last week, and it wasn't working really well.|I was going to give it a better start, but the engine just wasn't good enough. 750:\nTwo dogs are walking through the woods|When they meet up the first dog yells \"Hey is this dog our friend?\". The second dog thinks it's funny and says \"Is this dog that he walks around alone\". And the two dogs quickly stop walking. \"I don't think so, your mom always walks by his yard.\" Why did the chicken cross the road?|To get a job at the hen. What do you call a man with dyslexia?|A dyslexic. A man walks into a bar and asks for a drink|Bartender looks at him and says, \"This is not a drinking game.\" 1000:\nPuns aren't jokes.|...they're punchlines. 1250:\nThe bartender says. \"How much is $0.5 for an idiot?\" The mathematician says \"Not that much, I just went bowling. 1500:\nWhy did the chicken cross the road?|Because it had no legs. What do you get when you cross a sheep with a goat?|I'm a sheep with no legs. Just look at that sheep! I've been in some really terrible relationships and wanted to share.|So I made some tea and got out.` After Training When you’ve finished training, you’ll need to copy the checkpointed model weights to the model directory like so:\ncp -r /gpt-2/checkpoint/run1/* /gpt-2/models/117M/\nNow, you can use your fine-tuned joke model to generate a bunch of jokes for a certain prompt. Let’s figure out more ways the chicken could cross the road…\npython src/interactive_conditional_samples.py --top_k 40 --temperature 0.7 --nsamples 10 [... wait for startup...] Model prompt  Why did the chicken cross the road?| Some answers:\n So I can get my steak  To the left... I'll see myself out  Because I thought the chicken crossed the road.  I don't know, but his face is too close to the road.  Because it was a chicken.  The chicken crossed the road in the morning, and the morning is fine, the morning is fine. What happens when A guy walks into a bar...?\nModel prompt  A guy walks into a bar...|  A guy walks into a bar and orders a drink. The bartender asks him what the occasion is. The guy says that it's the new year and all the old ladies are going to get married. The bartender says no worries, they'll be there in time for the anniversary. The guy says that he's really excited and he's a bit nervous. The bartender is a bit more hesitant and asks him what the occasion is. The guy says \"I'm a new guy, I was going to give a speech about my experience with alcohol.\" So the bartender gives him a little push and the guy says \"You know what, I'm drunk.\" Then the bartender says \"Sorry, but you don't have the guts to talk like that.\" What about What's the difference between?\nModel prompt  What's the difference between \" a woman that's going to have a baby and a guy that's never gonna have a baby?|One's a girl that's going to have a baby and the other is a guy that's never gonna have a baby. Hilarious.\nWrap-up My personal thought is that we’ve probably overfit on the data. The examples I’m not selecting are pretty reflective of the typical jokes on /r/jokes (lots of dogs, “whats the difference?” and racial stereotyping). For my sense of humor, favoring a little more generality and abstractness, I’d prefer text from the models after 500-1000 epochs of training.\n","wordCount":"1432","inLanguage":"en","datePublished":"2019-03-23T11:16:39-04:00","dateModified":"2019-03-23T11:16:39-04:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.peterbaumgartner.com/blog/gpt2-jokes/"},"publisher":{"@type":"Organization","name":"Peter Baumgartner","logo":{"@type":"ImageObject","url":"https://www.peterbaumgartner.com/favicon.ico"}}}</script>
+</head>
+<body id=top>
+<script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add('dark'):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove('dark'):window.matchMedia('(prefers-color-scheme: dark)').matches&&document.body.classList.add('dark')</script>
+<header class=header>
+<nav class=nav>
+<div class=logo>
+<a href=https://www.peterbaumgartner.com/ accesskey=h title="Peter Baumgartner (Alt + H)">Peter Baumgartner</a>
+<span class=logo-switches>
+<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+</span>
+</div>
+<ul id=menu>
+<li>
+<a href=https://www.peterbaumgartner.com/ title=Home>
+<span>Home</span>
+</a>
+</li>
+<li>
+<a href=https://www.peterbaumgartner.com/blog/ title=Blog>
+<span>Blog</span>
+</a>
+</li>
+<li>
+<a href=https://www.peterbaumgartner.com/notebooks/ title=Notebooks>
+<span>Notebooks</span>
+</a>
+</li>
+</ul>
+</nav>
+</header>
+<main class=main>
+<article class=post-single>
+<header class=post-header>
+<h1 class=post-title>
+Fine-Tuning GPT-2 Small for Generative Text
+</h1>
+<div class=post-meta><span title="2019-03-23 11:16:39 -0400 -0400">March 23, 2019</span>
+</div>
+</header>
+<div class=post-content><meta name=twitter:card content="summary">
 <meta name=twitter:site content="@pmbaumgartner">
 <meta name=twitter:creator content="@pmbaumgartner">
 <meta name=twitter:title content="Fine-Tuning GPT-2 Small for Generative Text">
@@ -102,7 +94,7 @@ Data Scientist
 <p>These are the types of <em>hilarious</em> jokes the <code>gpt-2 small</code> model can generate for you.</p>
 <p>After reading a few blog posts <a href=https://www.gwern.net/RNN-metadata#finetuning-the-gpt-2-small-transformer-for-english-poetry-generation>here</a> and <a href=https://svilentodorov.xyz/blog/gpt-finetune>here</a>, and playing around with <code>gpt-2 small</code> myself, I thought I would write up the full process I used to fine-tune and produce generative text.</p>
 <p>For this example, we&rsquo;ll use a dataset of jokes pulled from the <code>/r/jokes</code> subreddit to fine tune the GPT-2 small model to generate new jokes. You&rsquo;ll need a computer with a GPU and <code>nvidia-docker</code> for this.</p>
-<h2 id=getting-started>Getting Started</h2>
+<h2 id=getting-started>Getting Started<a hidden class=anchor aria-hidden=true href=#getting-started>#</a></h2>
 <p>We&rsquo;ll start by cloning the code to download and train the GPT-2 Small model. Fortunately, others have done the hard work of adding code to train on top of the <code>gpt-2 small</code> model that OpenAI released.</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>git clone https://github.com/nshepperd/gpt-2
 cd gpt-2
@@ -128,7 +120,7 @@ Model prompt &gt;&gt;&gt; A pair of jumper cables walks into a bar
 <p>The bartender sighs and says; &ldquo;I&rsquo;ll serve you, but don&rsquo;t start anything!&rdquo;</p>
 </blockquote>
 <p>That&rsquo;s the level of sense we can expect out of this thing without fine tuning.</p>
-<h2 id=fine-tuning-on-a-specific-corpus>Fine-Tuning on a Specific Corpus</h2>
+<h2 id=fine-tuning-on-a-specific-corpus>Fine-Tuning on a Specific Corpus<a hidden class=anchor aria-hidden=true href=#fine-tuning-on-a-specific-corpus>#</a></h2>
 <p>We&rsquo;re going to fine-tune it a set of jokes. What this is going to do is train the model to pick up both the structure of the joke (setup, punchline) as well as how language is used (both vocabulary and structure).</p>
 <p>We&rsquo;ll download a set of jokes from <a href=https://github.com/taivop/joke-dataset>this repository</a>. Note that there is some NSFW and racist, sexist, and plain unfunny content in some of these jokes, look out for this both in the training data and in our model output.</p>
 <p>There are a few different structures for jokes in our dataset. For short jokes, the setup will be the title of the post, and the punchline will be the body. For longer jokes that have a bit of setup, typically the title of the post is also the first sentence of the joke. Fine-tuning the model will pick up on the structure and language of the jokes, so what we&rsquo;ll do is separate the setup (post title) and punchline (post body) with a pipe (<code>|</code>). Additionally, <code>gpt-2</code> uses a special token <code>&lt;|endoftext|></code>, to signify the end of a piece of text, so we&rsquo;ll be formatting data with those structural constraints.</p>
@@ -151,7 +143,7 @@ PYTHONPATH<span style=color:#f92672>=</span>src ./encode.py input-text.txt input
 </code></pre></div><p>And with that, let&rsquo;s get training! This script will train until you <code>Ctrl-C</code> out of it. The flags that we&rsquo;re passing will print out a sample as well as checkpoint the model every 250 epochs.</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>PYTHONPATH<span style=color:#f92672>=</span>src ./train.py --dataset input-text.txt.npz --sample_every<span style=color:#f92672>=</span><span style=color:#ae81ff>250</span> --save_every<span style=color:#f92672>=</span><span style=color:#ae81ff>250</span>
 </code></pre></div><p>Choosing the right amount of training for these types of things is difficult. Personally, I enjoy the surrealism, absurdity, and nonsense of jokes from models with fewer training epochs.</p>
-<h3 id=training-examples>Training Examples</h3>
+<h3 id=training-examples>Training Examples<a hidden class=anchor aria-hidden=true href=#training-examples>#</a></h3>
 <p>Below I&rsquo;ll post some jokes from the sample output that gets generated every 250 epochs:</p>
 <p>250:</p>
 <pre tabindex=0><code>What do you call it when the baby is on your chin?|Lion's Pie
@@ -179,7 +171,7 @@ A man walks into a bar and asks for a drink|Bartender looks at him and says, &qu
 <pre tabindex=0><code>Why did the chicken cross the road?|Because it had no legs.
 What do you get when you cross a sheep with a goat?|I'm a sheep with no legs. Just look at that sheep!
 I've been in some really terrible relationships and wanted to share.|So I made some tea and got out.`
-</code></pre><h3 id=after-training>After Training</h3>
+</code></pre><h3 id=after-training>After Training<a hidden class=anchor aria-hidden=true href=#after-training>#</a></h3>
 <p>When you&rsquo;ve finished training, you&rsquo;ll need to copy the checkpointed model weights to the model directory like so:</p>
 <p><code>cp -r /gpt-2/checkpoint/run1/* /gpt-2/models/117M/</code></p>
 <p>Now, you can use your fine-tuned joke model to generate a bunch of jokes for a certain prompt. Let&rsquo;s figure out more ways the chicken could cross the road&mldr;</p>
@@ -200,36 +192,25 @@ Model prompt &gt;&gt;&gt; Why did the chicken cross the road?|
 <pre tabindex=0><code>Model prompt &gt;&gt;&gt; What's the difference between
 &quot; a woman that's going to have a baby and a guy that's never gonna have a baby?|One's a girl that's going to have a baby and the other is a guy that's never gonna have a baby.
 </code></pre><p>Hilarious.</p>
-<h2 id=wrap-up>Wrap-up</h2>
+<h2 id=wrap-up>Wrap-up<a hidden class=anchor aria-hidden=true href=#wrap-up>#</a></h2>
 <p>My personal thought is that we&rsquo;ve probably overfit on the data. The examples I&rsquo;m not selecting are pretty reflective of the typical jokes on <code>/r/jokes</code> (lots of dogs, &ldquo;whats the difference?&rdquo; and racial stereotyping). For my sense of humor, favoring a little more generality and abstractness, I&rsquo;d prefer text from the models after 500-1000 epochs of training.</p>
 </div>
-<footer class=entry-footer>
-<div class="container sep-before">
-</div>
+<footer class=post-footer>
 </footer>
 </article>
-<nav class=entry-nav>
-<div class=container><div class="prev-entry sep-before">
-<a href=/blog/issues-with-criminal-justice-data/>
-<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
-Previous</span>
-<span class=screen-reader-text>Previous post: </span>Potential Issues with Criminal Justice Data</a>
-</div><div class="next-entry sep-before">
-<a href=/blog/applied-nlp-lessons/>
-<span class=screen-reader-text>Next post: </span>Applied NLP: Lessons from the Field<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
-</span>
-</a>
-</div></div>
-</nav>
 </main>
-<footer id=footer class=footer>
-<div class="container sep-before"><div class=copyright>
-<p></p>
-</div>
-</div>
+<footer class=footer>
+<span>&copy; 2021 <a href=https://www.peterbaumgartner.com/>Peter Baumgartner</a></span>
+<span>
+Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
+</span>
 </footer>
-</div>
-</div><script>window.__assets_js_src="/assets/js/"</script>
-<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a>
+<script>let menu=document.getElementById('menu');menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
+<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
+<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
 </body>
 </html>

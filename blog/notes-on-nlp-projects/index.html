@@ -1,92 +1,82 @@
-<!doctype html><html lang=en><head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
+<!doctype html><html lang=en dir=auto>
+<head><meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=robots content="index, follow">
+<title>Notes on NLP Projects | Peter Baumgartner</title>
+<meta name=keywords content>
 <meta name=description content="Summary: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal&rsquo;s PyData Berlin 2018 talk: Building new NLP solutions with spaCy and Prodigy. I intended to use these as a reference when starting new NLP projects.
 In NLP and ML we talk a lot about models and optimization. But this isn't where the battle is really won! I've been trying to explain my thoughts on this lately.">
-<meta name=theme-color content="#297FD5">
-<meta property="og:title" content="Notes on NLP Projects • Peter Baumgartner">
+<meta name=author content>
+<link rel=canonical href=https://www.peterbaumgartner.com/blog/notes-on-nlp-projects/>
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css integrity="sha256-yIlj/i15RiAA/Q+xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as=style>
+<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://www.peterbaumgartner.com/favicon.ico>
+<link rel=icon type=image/png sizes=16x16 href=https://www.peterbaumgartner.com/favicon-16x16.png>
+<link rel=icon type=image/png sizes=32x32 href=https://www.peterbaumgartner.com/favicon-32x32.png>
+<link rel=apple-touch-icon href=https://www.peterbaumgartner.com/apple-touch-icon.png>
+<link rel=mask-icon href=https://www.peterbaumgartner.com/safari-pinned-tab.svg>
+<meta name=theme-color content="#2e2e33">
+<meta name=msapplication-TileColor content="#2e2e33">
+<meta name=generator content="Hugo 0.91.0">
+<noscript>
+<style>#theme-toggle,.top-link{display:none}</style>
+<style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--hljs-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style>
+</noscript>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script><meta property="og:title" content="Notes on NLP Projects">
 <meta property="og:description" content="Summary: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal&rsquo;s PyData Berlin 2018 talk: Building new NLP solutions with spaCy and Prodigy. I intended to use these as a reference when starting new NLP projects.
 In NLP and ML we talk a lot about models and optimization. But this isn't where the battle is really won! I've been trying to explain my thoughts on this lately.">
-<meta property="og:url" content="https://www.peterbaumgartner.com/blog/notes-on-nlp-projects/">
-<meta property="og:site_name" content="Peter Baumgartner">
-<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2018-08-06T10:59:48-04:00"><meta property="article:modified_time" content="2018-08-06T10:59:48-04:00"><meta name=twitter:card content="summary">
-<meta name=generator content="Hugo 0.90.1">
-<title>Notes on NLP Projects • Peter Baumgartner</title>
-<link rel=canonical href=https://www.peterbaumgartner.com/blog/notes-on-nlp-projects/>
-<link rel=icon href=/favicon.ico>
-<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
-<script async src=https://www.google-analytics.com/analytics.js></script>
-</head>
-<body class="page type-blog has-sidebar">
-<div class=site><div id=sidebar class=sidebar>
-<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
-<div class=container><section class="widget widget-about sep-after">
-<header>
-<div class=logo>
-<a href=/>
-<img src=/images/LAZERS.jpg>
-</a>
-</div>
-<h2 class="title site-title">
-<a href=/>
-Peter Baumgartner
-</a>
-</h2>
-<div class=desc>
-Data Scientist
-</div>
-</header>
-</section>
-</div>
-<div class=sidebar-overlay></div>
-</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
-<div class=container>
-<a class=screen-reader-text href=#content>Skip to Content</a>
-<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
-<span class=screen-reader-text>Toggle Sidebar</span>
-<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</span>
-<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-</span>
-</button>
-<ul><li class=item>
-<a href=/>Home</a>
-</li><li class="item current">
-<a aria-current=page href=/blog/>Blog</a>
-</li><li class=item>
-<a href=/notebooks/>Notebooks</a>
-</li></ul>
-</div>
-</nav><div class=header-widgets>
-<div class=container></div>
-</div>
-<header id=header class="header site-header">
-<div class="container sep-after">
-<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
-</div>
-</div>
-</header>
-<main id=content>
-<article lang=en class=entry>
-<header class="header entry-header">
-<div class="container sep-after">
-<div class=header-info>
-<h1 class=title>Notes on NLP Projects</h1>
-</div>
-<div class=entry-meta>
-<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-<span class=screen-reader-text>Posted on </span>
-<time class=entry-date datetime=2018-08-06T10:59:48-04:00>2018-08-06</time>
-</span>
-<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
-3 mins read
-</span>
-</div>
-</div>
-</header>
-<div class="container entry-content">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.peterbaumgartner.com/blog/notes-on-nlp-projects/"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2018-08-06T10:59:48-04:00">
+<meta property="article:modified_time" content="2018-08-06T10:59:48-04:00">
 <meta name=twitter:card content="summary">
+<meta name=twitter:title content="Notes on NLP Projects">
+<meta name=twitter:description content="Summary: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal&rsquo;s PyData Berlin 2018 talk: Building new NLP solutions with spaCy and Prodigy. I intended to use these as a reference when starting new NLP projects.
+In NLP and ML we talk a lot about models and optimization. But this isn't where the battle is really won! I've been trying to explain my thoughts on this lately.">
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Blog","item":"https://www.peterbaumgartner.com/blog/"},{"@type":"ListItem","position":2,"name":"Notes on NLP Projects","item":"https://www.peterbaumgartner.com/blog/notes-on-nlp-projects/"}]}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Notes on NLP Projects","name":"Notes on NLP Projects","description":"Summary: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal\u0026rsquo;s PyData Berlin 2018 talk: Building new NLP solutions with spaCy and Prodigy. I intended to use these as a reference when starting new NLP projects.\nIn NLP and ML we talk a lot about models and optimization. But this isn\u0026#39;t where the battle is really won! I\u0026#39;ve been trying to explain my thoughts on this lately.","keywords":[],"articleBody":"Summary: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal’s PyData Berlin 2018 talk: Building new NLP solutions with spaCy and Prodigy. I intended to use these as a reference when starting new NLP projects.\nIn NLP and ML we talk a lot about models and optimization. But this isn't where the battle is really won! I've been trying to explain my thoughts on this lately. Big thanks to @PyDataBerlin for a great event.\n📺 Slides: https://t.co/OqpBeY0uwPhttps://t.co/TzhQrBsefP\n— Matthew Honnibal (@honnibal) August 2, 2018  Essential Questions from the Machine Learning Hierarchy of Needs  How will the model fit into the larger application or business process?  What is the decision that will be impacted by a machine learning solution? Is there an existing software application we can plug into? Can we develop an API? Do we need to build something entirely custom?   What is the annotation scheme? What is being labeled? How will the corpus be built?  Are we classifying documents? Are we tagging spans of text? Are we trying to automatically generate structured data from text?  What models do we need to build and compose to generate this data?     What quality control processes will we use to ensure consistent and clean data?  Who are experts who we can get to label data accurately? How will we construct a gold standard data set for evaluation? How can we break down the NLP problem to improve the ease and consistency of the annotation task?    Things to Avoid  Overambitious Imagineering — Thinking too big, rather than specifically about what business problem(s) can be solved. Forecasting without experimentation — Most problems will need to be evaluated after experimentation with data: don’t put excessive value on arbitrary thresholds of accuracy or other performance metrics up front Outsourcing — You want a dataset and annotation process that is reliable and consistent, not noisy. Outsourcing solves the wrong problem (marginal annotation cost). Overengineering \u0026 AI FOMO — Can you compose existing, generic models to solve your task rather than tweaking parameters on the latest algorithms? Premature Shipping — if it fails in development, it certainly won’t work in production.  General Principles (with timestamp)  Iterate on your data (labeling, annotation scheme, problem framing), as well as your code. (10:52) Rather than make assumptions, get to iterative experimentation as fast as possible. (11:14) Start with what you need at output, then work towards breaking down the problem into a series of modeling decisions. (12:17) Break down the problem so that your component models can perform accurately and you can cheaply generate annotations. (14:00) Compose generic models into novel solutions (17:00)  Example: Is this document about a crime? If so, what do the entities represent? By comparison: jumping straight to classifying the victim, perpetrator, location is both hard for a model to classify and cognitively burdensome for a human to annotate.   Fine-tuning existing models for your domain, using generic categories, is much cheaper than starting from scratch (17:20)  Example: fine tuning the dependency parsing on conversational or colloquial text might improve the accuracy. (33:50)   Annotate events and topics at the sentence, paragraph, or document level to avoid boundary issues. Additionally, annotation is easier and classification is more accurate. (17:50) Bootstrap your project estimates based on contact with the evidence, rather than making assumptions or guesses up front. (23:17) Reframe your problem so that the annotator has to consider less information at once: use pre-suggested outputs and make corrections. This reduces error by asking the annotator to correct the model when its wrong (vs. getting tired/lazy on annotation tasks from scratch) (28:57)  References:\nHonnibal, M. (2018, July). Building new NLP solutions with spaCy and Prodigy. Presented at PyData Berlin 2018, Berlin, Germany.\n","wordCount":"617","inLanguage":"en","datePublished":"2018-08-06T10:59:48-04:00","dateModified":"2018-08-06T10:59:48-04:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.peterbaumgartner.com/blog/notes-on-nlp-projects/"},"publisher":{"@type":"Organization","name":"Peter Baumgartner","logo":{"@type":"ImageObject","url":"https://www.peterbaumgartner.com/favicon.ico"}}}</script>
+</head>
+<body id=top>
+<script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add('dark'):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove('dark'):window.matchMedia('(prefers-color-scheme: dark)').matches&&document.body.classList.add('dark')</script>
+<header class=header>
+<nav class=nav>
+<div class=logo>
+<a href=https://www.peterbaumgartner.com/ accesskey=h title="Peter Baumgartner (Alt + H)">Peter Baumgartner</a>
+<span class=logo-switches>
+<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+</button>
+</span>
+</div>
+<ul id=menu>
+<li>
+<a href=https://www.peterbaumgartner.com/ title=Home>
+<span>Home</span>
+</a>
+</li>
+<li>
+<a href=https://www.peterbaumgartner.com/blog/ title=Blog>
+<span>Blog</span>
+</a>
+</li>
+<li>
+<a href=https://www.peterbaumgartner.com/notebooks/ title=Notebooks>
+<span>Notebooks</span>
+</a>
+</li>
+</ul>
+</nav>
+</header>
+<main class=main>
+<article class=post-single>
+<header class=post-header>
+<h1 class=post-title>
+Notes on NLP Projects
+</h1>
+<div class=post-meta><span title="2018-08-06 10:59:48 -0400 -0400">August 6, 2018</span>
+</div>
+</header>
+<div class=post-content><meta name=twitter:card content="summary">
 <meta name=twitter:site content="@pmbaumgartner">
 <meta name=twitter:creator content="@pmbaumgartner">
 <meta name=twitter:title content="Notes on NLP Projects">
@@ -95,7 +85,7 @@ Data Scientist
 <p><strong>Summary</strong>: These are some notes, combined with my own experience and commentary, derived from Matthew Honnibal&rsquo;s PyData Berlin 2018 talk: <em>Building new NLP solutions with spaCy and Prodigy</em>. I intended to use these as a reference when starting new NLP projects.</p>
 <blockquote class=twitter-tweet data-lang=en><p lang=en dir=ltr>In NLP and ML we talk a lot about models and optimization. But this isn't where the battle is really won! I've been trying to explain my thoughts on this lately. Big thanks to <a href="https://twitter.com/pydataberlin?ref_src=twsrc%5Etfw">@PyDataBerlin</a> for a great event.<br><br>📺 Slides: <a href=https://t.co/OqpBeY0uwP>https://t.co/OqpBeY0uwP</a><a href=https://t.co/TzhQrBsefP>https://t.co/TzhQrBsefP</a></p>&mdash; Matthew Honnibal (@honnibal) <a href="https://twitter.com/honnibal/status/1025093783426359296?ref_src=twsrc%5Etfw">August 2, 2018</a></blockquote>
 <script async src=https://platform.twitter.com/widgets.js></script>
-<h3 id=essential-questions-from-the-machine-learning-hierarchy-of-needs>Essential Questions from the Machine Learning Hierarchy of Needs</h3>
+<h3 id=essential-questions-from-the-machine-learning-hierarchy-of-needs>Essential Questions from the Machine Learning Hierarchy of Needs<a hidden class=anchor aria-hidden=true href=#essential-questions-from-the-machine-learning-hierarchy-of-needs>#</a></h3>
 <ol>
 <li><strong>How will the model fit into the larger application or business process?</strong>
 <ol>
@@ -123,7 +113,7 @@ Data Scientist
 </ol>
 </li>
 </ol>
-<h3 id=things-to-avoid>Things to Avoid</h3>
+<h3 id=things-to-avoid>Things to Avoid<a hidden class=anchor aria-hidden=true href=#things-to-avoid>#</a></h3>
 <ol>
 <li><strong>Overambitious <em>Imagineering</em></strong> — Thinking too big, rather than specifically about what business problem(s) can be solved.</li>
 <li><strong>Forecasting without experimentation</strong> — Most problems will need to be evaluated after experimentation with data: don&rsquo;t put excessive value on arbitrary thresholds of accuracy or other performance metrics up front</li>
@@ -131,7 +121,7 @@ Data Scientist
 <li><strong>Overengineering & AI FOMO</strong> — Can you compose existing, generic models to solve your task rather than tweaking parameters on the latest algorithms?</li>
 <li><strong>Premature Shipping</strong> — if it fails in development, it certainly won&rsquo;t work in production.</li>
 </ol>
-<h3 id=general-principles-with-timestamp>General Principles (with timestamp)</h3>
+<h3 id=general-principles-with-timestamp>General Principles (with timestamp)<a hidden class=anchor aria-hidden=true href=#general-principles-with-timestamp>#</a></h3>
 <ul>
 <li>Iterate on your data (labeling, annotation scheme, problem framing), as well as your code. (10:52)</li>
 <li>Rather than make assumptions, get to iterative experimentation as fast as possible. (11:14)</li>
@@ -153,33 +143,22 @@ Data Scientist
 <p><strong>References:</strong></p>
 <p>Honnibal, M. (2018, July). <em>Building new NLP solutions with spaCy and Prodigy</em>. Presented at PyData Berlin 2018, Berlin, Germany.</p>
 </div>
-<footer class=entry-footer>
-<div class="container sep-before">
-</div>
+<footer class=post-footer>
 </footer>
 </article>
-<nav class=entry-nav>
-<div class=container><div class="prev-entry sep-before">
-<a href=/blog/holy-nlp/>
-<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
-Previous</span>
-<span class=screen-reader-text>Previous post: </span>Holy NLP! Understanding Part of Speech Tags, Dependency Parsing, and Named Entity Recognition</a>
-</div><div class="next-entry sep-before">
-<a href=/blog/issues-with-criminal-justice-data/>
-<span class=screen-reader-text>Next post: </span>Potential Issues with Criminal Justice Data<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
-</span>
-</a>
-</div></div>
-</nav>
 </main>
-<footer id=footer class=footer>
-<div class="container sep-before"><div class=copyright>
-<p></p>
-</div>
-</div>
+<footer class=footer>
+<span>&copy; 2021 <a href=https://www.peterbaumgartner.com/>Peter Baumgartner</a></span>
+<span>
+Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
+</span>
 </footer>
-</div>
-</div><script>window.__assets_js_src="/assets/js/"</script>
-<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a>
+<script>let menu=document.getElementById('menu');menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
+<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
+<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
 </body>
 </html>

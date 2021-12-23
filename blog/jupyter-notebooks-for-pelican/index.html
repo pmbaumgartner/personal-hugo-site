@@ -1,99 +1,88 @@
-<!doctype html><html lang=en><head>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
+<!doctype html><html lang=en dir=auto>
+<head><meta charset=utf-8>
+<meta http-equiv=x-ua-compatible content="IE=edge">
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<meta name=robots content="index, follow">
+<title>Some Tips for Using Jupyter Notebooks with Pelican | Peter Baumgartner</title>
+<meta name=keywords content>
 <meta name=description content="Note (2018-04-09): I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in this notebook from Chris Albon. Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I&rsquo;m a python person so I figured I&rsquo;d learn something new and move everything over to Pelican.">
-<meta name=theme-color content="#297FD5">
-<meta property="og:title" content="Some Tips for Using Jupyter Notebooks with Pelican • Peter Baumgartner">
-<meta property="og:description" content="Note (2018-04-09): I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in this notebook from Chris Albon. Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I&rsquo;m a python person so I figured I&rsquo;d learn something new and move everything over to Pelican.">
-<meta property="og:url" content="https://www.peterbaumgartner.com/blog/jupyter-notebooks-for-pelican/">
-<meta property="og:site_name" content="Peter Baumgartner">
-<meta property="og:type" content="article"><meta property="article:section" content="blog"><meta property="article:published_time" content="2017-03-17T00:00:00Z"><meta property="article:modified_time" content="2017-03-17T00:00:00Z"><meta name=twitter:card content="summary">
-<meta name=generator content="Hugo 0.90.1">
-<title>Some Tips for Using Jupyter Notebooks with Pelican • Peter Baumgartner</title>
+<meta name=author content>
 <link rel=canonical href=https://www.peterbaumgartner.com/blog/jupyter-notebooks-for-pelican/>
-<link rel=icon href=/favicon.ico>
-<link rel=stylesheet href=/assets/css/main.6a060eb7.css><link rel=stylesheet href=/css/custom.css><style>:root{--color-accent:#297FD5}</style>
-<script type=application/javascript>var doNotTrack=!1;doNotTrack||(window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script>
-<script async src=https://www.google-analytics.com/analytics.js></script>
+<link crossorigin=anonymous href=/assets/css/stylesheet.min.c88963fe2d79462000fd0fb1b3737783c32855d340583e4523343f8735c787f0.css integrity="sha256-yIlj/i15RiAA/Q+xs3N3g8MoVdNAWD5FIzQ/hzXHh/A=" rel="preload stylesheet" as=style>
+<script defer crossorigin=anonymous src=/assets/js/highlight.min.7680afc38aa6b15ddf158a4f3780b7b1f7dde7e91d26f073e6229bb7a0793c92.js integrity="sha256-doCvw4qmsV3fFYpPN4C3sffd5+kdJvBz5iKbt6B5PJI=" onload=hljs.initHighlightingOnLoad()></script>
+<link rel=icon href=https://www.peterbaumgartner.com/favicon.ico>
+<link rel=icon type=image/png sizes=16x16 href=https://www.peterbaumgartner.com/favicon-16x16.png>
+<link rel=icon type=image/png sizes=32x32 href=https://www.peterbaumgartner.com/favicon-32x32.png>
+<link rel=apple-touch-icon href=https://www.peterbaumgartner.com/apple-touch-icon.png>
+<link rel=mask-icon href=https://www.peterbaumgartner.com/safari-pinned-tab.svg>
+<meta name=theme-color content="#2e2e33">
+<meta name=msapplication-TileColor content="#2e2e33">
+<meta name=generator content="Hugo 0.91.0">
+<noscript>
+<style>#theme-toggle,.top-link{display:none}</style>
+<style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--hljs-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51)}.list{background:var(--theme)}.list:not(.dark)::-webkit-scrollbar-track{background:0 0}.list:not(.dark)::-webkit-scrollbar-thumb{border-color:var(--theme)}}</style>
+</noscript>
+<script type=application/javascript>var doNotTrack=!1;doNotTrack||(function(a,e,f,g,b,c,d){a.GoogleAnalyticsObject=b,a[b]=a[b]||function(){(a[b].q=a[b].q||[]).push(arguments)},a[b].l=1*new Date,c=e.createElement(f),d=e.getElementsByTagName(f)[0],c.async=1,c.src=g,d.parentNode.insertBefore(c,d)}(window,document,'script','https://www.google-analytics.com/analytics.js','ga'),ga('create','UA-72692144-1','auto'),ga('send','pageview'))</script><meta property="og:title" content="Some Tips for Using Jupyter Notebooks with Pelican">
+<meta property="og:description" content="Note (2018-04-09): I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in this notebook from Chris Albon. Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I&rsquo;m a python person so I figured I&rsquo;d learn something new and move everything over to Pelican.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.peterbaumgartner.com/blog/jupyter-notebooks-for-pelican/"><meta property="article:section" content="blog">
+<meta property="article:published_time" content="2017-03-17T00:00:00+00:00">
+<meta property="article:modified_time" content="2017-03-17T00:00:00+00:00">
+<meta name=twitter:card content="summary">
+<meta name=twitter:title content="Some Tips for Using Jupyter Notebooks with Pelican">
+<meta name=twitter:description content="Note (2018-04-09): I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in this notebook from Chris Albon. Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I&rsquo;m a python person so I figured I&rsquo;d learn something new and move everything over to Pelican.">
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Blog","item":"https://www.peterbaumgartner.com/blog/"},{"@type":"ListItem","position":2,"name":"Some Tips for Using Jupyter Notebooks with Pelican","item":"https://www.peterbaumgartner.com/blog/jupyter-notebooks-for-pelican/"}]}</script>
+<script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Some Tips for Using Jupyter Notebooks with Pelican","name":"Some Tips for Using Jupyter Notebooks with Pelican","description":"Note (2018-04-09): I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in this notebook from Chris Albon. Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I\u0026rsquo;m a python person so I figured I\u0026rsquo;d learn something new and move everything over to Pelican.","keywords":[],"articleBody":"Note (2018-04-09): I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in this notebook from Chris Albon. Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I’m a python person so I figured I’d learn something new and move everything over to Pelican. I had also wanted an organized way to publicly store notebooks, code snippets, and workflows I was using regularly. My current storage system was randomly distributing them among various local folders, my employer’s gitlab instance, and Slack. Using a static site generator like Pelican, along with the category and tag system, seemed like a good way to publicly share and organize this content.\nI was inspired by Chris Albon’s great site and wanted to build something similar. You’ll probably notice the theme and layout of this site are almost exactly the same. His site is built using Pelican and appeared to have a pretty good workflow for handling Jupyter Notebooks, which is the main feature I also need.\nCreating Jupyter Notebooks for Pelican Pelican works by taking Markdown files and converting them to HTML, with formatting governed by Jinja templates. To get our notebook into markdown for Pelican, we can use nbconvert from the shell, like so:\n$ jupyter nbconvert --to markdown  This should output a markdown version of the notebook, with the same filename and a .md extension, in the directory of the notebook.\nPelican expects some metadata for each article – at minimum Title and Date are required. With a Jupyter Notebook, this markdown formatted metadata can be placed in the first cell of a notebook. An issue I had at this point is that nbconvert inserts a blank line at the beginning of the markdown file, and Pelican expects the first line to contain the metadata. This can be fixed manually by editing the markdown file with a code editor.\nOne Cool Trick for Delineating Notebook Input and Output I spent some time down a rabbit hole trying to figure our how Chris' blog styling puts a border around notebook input cells and leaves the output cells borderless. I had originally started by building my own theme and could not figure out what combination of Pelican/Pygments/nbconvert processes to use for this effect. After some time reworking the the template Chris uses into my own, I stumbled upon this jQuery magic at the bottom of the base.html template:\ntag and adds a border. This is done as a workaround to visually distinguish the code inputs and outputs -- script $( \".hll, .n, .c, .err, .s1, .ss, .bp, .vc, .vg, .vi, .il\" ).parent( \"pre\" ).css( \"border\", \"1px solid #DEDEDE\" ); script Brilliant. Pygments only applies those classes if you declare a lexer for a code block. Since nbconvert takes input cells and declares them as python and output cells are just indented without a declared lexer, this works perfect.\nAdding in Dynamic Notebook Content Bokeh is a visualization tool I use often to make interactive charts. It works well in notebooks since notebooks are able to render dynamic HTML and javascript in output cells. However, that dynamic content isn’t easily be translated into markdown. The conversion process with nbconvert takes any HTML code used to build the output and translates it to an indented code block. With Bokeh plots, I got something like this in my markdown:\ndiv class=\"bk-root\" div class=\"bk-plotdiv\" id=\"4d4f8b4a-2299-47b4-be81-d951dca9511e\"div div This is another easy manual fix – remove the tabs and Markdown will interpret inline HTML and Pelican won’t have a problem with it either.\nIncorporating Additional CSS and JS Files into Pelican In a notebook, Bokeh will load the required CSS and JS files it needs to render plots in the browser. Once the file is converted to Markdown, then to HTML through Pelican, it’ll need to be pointed to the correct files again. I tried a few different things here, including the pelican_javascript plugin, but kept having issues configuring the settings and inserting the code in my templates. My final solution was to add custom metadata to my notebooks that referenced the files, then create references to those metadata within the templates. So I have two additional lines in my article metadata that reference the required files:\nBokehCSS: https://cdn.pydata.org/bokeh/dev/bokeh-0.12.5dev16.min.css BokehJS: https://cdn.pydata.org/bokeh/dev/bokeh-0.12.5dev16.min.js Then in my article template, I have this code in my HTML head:\n{% if article.bokehcss and article.bokehjs %} {{ article.bokehcss }}' {{ article.bokehjs }}\" {% endif %} Deploying to Github Pages Jekyll seemed hands-free to deploy to Github User pages, by comparison Pelican requires a few more steps. The Pelican docs recommend using a tool called ghp-import, but it was a little wonky for me with user pages. I’m not a git pro so I was probably doing something wrong, but it seemed weird to me to make a local branch in my Pelican repository that I was then pushing to another repository. Instead I used a git submodule and took a hint from this blog. This process consisted of creating a submodule in my output folder. From my Pelican folder, the following command does that:\n$ git submodule add https://github.com/username/username.github.io.git output This will also create a .gitmodules file, which we need to update to match the following:\n[submodule \"output\"] path = output url = https://github.com/username/username.github.io.git ignore = all This was my first experience using a git submodule and there were some issues, but the end result is a nested git repository connected to my github pages repository. Now when I want to update my site it’s add/commit/push from the main repo, then the same process from inside the output folder.\nRecap Jupyter Notebooks are great for doing data analysis and just need a little tweaking before they can be put on a blog generated with Pelican. The process described above uses nbconvert to convert a notebook to markdown, uses a bit of manual editing to format output correctly, and uses a git submodule to update my github pages repository. There’s still a bit of manual labor in this process and I’m sure some of it could be automated. If you’re thinking of doing the same, be on the lookout for nbconvert quirks, notebooks with dynamic content, issues hosting your content on github pages, and finding the right way to style your notebook input/output.\n","wordCount":"1104","inLanguage":"en","datePublished":"2017-03-17T00:00:00Z","dateModified":"2017-03-17T00:00:00Z","mainEntityOfPage":{"@type":"WebPage","@id":"https://www.peterbaumgartner.com/blog/jupyter-notebooks-for-pelican/"},"publisher":{"@type":"Organization","name":"Peter Baumgartner","logo":{"@type":"ImageObject","url":"https://www.peterbaumgartner.com/favicon.ico"}}}</script>
 </head>
-<body class="page type-blog has-sidebar">
-<div class=site><div id=sidebar class=sidebar>
-<a class=screen-reader-text href=#main-menu>Skip to Main Menu</a>
-<div class=container><section class="widget widget-about sep-after">
-<header>
+<body id=top>
+<script>localStorage.getItem("pref-theme")==="dark"?document.body.classList.add('dark'):localStorage.getItem("pref-theme")==="light"?document.body.classList.remove('dark'):window.matchMedia('(prefers-color-scheme: dark)').matches&&document.body.classList.add('dark')</script>
+<header class=header>
+<nav class=nav>
 <div class=logo>
-<a href=/>
-<img src=/images/LAZERS.jpg>
-</a>
-</div>
-<h2 class="title site-title">
-<a href=/>
-Peter Baumgartner
-</a>
-</h2>
-<div class=desc>
-Data Scientist
-</div>
-</header>
-</section>
-</div>
-<div class=sidebar-overlay></div>
-</div><div class=main><nav id=main-menu class="menu main-menu" aria-label="Main Menu">
-<div class=container>
-<a class=screen-reader-text href=#content>Skip to Content</a>
-<button id=sidebar-toggler class=sidebar-toggler aria-controls=sidebar>
-<span class=screen-reader-text>Toggle Sidebar</span>
-<span class=open><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-</span>
-<span class=close><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-</span>
+<a href=https://www.peterbaumgartner.com/ accesskey=h title="Peter Baumgartner (Alt + H)">Peter Baumgartner</a>
+<span class=logo-switches>
+<button id=theme-toggle accesskey=t title="(Alt + T)"><svg id="moon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg><svg id="sun" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentcolor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
 </button>
-<ul><li class=item>
-<a href=/>Home</a>
-</li><li class="item current">
-<a aria-current=page href=/blog/>Blog</a>
-</li><li class=item>
-<a href=/notebooks/>Notebooks</a>
-</li></ul>
-</div>
-</nav><div class=header-widgets>
-<div class=container></div>
-</div>
-<header id=header class="header site-header">
-<div class="container sep-after">
-<div class=header-info><p class="site-title title">Peter Baumgartner</p><p class="desc site-desc"></p>
-</div>
-</div>
-</header>
-<main id=content>
-<article lang=en class=entry>
-<header class="header entry-header">
-<div class="container sep-after">
-<div class=header-info>
-<h1 class=title>Some Tips for Using Jupyter Notebooks with Pelican</h1>
-</div>
-<div class=entry-meta>
-<span class=posted-on><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-<span class=screen-reader-text>Posted on </span>
-<time class=entry-date datetime=2017-03-17T00:00:00Z>2017-03-17</time>
-</span>
-<span class=reading-time><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 15 15"/></svg>
-6 mins read
 </span>
 </div>
+<ul id=menu>
+<li>
+<a href=https://www.peterbaumgartner.com/ title=Home>
+<span>Home</span>
+</a>
+</li>
+<li>
+<a href=https://www.peterbaumgartner.com/blog/ title=Blog>
+<span>Blog</span>
+</a>
+</li>
+<li>
+<a href=https://www.peterbaumgartner.com/notebooks/ title=Notebooks>
+<span>Notebooks</span>
+</a>
+</li>
+</ul>
+</nav>
+</header>
+<main class=main>
+<article class=post-single>
+<header class=post-header>
+<h1 class=post-title>
+Some Tips for Using Jupyter Notebooks with Pelican
+</h1>
+<div class=post-meta><span title="2017-03-17 00:00:00 +0000 UTC">March 17, 2017</span>
 </div>
 </header>
-<div class="container entry-content">
-<div class=note><strong>Note (2018-04-09): </strong>I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in <a href=https://github.com/chrisalbon/notes/blob/master/make.ipynb>this notebook</a> from Chris Albon.</div>
+<div class=post-content><div class=note><strong>Note (2018-04-09): </strong>I no longer use Pelican as the engine to build my blog, so you want be able to see parts of this workflow in this blog's repository. The insipiration for ideas in this post is captured in <a href=https://github.com/chrisalbon/notes/blob/master/make.ipynb>this notebook</a> from Chris Albon.</div>
 <br>
 <p>Switching static site generators is a great way to kill a few hours on the weekend. I was previously using Jekyll because it works seamlessly with Github Pages, but I&rsquo;m a python person so I figured I&rsquo;d learn something new and move everything over to Pelican. I had also wanted an organized way to publicly store notebooks, code snippets, and workflows I was using regularly. My current storage system was randomly distributing them among various local folders, my employer&rsquo;s gitlab instance, and Slack. Using a static site generator like Pelican, along with the category and tag system, seemed like a good way to publicly share and organize this content.</p>
 <p>I was inspired by <a href=https://chrisalbon.com/>Chris Albon&rsquo;s</a> great site and wanted to build something similar. You&rsquo;ll probably notice the theme and layout of this site are almost exactly the same. His site is built using Pelican and appeared to have a pretty good workflow for handling Jupyter Notebooks, which is the main feature I also need.</p>
-<h2 id=creating-jupyter-notebooks-for-pelican>Creating Jupyter Notebooks for Pelican</h2>
+<h2 id=creating-jupyter-notebooks-for-pelican>Creating Jupyter Notebooks for Pelican<a hidden class=anchor aria-hidden=true href=#creating-jupyter-notebooks-for-pelican>#</a></h2>
 <p>Pelican works by taking Markdown files and converting them to HTML, with formatting governed by Jinja templates. To get our notebook into markdown for Pelican, we can use <code>nbconvert</code> from the shell, like so:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ jupyter nbconvert --to markdown &lt;notebook.ipynb&gt;
 </code></pre></div><p>This should output a markdown version of the notebook, with the same filename and a <code>.md</code> extension, in the directory of the notebook.</p>
 <p>Pelican expects some <a href=http://docs.getpelican.com/en/latest/content.html#file-metadata>metadata</a> for each article &ndash; at minimum <code>Title</code> and <code>Date</code> are required. With a Jupyter Notebook, this markdown formatted metadata can be placed in the first cell of a notebook. An issue I had at this point is that <code>nbconvert</code> inserts a blank line at the beginning of the markdown file, and Pelican expects the first line to contain the metadata. This can be fixed manually by editing the markdown file with a code editor.</p>
-<h3 id=one-cool-trick-for-delineating-notebook-input-and-output>One Cool Trick for Delineating Notebook Input and Output</h3>
+<h3 id=one-cool-trick-for-delineating-notebook-input-and-output>One Cool Trick for Delineating Notebook Input and Output<a hidden class=anchor aria-hidden=true href=#one-cool-trick-for-delineating-notebook-input-and-output>#</a></h3>
 <p>I spent some time down a rabbit hole trying to figure our how Chris' blog styling puts a border around notebook input cells and leaves the output cells borderless. I had originally started by building my own theme and could not figure out what combination of Pelican/Pygments/nbconvert processes to use for this effect. After some time reworking the the template Chris uses into my own, I stumbled upon this jQuery magic at the bottom of the <code>base.html</code> template:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=color:#75715e>&lt;!-- This jQuery line finds any span that contains code highlighting classes and then selects the parent &lt;pre&gt; tag and adds a border. 
 </span><span style=color:#75715e>This is done as a workaround to visually distinguish the code inputs and outputs --&gt;</span>
@@ -101,13 +90,13 @@ Data Scientist
     <span style=color:#a6e22e>$</span>( <span style=color:#e6db74>&#34;.hll, .n, .c, .err, .s1, .ss, .bp, .vc, .vg, .vi, .il&#34;</span> ).<span style=color:#a6e22e>parent</span>( <span style=color:#e6db74>&#34;pre&#34;</span> ).<span style=color:#a6e22e>css</span>( <span style=color:#e6db74>&#34;border&#34;</span>, <span style=color:#e6db74>&#34;1px solid #DEDEDE&#34;</span> );
 &lt;/<span style=color:#f92672>script</span>&gt;
 </code></pre></div><p>Brilliant. Pygments only applies those classes if you declare a lexer for a code block. Since <code>nbconvert</code> takes input cells and declares them as python and output cells are just indented without a declared lexer, this works perfect.</p>
-<h3 id=adding-in-dynamic-notebook-content>Adding in Dynamic Notebook Content</h3>
+<h3 id=adding-in-dynamic-notebook-content>Adding in Dynamic Notebook Content<a hidden class=anchor aria-hidden=true href=#adding-in-dynamic-notebook-content>#</a></h3>
 <p><a href=http://bokeh.pydata.org/en/latest/>Bokeh</a> is a visualization tool I use often to make interactive charts. It works well in notebooks since notebooks are able to render dynamic HTML and javascript in output cells. However, that dynamic content isn&rsquo;t easily be translated into markdown. The conversion process with <code>nbconvert</code> takes any HTML code used to build the output and translates it to an indented code block. With Bokeh plots, I got something like this in my markdown:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>    &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;bk-root&#34;</span>&gt;
         &lt;<span style=color:#f92672>div</span> <span style=color:#a6e22e>class</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;bk-plotdiv&#34;</span> <span style=color:#a6e22e>id</span><span style=color:#f92672>=</span><span style=color:#e6db74>&#34;4d4f8b4a-2299-47b4-be81-d951dca9511e&#34;</span>&gt;&lt;/<span style=color:#f92672>div</span>&gt;
     &lt;/<span style=color:#f92672>div</span>&gt;
 </code></pre></div><p>This is another easy manual fix &ndash; remove the tabs and Markdown will interpret inline HTML and Pelican won&rsquo;t have a problem with it either.</p>
-<h3 id=incorporating-additional-css-and-js-files-into-pelican>Incorporating Additional CSS and JS Files into Pelican</h3>
+<h3 id=incorporating-additional-css-and-js-files-into-pelican>Incorporating Additional CSS and JS Files into Pelican<a hidden class=anchor aria-hidden=true href=#incorporating-additional-css-and-js-files-into-pelican>#</a></h3>
 <p>In a notebook, Bokeh will load the required CSS and JS files it needs to render plots in the browser. Once the file is converted to Markdown, then to HTML through Pelican, it&rsquo;ll need to be pointed to the correct files again. I tried a few different things here, including the <a href=https://github.com/mortada/pelican_javascript>pelican_javascript</a> plugin, but kept having issues configuring the settings and inserting the code in my templates. My final solution was to add custom metadata to my notebooks that referenced the files, then create references to those metadata within the templates. So I have two additional lines in my article metadata that reference the required files:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-python data-lang=python>BokehCSS: https:<span style=color:#f92672>//</span>cdn<span style=color:#f92672>.</span>pydata<span style=color:#f92672>.</span>org<span style=color:#f92672>/</span>bokeh<span style=color:#f92672>/</span>dev<span style=color:#f92672>/</span>bokeh<span style=color:#f92672>-</span><span style=color:#ae81ff>0.12.5</span>dev16<span style=color:#f92672>.</span>min<span style=color:#f92672>.</span>css
 BokehJS: https:<span style=color:#f92672>//</span>cdn<span style=color:#f92672>.</span>pydata<span style=color:#f92672>.</span>org<span style=color:#f92672>/</span>bokeh<span style=color:#f92672>/</span>dev<span style=color:#f92672>/</span>bokeh<span style=color:#f92672>-</span><span style=color:#ae81ff>0.12.5</span>dev16<span style=color:#f92672>.</span>min<span style=color:#f92672>.</span>js
@@ -116,7 +105,7 @@ BokehJS: https:<span style=color:#f92672>//</span>cdn<span style=color:#f92672>.
     &lt;link rel=&#39;stylesheet&#39; href=&#39;<span style=color:#75715e>{{</span> article.bokehcss <span style=color:#75715e>}}</span>&#39;&gt;
     &lt;script src=&#34;<span style=color:#75715e>{{</span> article.bokehjs <span style=color:#75715e>}}</span>&#34;&gt;&lt;/script&gt;
 <span style=color:#75715e>{%</span> <span style=color:#66d9ef>endif</span> <span style=color:#75715e>%}</span>
-</code></pre></div><h2 id=deploying-to-github-pages>Deploying to Github Pages</h2>
+</code></pre></div><h2 id=deploying-to-github-pages>Deploying to Github Pages<a hidden class=anchor aria-hidden=true href=#deploying-to-github-pages>#</a></h2>
 <p>Jekyll seemed hands-free to deploy to Github User pages, by comparison Pelican requires a few more steps. The Pelican docs recommend using a tool called <a href=http://docs.getpelican.com/en/latest/tips.html#user-pages>ghp-import</a>, but it was a little wonky for me with user pages. I&rsquo;m not a git pro so I was probably doing something wrong, but it seemed weird to me to make a local branch in my Pelican repository that I was then pushing to another repository. Instead I used a git submodule and took a hint from <a href=http://hernantz.github.io/how-to-publish-a-pelican-site-on-github.html>this blog</a>. This process consisted of creating a submodule in my output folder. From my Pelican folder, the following command does that:</p>
 <div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ git submodule add https://github.com/username/username.github.io.git output
 </code></pre></div><p>This will also create a <code>.gitmodules</code> file, which we need to update to match the following:</p>
@@ -125,36 +114,25 @@ BokehJS: https:<span style=color:#f92672>//</span>cdn<span style=color:#f92672>.
     url <span style=color:#f92672>=</span> https://github.com/username/username.github.io.git
     ignore <span style=color:#f92672>=</span> all
 </code></pre></div><p>This was my first experience using a git submodule and there were some <a href=http://stackoverflow.com/questions/24603563/error-with-git-already-exists-and-is-not-a-valid-git-repo>issues</a>, but the end result is a nested git repository connected to my github pages repository. Now when I want to update my site it&rsquo;s add/commit/push from the main repo, then the same process from inside the output folder.</p>
-<h2 id=recap>Recap</h2>
+<h2 id=recap>Recap<a hidden class=anchor aria-hidden=true href=#recap>#</a></h2>
 <p>Jupyter Notebooks are great for doing data analysis and just need a little tweaking before they can be put on a blog generated with Pelican. The process described above uses nbconvert to convert a notebook to markdown, uses a bit of manual editing to format output correctly, and uses a git submodule to update my github pages repository. There&rsquo;s still a bit of manual labor in this process and I&rsquo;m sure some of it could be automated. If you&rsquo;re thinking of doing the same, be on the lookout for nbconvert quirks, notebooks with dynamic content, issues hosting your content on github pages, and finding the right way to style your notebook input/output.</p>
 </div>
-<footer class=entry-footer>
-<div class="container sep-before">
-</div>
+<footer class=post-footer>
 </footer>
 </article>
-<nav class=entry-nav>
-<div class=container><div class="prev-entry sep-before">
-<a href=/blog/pydata-carolinas-recap/>
-<span aria-hidden=true><svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="20" y1="12" x2="4" y2="12"/><polyline points="10 18 4 12 10 6"/></svg>
-Previous</span>
-<span class=screen-reader-text>Previous post: </span>PyData Carolinas Recap & Presentation Reflection</a>
-</div><div class="next-entry sep-before">
-<a href=/blog/output-transformations-roc-impact/>
-<span class=screen-reader-text>Next post: </span>The Impact of Model Output Transformations on ROC<span aria-hidden=true>Next<svg class="icon" viewbox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" aria-hidden="true"><line x1="4" y1="12" x2="20" y2="12"/><polyline points="14 6 20 12 14 18"/></svg>
-</span>
-</a>
-</div></div>
-</nav>
 </main>
-<footer id=footer class=footer>
-<div class="container sep-before"><div class=copyright>
-<p></p>
-</div>
-</div>
+<footer class=footer>
+<span>&copy; 2021 <a href=https://www.peterbaumgartner.com/>Peter Baumgartner</a></span>
+<span>
+Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+        <a href=https://git.io/hugopapermod rel=noopener target=_blank>PaperMod</a>
+</span>
 </footer>
-</div>
-</div><script>window.__assets_js_src="/assets/js/"</script>
-<script src=/assets/js/main.67d669ac.js></script><script src=/js/custom.js></script>
+<a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 6" fill="currentcolor"><path d="M12 6H0l6-6z"/></svg>
+</a>
+<script>let menu=document.getElementById('menu');menu&&(menu.scrollLeft=localStorage.getItem("menu-scroll-position"),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}),document.querySelectorAll('a[href^="#"]').forEach(a=>{a.addEventListener("click",function(b){b.preventDefault();var a=this.getAttribute("href").substr(1);window.matchMedia('(prefers-reduced-motion: reduce)').matches?document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(a)}']`).scrollIntoView({behavior:"smooth"}),a==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${a}`)})})</script>
+<script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script>
+<script>document.getElementById("theme-toggle").addEventListener("click",()=>{document.body.className.includes("dark")?(document.body.classList.remove('dark'),localStorage.setItem("pref-theme",'light')):(document.body.classList.add('dark'),localStorage.setItem("pref-theme",'dark'))})</script>
 </body>
 </html>
