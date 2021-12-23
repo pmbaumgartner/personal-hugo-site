@@ -9,6 +9,7 @@ draft: false
 <meta name="twitter:creator" content="@pmbaumgartner">
 <meta name="twitter:title" content="Ways I Use Testing as a Data Scientist">
 <meta name="twitter:description" content="How I think about testing code & testing data">
+<meta name="twitter:image" content="https://i.ibb.co/LYz2DyQ/1537215809678.jpg">
 
 In my work, writing tests serves three purposes: *making sure things work*, *documenting my understanding*, *preventing future errors*. When I was starting out with testing, I had a hard time understanding what I should be writing tests for. As a beginner, I just assumed my code worked--I was staring right at the output in a notebook and visually inspecting that the output was correct.
 
