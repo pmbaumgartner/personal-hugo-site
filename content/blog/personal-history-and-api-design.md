@@ -4,6 +4,13 @@ date: 2022-01-16T07:39:47-05:00
 draft: false
 ---
 
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@pmbaumgartner">
+<meta name="twitter:creator" content="@pmbaumgartner">
+<meta name="twitter:title" content="My Personal History with NLP or Side-Effects of Good API Design">
+<meta name="twitter:description" content="On Word Clouds, Don Norman, and Good API Design">
+<meta name="twitter:image" content="https://i.ibb.co/X8PXNdL/Peter-Avatar-Final.png">
+
 I'm joining Explosion AI as a Machine Learning Engineer. This is my first  career move in 6 years and I thought I'd take some time to reflect on my personal experience in data science and natural language processing. 
 
 Since I've been in data science, I've been working in professional services/consulting environments. My last job was working mostly with social scientists and researchers to incorporate machine learning into their research projects. Consulting takes the "jack of all trades, master of none" spirit of data science and cranks it up to 11 by having to work across multiple projects. In my career, I've probably been on at least 50 different projects, giving me a lot of different exposure to different domains and also giving me a broad experience for "what works" on projects.
