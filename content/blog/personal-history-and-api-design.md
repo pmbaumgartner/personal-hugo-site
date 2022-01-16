@@ -1,6 +1,6 @@
 ---
 title: "My Personal History with NLP or Side-Effects of Good API Design"
-date: 2022-01-17T07:39:47-05:00
+date: 2022-01-16T07:39:47-05:00
 draft: false
 ---
 
