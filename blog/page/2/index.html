@@ -16,7 +16,7 @@
 <link rel=mask-icon href=https://www.peterbaumgartner.com/safari-pinned-tab.svg>
 <meta name=theme-color content="#2e2e33">
 <meta name=msapplication-TileColor content="#2e2e33">
-<meta name=generator content="Hugo 0.92.0">
+<meta name=generator content="Hugo 0.92.1">
 <link rel=alternate type=application/rss+xml href=https://www.peterbaumgartner.com/blog/index.xml>
 <noscript>
 <style>#theme-toggle,.top-link{display:none}</style>
@@ -65,6 +65,19 @@
 <header class=page-header>
 <h1>Blog</h1>
 </header>
+<article class=post-entry>
+<header class=entry-header>
+<h2>How to Test IPython Magic
+</h2>
+</header>
+<section class=entry-content>
+<p>TL;DR If you want to test ipython magics you can do the following:
+Import the global ipython app with from IPython.testing.globalipapp import get_ipython Crete an object with the global ipython app with ip = get_ipython() Load your magic with ip.magic('load_ext your_magic_name') Run your magic with ip.run_line_magic('your_magic_function', 'your_magic_arguments') (Optional) Access results of your magic with ip.user_ns (ipython user namespace). An example test using pytest looks like this:
+import pytest from IPython....</p>
+</section>
+<footer class=entry-footer><span title="2018-02-16 00:00:00 +0000 UTC">February 16, 2018</span></footer>
+<a class=entry-link aria-label="post link to How to Test IPython Magic" href=https://www.peterbaumgartner.com/blog/testing-ipython-magics/></a>
+</article>
 <article class=post-entry>
 <header class=entry-header>
 <h2>An Exploration in Earth & Word Movers Distance
