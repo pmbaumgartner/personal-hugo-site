@@ -4,6 +4,13 @@ date: 2022-01-28T20:19:35-05:00
 draft: false
 ---
 
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@pmbaumgartner">
+<meta name="twitter:creator" content="@pmbaumgartner">
+<meta name="twitter:title" content="Python Virtual Environment & Packaging Workflow">
+<meta name="twitter:description" content="I use conda and poetry. That's it.">
+<meta name="twitter:image" content="https://i.ibb.co/LYz2DyQ/1537215809678.jpg">
+
 In this blog post I'll walk you through the workflow I use for managing virtual environments and creating python packages.
 
 I have a long list of criteria I've used to develop this workflow and have honed it over time since the start of my career as a data scientist. The factors that I've determined are critically important for choosing these tools are as follows:
