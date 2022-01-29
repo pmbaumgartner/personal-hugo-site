@@ -15,15 +15,15 @@ In this blog post I'll walk you through the workflow I use for managing virtual 
 
 I have a long list of criteria I've used to develop this workflow and have honed it over time since the start of my career as a data scientist. The factors that I've determined are critically important for choosing these tools are as follows:
 
-- It works for me
+- They work for me
 
 Yep, that's it. I haven't actually done a thorough evaluation of what's available. All I know is that this works for me and I hope if you're reading this it'll help you find something that works for you.
 
 ## Managing Python Versions & Virtual Environments: `conda`
 
-I use `conda` (installed via [`miniconda`](https://docs.conda.io/en/latest/miniconda.html)) to manage virtual environments and python versions installed on my computer. This mostly a historical artifact: when I started programming as a data scientist, the easiest way to get up and running with python was through the Anaconda installer. At the time (2014ish), there were some packages that were also easier to install via a `conda install` rather than a `pip install`, but I don't think that's been true since about 2017. 
+I use `conda` (installed via [`miniconda`](https://docs.conda.io/en/latest/miniconda.html)) to manage virtual environments and python versions installed on my computer. This mostly a historical artifact: when I started programming as a data scientist, the easiest way to get up and running with python was through the Anaconda installer. At the time (2014ish), there were some packages that were also easier to install via a `conda install` rather than a `pip install`, but I don't think that's been true since about 2017[^1]. 
 
-In short, I create environments with `conda`, but then use `pip install` and a `requirements.txt` inside the environment. I do _not_ use `conda`'s `environment.yml` file except in rare circumstances.
+In short, I create environments with `conda`, then use `pip install` and a `requirements.txt` inside the environment. I do _not_ use `conda`'s `environment.yml` file except in rare circumstances.
 
 The command to create a new environment is `conda create -n <environment_name> python=<python_version>`. I do this often so I created a bash function for it (put this in your `~/.bash_profile` or `~/.zshrc`).
 
@@ -47,7 +47,7 @@ If I'm doing a project that's more analysis focused, or won't result in a python
 
 This is a newer addition to my workflow. For most of my work I'm not creating a python package, I'm just following the previous process with `conda` and making sure my repositories include a `requirements.txt` that allows someone else to execute my code.
 
-More recently I have been creating packages using `poetry`. Here's the main thing I like: it sets everything up so that relative and absolute imports ✨just work✨. Every time I've tried to create a package manually I get lost for days in Stack Overflow [`ImportError` hell](https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time).[^1] The side effect of imports working correctly is that you also don't have to worry about some `PATH` nonsense with your test suite! It sets up `pytest` and gives an example test that also ✨just works✨.
+More recently I have been creating packages using `poetry`. Here's the main thing I like: it sets everything up so that relative and absolute imports ✨just work✨. Every time I've tried to create a package manually I get lost for days in Stack Overflow [`ImportError` hell](https://stackoverflow.com/questions/14132789/relative-imports-for-the-billionth-time).[^2] The side effect of imports working correctly is that you also don't have to worry about some `PATH` nonsense with your test suite! It sets up `pytest` and gives an example test that also ✨just works✨.
 
 Here's how I use `poetry` with `conda`. I create a new virtual environment _first_, where the python version in that environment is the minimum I'll choose to support for that package. Then I'll activate that environment and `pip install poetry`. The side effect of this is that in the `pyproject.toml` file the python version will be set at the version you chose for that environment. This is better than installing `poetry` inside your `base` environment because it'll use whatever version of python is there and that might not be what you want. After this, I will then use `poetry` for package and dependency management (**not** `pip`) by adding new packages with `poetry add <package>` so that the required packages are tracked in the `pyproject.toml` and `poetry.lock` files.
 
@@ -67,4 +67,6 @@ If I'm working on a package that becomes a bit more stable and I want to publish
 
 That's it! That's how I use `conda` and `poetry` to manage python virtual environments and create python packages. 
 
-[^1]: Remember my only criteria for this workflow is that it **works**. I have _no idea_ what it is doing that makes it work and what I was doing incorrectly before that made it not work. I am [DHH's dog](https://twitter.com/dhh/status/1463822670131351555?lang=en). 
+[^1]: I was curious why this was so I did a little digging. I think can pin it down to the invention of wheels with binaries (circa 2013). This meant that the underlying non-python libraries used for things like numpy could be included in the package when things were installed with `pip`. Until this time, the ability to install system-specific precompiled binaries was `conda`'s selling point. I think it took a few years for packages in the data science python ecosystem to actually implement this (and users to realize it) before this became the mainstream way to install python packages if you were doing data science / scientific computing. For more, see this [Stack Overflow answer](https://stackoverflow.com/questions/20994716/what-is-the-difference-between-pip-and-conda/68897551#68897551). For more on wheels, check [this RealPython article](https://realpython.com/python-wheels/#python-packaging-made-better-an-intro-to-python-wheels).
+
+[^2]: Remember my only criteria for this workflow is that it **works**. I have _no idea_ what it is doing that makes it work and what I was doing incorrectly before that made it not work. I am [DHH's dog](https://twitter.com/dhh/status/1463822670131351555?lang=en). 
