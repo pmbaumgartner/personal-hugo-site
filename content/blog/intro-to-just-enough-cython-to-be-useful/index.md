@@ -93,7 +93,7 @@ cpdef int count_increases_cy(list depths):
     return increase_counter
 ```
 
-First is the the `cpdef` keyword to define the function. This essentially creates a C function, with python syntax, and also creates a python wrapper for that function. If we just used `cdef` for the fuction, we would define a C function but it wouldn't be callable from python. Defining functions with `cdef` is helpful if you had smaller functions that were used inside of any `cpdef` functions that could operate soley on C types, and you knew they would not need to be called from python.
+First is the the `cpdef` keyword to define the function. This essentially creates a C function, with python syntax, and also creates a python wrapper for that function. If we just used `cdef` for the fuction, we would define a C function but it wouldn't be callable from python. Defining functions with `cdef` is helpful if you had smaller functions that were used inside of any `cpdef` functions that could operate solely on C types, and you knew they would not need to be called from python.
 
 After `cpdef` you'll see the the `int` type, which in Cython syntax declares the return type of the function. One thing you'll notice is that the types are in a different order than they are if you're used to typing things for `mypy` in python. This also applies to the function arguments, which take their type before their name—in this case we're declaring `depths` as a `list`, but the keyword comes before the name, not after.
 
