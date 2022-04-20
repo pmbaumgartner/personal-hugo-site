@@ -18,7 +18,7 @@ There's more detail and clarifications of Vicki's position in the replies, and y
 
 My career has been in professional services / consulting organizations, so I've worked on many projects requiring many different skills. My advice to new employees is always "say yes to most opportunities," which is contrary to my objection about telling beginners to learn everything. It's even a point for Vicki's argument that you might not have a choice depending on your job—in this case, a beginner might not have a choice of what they learn because of a client's tech stack.
 
-The reason I give this advice is that when you're new to a field you don't really know what you'll enjoy or what you're good at. A good solution to this is to should try and do is gain awareness of as much of the field as possible so you get a taste of the different skills and experiences you might have. Your experience doing any type of work is much more valuable than any specific advice you receive or any blog posts of the "types of data scientists" or "all data scientists should learn X" genre.
+The reason I give this advice is that when you're new to a field you don't really know what you'll enjoy or what you're good at. A good solution to this is to gain awareness of as much of the field as possible so you get a taste of the different skills and experiences you might have. Your experience doing any type of work is much more valuable than any specific advice you receive or any blog posts of the "types of data scientists" or "all data scientists should learn X" genre.
 
 You shouldn't go blindly into any opportunity though. There are two things you need to think about when taking this approach: your search strategy and your exit strategy.
 
