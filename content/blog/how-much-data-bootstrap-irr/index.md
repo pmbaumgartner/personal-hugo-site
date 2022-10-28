@@ -6,8 +6,8 @@ draft: false
 <meta name="twitter:card" content="summary">
 <meta name="twitter:site" content="@pmbaumgartner">
 <meta name="twitter:creator" content="@pmbaumgartner">
-<meta name="twitter:title" content='"How much data do I need to label?" - The Bootstrapped Inter-Rater Reliability Answer'>
-<meta name="twitter:description" content="Let's do the bootstrap!">
+<meta name="twitter:title" content='"How much data do I need to label?"'>
+<meta name="twitter:description" content="Let's do the bootstrap and find out!">
 <meta name="twitter:image" content="https://i.ibb.co/0rNMYXV/facesweird.png">
 
 One of the most frequent questions I get is "How much data to I need to label?" When I get this question, I usually ask a few questions in return: what's the base rate of the outcome that you're labeling? Are you experimenting or building a production-ready system? How ambiguous or well-defined is your annotation task? Is all of your data ready to be annotated[^1], or do you need to figure out some preprocessing to get an annotation-ready dataset?
