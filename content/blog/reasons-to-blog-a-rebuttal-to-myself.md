@@ -4,6 +4,13 @@ date: 2022-10-05T11:24:56-04:00
 draft: false
 ---
 
+<meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@pmbaumgartner">
+<meta name="twitter:creator" content="@pmbaumgartner">
+<meta name="twitter:title" content="Reasons to Blog: A Rebuttal to Myself">
+<meta name="twitter:description" content="A rebuttal to reasons I tell myself not to blog.">
+<meta name="twitter:image" content="https://i.postimg.cc/fyQDfwD2/img2.jpg">
+
 > “Writing has so much to give, so much to teach, so many surprises. That thing you had to force yourself to do—the actual act of writing—turns out to be the best part. It’s like discovering that while you thought you needed the tea ceremony for the caffeine, what you really needed was the tea ceremony. The act of writing turns out to be its own reward.” - Anne Lamott 
 
 Often times I find myself with a seedling of a blog idea, but end up not executing that idea. This blog post is a reminder to myself—and for others who read—of reasons to publish that blog. This is also a living blog post that I'll modify over time. 
