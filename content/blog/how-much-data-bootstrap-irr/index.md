@@ -66,18 +66,18 @@ For this label the variability of the distributions is much wider across all ite
 
 ### Summary & Implications
 
-Double annotating 400 and 700 examples in a binary classification task seems like a lot, right? But think of the costs of proceeding without an analysis like this: you end up wasting a lot of time and resources on generating a dataset on an under-specified task and generating lots of [label errors](https://www.surgehq.ai/blog/30-percent-of-googles-reddit-emotions-dataset-is-mislabeled) anyways. The original dataset contains 58,011 individual comments and 211,225 labeled examples across the multiple annotators. By comparison, 700 is nothing - even with double labeling it's not even 1% of the total number of labeled examples.
+Double annotating 400 and 700 examples in a binary classification task seems like a lot, right? But think of the costs of proceeding without an analysis like this: we end up wasting a lot of time and resources on generating a dataset on an under-specified task and generating lots of [label errors](https://www.surgehq.ai/blog/30-percent-of-googles-reddit-emotions-dataset-is-mislabeled) anyways. The original dataset contains 58,011 individual comments and 211,225 labeled examples across the multiple annotators. By comparison, 700 is nothing - even with double labeling it's not even 1% of the total number of labeled examples.
 
-One thing we haven't yet done is use our estimates of `κ` either. They have a use beyond understanding how much agreement our task has. They reported[^2] `κ` in the appendix of the original GoEmotions paper. If you plot their values of kappa against the F1 scores for each label, we might notice something interesting.
+One thing we haven't yet done is use our estimates of `κ` either. They have a use beyond understanding how much agreement our task has. They reported[^2] `κ` in the appendix of the original GoEmotions paper. If we plot their values of kappa against the F1 scores for each label, we might notice something interesting.
 
 ![Kappa and F1 Scores from GoEmotions labels](kappaf1.svg)
 
 The kappa values are very strongly correlated (φ=0.904) with the F1 scores from the model. Because they're that strongly correlated, in this instance, we actually get a fairly reliable proxy for how the model is going to perform. If we were actually starting an annotation task from scratch, we likely won't even have a test set yet, so this is even more useful to make modeling, annotation, and problem framing decisions[^4]!
 
-In summary: how much data you need to label depends on characteristics inherent to your task and data, and you often don't know these characteristics until you've completed the project. With the bootstrap, you can incrementally gain an understanding of these characteristics and make decisions accordingly as you annotate data. 
+In summary: how much data you need to label depends on characteristics inherent to your task and data, and you often don't know these characteristics until you've completed the project. With the bootstrap and IRR measures, you can incrementally gain an understanding of these characteristics and make decisions accordingly as you annotate data. 
 
 
 [^1]: I'm going to use "annotation" and "labeling" interchangeably throughout this post.
 [^2]: Their calculation of kappa in the paper is so wrong, I'd consider it a proxy for the true agreement. However, it's probably "close enough" to the real agreement for our use.
 [^3]: One possible way to alleviate this limitation is to adopt an idea like _patience_ when using [early stopping](https://machinelearningmastery.com/how-to-stop-training-deep-neural-networks-at-the-right-time-using-early-stopping/) for training neural networks. Rather than stopping at the first instance of our criteria, we should wait until the 2nd or 3rd time in a row we meet the criteria to be sure it's not just a fluke of this sample.
-[^4]: Keep in mind that if you wanted to do something like this, the aforementioned limitations around the sample ordering and sample size still apply. I'd probably up the CI to 95% or decrease the width of our threshold to something like 0.1.
+[^4]: Keep in mind that if we wanted to do something like this, the aforementioned limitations around the sample ordering and sample size still apply. I'd probably up the CI to 95% or decrease the width of our threshold to something like 0.1.
