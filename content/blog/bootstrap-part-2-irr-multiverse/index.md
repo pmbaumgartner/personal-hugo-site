@@ -60,5 +60,12 @@ Another option is to explore the source of the underlying disagreement in depth.
 
 Finally, we could always change the stopping criteria to be more strict - we could increase the confidence interval to 95% or reduce the width to something like 0.15. However, the set of failure modes with low agreement might still occur here: because of the annotations available in those universes, we'd still likely see very tight CIs at 100 samples.
 
+## Wrap Up
+
+Now that this topic spans two blog posts, let's summarize the problem and what we've learned.
+
+**Summary:** For machine learning projects, we want to know how much data we need to annotate to get an accurate model. However, we don't know a lot of aspects about our problem—for example the base rate or difficulty of the annotation task—that would allow us to make a decision about how much data we need to annotate. Using inter-rater reliability (IRR) or inner-annotator agreement (IAA) metrics calculated from two or more annotators performing the annotation task can give us some information about our problem that will give us a better understanding of how much data we need to annotate. These metrics, when combined with bootstrap sampling, can be used to define a stopping criteria for an annotation project, allowing us to annotate _just enough_ data to give us confidence in our metrics. A limitation of this methodology is that estimation is sensitive to initial conditions, specifically the order that examples are annotated. Because of this, we should be cautious in interpreting unlikely outcomes like no agreement and investigate disagreements in-depth. And of course, when in doubt: annotate more data.
+
+
 [^1]:  A commonly overlooked mistake.
 [^2]:  This will change depending on the random seed used.
