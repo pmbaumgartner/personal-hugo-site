@@ -3,7 +3,7 @@ title: 'Bootstrapped Sampling for Annotation: A Multiverse of Madness?'
 date: 2022-11-10T04:00:00-04:00
 draft: false
 ---
-<meta name="twitter:card" content="summary">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@pmbaumgartner">
 <meta name="twitter:creator" content="@pmbaumgartner">
 <meta name="twitter:title" content='Bootstrapped Sampling for Annotation: A Multiverse of Madness?'>
