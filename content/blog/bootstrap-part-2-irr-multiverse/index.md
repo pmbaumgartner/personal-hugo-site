@@ -9,6 +9,7 @@ draft: false
 <meta name="twitter:title" content='Bootstrapped Sampling for Annotation: A Multiverse of Madness?'>
 <meta name="twitter:description" content="Giving Dr. Strange some company.">
 <meta name="twitter:image" content="https://i.ibb.co/8bbhQYq/multiverse-mountains.png">
+<meta property="og:image" content="https://i.ibb.co/8bbhQYq/multiverse-mountains.png">
 
 > *Note*: If you haven't read my [prior post](/blog/how-much-data-bootstrap-irr) on the bootstrap and inter-rater reliability, this post probably won't make sense. Go read that first.
 
