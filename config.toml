@@ -46,6 +46,10 @@ url = "https://github.com/pmbaumgartner/"
 name = "LinkedIn"
 url = "https://www.linkedin.com/in/peterbaumgartner/"
 
+[[params.socialIcons]]
+name = "Mastodon"
+url = "https://fosstodon.org/@pbaumgartner"
+
 [params.info]
 description = ""
 title404 = "Nothing's here!"
