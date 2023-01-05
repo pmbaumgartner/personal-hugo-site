@@ -9,6 +9,7 @@ draft: false
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://www.peterbaumgartner.com/blog/wrapping-a-rust-crate-in-a-python-package/" />
 <meta name="image" property="og:image" content="https://i.postimg.cc/NFhNpxK5/crapwrap.jpg" />
+<meta name="author" content="Peter Baumgartner"> 
 
 In this blog post I'll walk through step-by-step how I wrapped the [`voronoice`](https://docs.rs/voronoice/0.2.0/voronoice/) Rust crate and created a Python package with it. It's written as a development journal, where I walk through my thought process and document the code and errors we're getting along the way. My hope is that this makes the process a little more approachable for beginners and adds some transparency to the process.
 
