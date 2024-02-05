@@ -11,7 +11,7 @@ draft: false
 <meta property="og:image" content="https://i.postimg.cc/XvnnBCny/DALL-E-2024-02-05-07-55-58-Visualize-a-cartoonish-friendly-robot-seated-at-a-colorful-desk-surro.webp" />
 
 
-Recently I've been using Quarto to generate HTML reports to share with non-technical team members and I'd like to share a workflow and configuration that has worked for me.
+Recently I've been using Quarto to generate HTML reports to share with stakeholders and I'd like to share a workflow and configuration that has worked for me.
 
 ## Background
 Most of my programming I do in VSCode. A typical workflow involves  using an IPython REPL for exploratory coding, organizing commonly used code into a package, and creating CLI functions with `typer` as an abstraction for common tasks. This approach solves 90% of my problems on data science projects and gives me a replicable workflow that's easily modified. However, when it comes to reporting for things like model evaluation, I didn't have a satisfying workflow (until now). Reporting usually involves lots of tables, visualizations, examples, and narrative that need to be connected in some way. Previously I've tried to shoehorn these various components into my workflow typically by creating single-use scripts for intermediate data processing and outputting images of visualizations, then attempting some hacky solution for putting them in a markdown document. It wasn't really working for me, but then I discovered Quarto, and it has become my go-to solution for reporting evaluations.
@@ -66,7 +66,7 @@ And if a visualization or figure:
 # | fig-cap: Model Evaluation Comparision
 ```
 
-In common across both cell types is setting `include: true` and `echo: false`[^1]. The `include` setting overrides my front-matter setting and displays the cell. Without `echo: false`, the code used to generate the visualization would also be displayed. Since I am delivering reports to non-technical audiences, and the relevant code is only for the visualization, I do not want to display the code to the reader.
+In common across both cell types is setting `include: true` and `echo: false`[^1]. The `include` setting overrides my front-matter setting and displays the cell. Without `echo: false`, the code used to generate the visualization would also be displayed. Since I am delivering reports to a lay audience, and the relevant code is only for the visualization, I do not want to display the code to the reader.
 
 Also in common is the `label`. With Quarto, if you prefix a [tabular](https://quarto.org/docs/authoring/tables.html#cross-references) output with `tbl-` or a [figure](https://quarto.org/docs/authoring/figures.html) with `fig-`, it will do three important things: automatically number that table, allow you to cross reference that table in markdown, and apply table or figure specific styling. 
 
