@@ -8,7 +8,7 @@ draft: false
 <meta property="og:description" content="Effective Evaluation and Reporting with Quarto in Python" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://peterbaumgartner.com/blog/reporting-with-quarto/" />
-<meta property="og:image" content="https://i.postimg.cc/XvnnBCny/DALL-E-2024-02-05-07-55-58-Visualize-a-cartoonish-friendly-robot-seated-at-a-colorful-desk-surro.webp" />
+<meta property="og:image" content="https://i.postimg.cc/02ByHLvT/DALL-E-2024-02-05-07-55-58-Visualize-a-cartoonish-friendly-robot-seated-at-a-colorful-desk-surro.jpg" />
 
 
 Recently I've been using Quarto to generate HTML reports to share with stakeholders and I'd like to share a workflow and configuration that has worked for me.
