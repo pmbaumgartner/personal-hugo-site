@@ -24,7 +24,7 @@ defaultContentLanguage = "en"
 [params.profileMode]
 enabled = true
 title = "Peter Baumgartner"
-subtitle = "Data Scientist & NLP Engineer"
+subtitle = "Data Scientist & Machine Learning Engineer"
 imageUrl = "https://i.ibb.co/LYz2DyQ/1537215809678.jpg"
 imageTitle = "Peter Baumgartner"
 imageWidth = 120
@@ -58,7 +58,7 @@ title404 = "Nothing's here!"
 favicon = "favicon.ico"
 customCSS = ["css/custom.css"]
 customJS = ["js/custom.js"]
-gopher = "" # used in 404 template ( Generator: https://gopherize.me )
+gopher = ""                    # used in 404 template ( Generator: https://gopherize.me )
 
 [params.settings]
 # date & time format: https://golang.org/pkg/time/
