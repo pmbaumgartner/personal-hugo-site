@@ -4,7 +4,7 @@ date: 2026-06-13T10:29:16-04:00
 draft: false
 ---
 
-**tl;dr**: Evaluate agentic tooling in realistic end-to-end agentic tasks, not in isolation. At the task level, costs are driven more by the persistence of context through many turns than by the token count of single turns.
+**tl;dr**: Evaluate agentic tooling in realistic end-to-end agentic tasks, not in isolation. At the task level, costs are driven more by the persistence of context through many turns than by the token count of any single turn.
 
 ## Intro 
 
@@ -13,7 +13,6 @@ Organizations are [entering the tokenmaxxing hangover](https://finance.yahoo.com
 I'm not an organization, but I'd love to use fewer tokens as well! As a Claude Pro subscriber I'd love to get more than 1.5 Opus 4.8 runs out of my session limit. 
 
 To that end, I ran an experiment with 4 tools I know of that claim to reduce token usage and built an evaluation harness to do so. 
-
 
 ## The Tools and Their Claims
 
@@ -49,9 +48,11 @@ This was incomplete in a few very important ways. The biggest shift in thinking 
 cost ≈ Σ (size × turns it stays in context)
 ```
 
-The other part missing from my understanding was the cache. As an oversimplification: 1000 tokens at turn 10 costs as much as 100 tokens in context since turn 1.
+I'll call "turns it stays in context" the `persistence` of the context.
 
-The flip side is even more important: tokens added to the context early in the run that are irrelevant, or not fully relevant to the task, are the most costly. Reading in a 1000 line file to edit only 20 lines, especially early in a task, is where waste comes from.
+The other part missing from my understanding was the cache. Providers have slight differences in the cache mechanics and cost differences, but in general they operate the same: a cache read costs 10% of the token input costs. This matters for our idea of persistence -- as an oversimplification: 1000 tokens at turn 10 costs as much as 100 tokens in context since turn 1.
+
+Now this idea of persistence gets us at the core of the cost issue: tokens added to the context early in the run that are irrelevant, or not fully relevant to the task, are the most costly. As a specific example: Reading in a 1000 line file to edit only 20 lines, especially early in a task, is where much of the waste comes from.
 
 ## The Experiment
 
@@ -187,6 +188,10 @@ Claude put it well:
 > The tools optimize a per-operation quantity (output length, command-output bytes, search tokens) and assume the agent will (a) adopt the new affordance, (b) substitute it for the expensive thing, and (c) not change its turn count. In the logs, all three assumptions fail: the agent ignores rtk's chunks, stacks semble on top of reads, and takes more turns when forced to be terse — and each failure is amplified by the cache economics, because anything that adds a turn or adds context is re-billed for the rest of the run. A tool that doesn't account for adoption, substitution, and turn count can be individually correct on its own benchmark and still lose on the whole task.
 
 To put it in my own words: **you gotta evaluate your tools in vivo, not in vitro**
+
+## Harness Code
+
+I will publish the harness I developed for the evaluation, as well as the agent session logs, as soon as I desloppify that code.
 
 ## Agentic Disclosure
 
